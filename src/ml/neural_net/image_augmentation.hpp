@@ -13,6 +13,7 @@
 
 #include <turi_common.h>
 #include <core/data/image/image_type.hpp>
+#include <ml/neural_net/Image.hpp>
 #include <ml/neural_net/float_array.hpp>
 
 namespace turi {
@@ -73,7 +74,7 @@ bool operator==(const image_annotation& a, const image_annotation& b);
  * Contains one image and its associated annotations.
  */
 struct labeled_image {
-  image_type image;
+  std::shared_ptr<Image> image;
   std::vector<image_annotation> annotations;
 
   // Used when parsing saved predictions for evaluation.
@@ -251,22 +252,6 @@ public:
    * options, then the result is padded with zeroes as needed.
    */
   virtual result prepare_images(std::vector<labeled_image> source_batch) = 0;
-};
-
-/**
- * An image_augmenter implementation that only resizes the input images to the
- * desired output shape.
- */
-class resize_only_image_augmenter final: public image_augmenter {
-public:
-  explicit resize_only_image_augmenter(const options& opts): opts_(opts) {}
-
-  const options& get_options() const override { return opts_; }
-
-  result prepare_images(std::vector<labeled_image> source_batch) override;
-
-private:
-  options opts_;
 };
 
 /**

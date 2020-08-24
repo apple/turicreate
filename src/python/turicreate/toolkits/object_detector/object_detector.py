@@ -24,6 +24,7 @@ from turicreate.toolkits._internal_utils import (
     _raise_error_if_not_iterable,
 )
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
+from turicreate._deps.minimal_package import _minimal_package_import_check
 from .. import _pre_trained_models
 from .._mps_utils import (
     MpsGraphAPI as _MpsGraphAPI,
@@ -58,25 +59,6 @@ def _get_mps_od_net(
     return network
 
 
-# Standard lib functions would be great here, but the formatting options of
-# timedelta are not great
-def _seconds_as_string(seconds):
-    """
-    Returns seconds as a human-friendly string, e.g. '1d 4h 47m 41s'
-    """
-    TIME_UNITS = [("s", 60), ("m", 60), ("h", 24), ("d", None)]
-    unit_strings = []
-    cur = max(int(seconds), 1)
-    for suffix, size in TIME_UNITS:
-        if size is not None:
-            cur, rest = divmod(cur, size)
-        else:
-            rest = cur
-        if rest > 0:
-            unit_strings.insert(0, "%d%s" % (rest, suffix))
-    return " ".join(unit_strings)
-
-
 def _raise_error_if_not_detection_sframe(
     dataset, feature, annotations, require_annotations
 ):
@@ -103,6 +85,7 @@ def create(
     max_iterations=0,
     verbose=True,
     grid_shape=[13, 13],
+    random_seed=None,
     **kwargs
 ):
     """
@@ -161,6 +144,9 @@ def create(
     max_iterations : int
         The number of training iterations. If 0, then it will be automatically
         be determined based on the amount of data you provide.
+
+    random_seed : int, optional
+        The results can be reproduced when given the same seed.
 
     verbose : bool, optional
         If True, print progress updates and model details.
@@ -277,7 +263,7 @@ def create(
     }
 
     # create tensorflow model here
-    import turicreate.toolkits.libtctensorflow
+    _minimal_package_import_check("turicreate.toolkits.libtctensorflow")
 
     if classes == None:
         classes = []
@@ -295,7 +281,8 @@ def create(
         "classes": classes,
         "compute_final_metrics": False,
         "verbose": verbose,
-        "model" : "darknet-yolo"
+        "model": "darknet-yolo",
+        "random_seed": random_seed,
     }
 
     # If batch_size or max_iterations = 0, they will be automatically

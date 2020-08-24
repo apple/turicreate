@@ -1,5 +1,5 @@
 /*
-  * Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  * Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
   *
   * Licensed under the Apache License, Version 2.0 (the "License").
   * You may not use this file except in compliance with the License.
@@ -54,14 +54,19 @@ namespace Aws
             // WinHttp specific implementations
             void* OpenRequest(const Aws::Http::HttpRequest& request, void* connection, const Aws::StringStream& ss) const override;
             void DoAddHeaders(void* hHttpRequest, Aws::String& headerStr) const override;
-            uint64_t DoWriteData(void* hHttpRequest, char* streamBuffer, uint64_t bytesRead) const override;
+            uint64_t DoWriteData(void* hHttpRequest, char* streamBuffer, uint64_t bytesRead, bool isChunked) const override;
+            uint64_t FinalizeWriteData(void* hHttpRequest) const override;
             bool DoReceiveResponse(void* hHttpRequest) const override;
-            bool DoQueryHeaders(void* hHttpRequest, std::shared_ptr<Aws::Http::Standard::StandardHttpResponse>& response, Aws::StringStream& ss, uint64_t& read) const override;
+            bool DoQueryHeaders(void* hHttpRequest, std::shared_ptr<Aws::Http::HttpResponse>& response, Aws::StringStream& ss, uint64_t& read) const override;
             bool DoSendRequest(void* hHttpRequest) const override;
             bool DoReadData(void* hHttpRequest, char* body, uint64_t size, uint64_t& read) const override;
             void* GetClientModule() const override;
 
             WinINetSyncHttpClient &operator =(const WinINetSyncHttpClient &rhs);
+
+            bool m_usingProxy;
+            Aws::String m_proxyUserName;
+            Aws::String m_proxyPassword;
         };
 
     } // namespace Http

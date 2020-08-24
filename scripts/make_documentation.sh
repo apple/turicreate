@@ -59,7 +59,8 @@ TARGET_DIR=${WORKSPACE}/target
 virtualenv ./deps/env
 source deps/env/bin/activate
 
-pip install target/turicreate-*.whl
+# ignore minimal build
+pip install "$(ls -1 target/turicreate-*.whl | grep -v minimal)"
 
 OUTPUT_DIR=${TARGET_DIR}/docs
 mkdir -p ${OUTPUT_DIR}

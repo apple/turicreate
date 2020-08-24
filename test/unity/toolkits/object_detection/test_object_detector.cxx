@@ -62,6 +62,24 @@ std::map<std::string, variant_type> get_basic_state() {
           {"verbose", false}};
 }
 
+class FakeImage : public neural_net::Image {
+ public:
+  FakeImage(size_t height, size_t width)
+    : height_(height)
+    , width_(width)
+  {
+  }
+
+  size_t Height() const override { return height_; }
+  size_t Width() const override { return width_; }
+  void WriteHWC(Span<float> buffer) const override {}
+  void WriteCHW(Span<float> buffer) const override {}
+
+ private:
+  size_t height_;
+  size_t width_;
+};
+
 class mock_data_iterator: public data_iterator {
 public:
   using next_batch_call =
@@ -130,8 +148,8 @@ public:
       std::function<std::unique_ptr<compute_context>()>;
 
   using create_trainer_call = std::function<std::unique_ptr<ModelTrainer>(
-      const Config& config, const std::string& pretrained_model_path,
-      int random_seed, std::unique_ptr<neural_net::compute_context> context)>;
+      const Config& config, const std::string& pretrained_model_path, int random_seed,
+      std::unique_ptr<neural_net::compute_context> context)>;
 
   using create_inference_trainer_call =
       std::function<std::unique_ptr<ModelTrainer>(
@@ -179,15 +197,14 @@ public:
   }
 
   std::unique_ptr<ModelTrainer> create_trainer(
-      const Config& config, const std::string& pretrained_model_path,
-      int random_seed,
-      std::unique_ptr<neural_net::compute_context> context) const override {
+      const Config& config, const std::string& pretrained_model_path, int random_seed,
+      std::unique_ptr<neural_net::compute_context> context) const override
+  {
     TS_ASSERT(!create_trainer_calls_.empty());
     create_trainer_call expected_call =
         std::move(create_trainer_calls_.front());
     create_trainer_calls_.pop_front();
-    return expected_call(config, pretrained_model_path, random_seed,
-                         std::move(context));
+    return expected_call(config, pretrained_model_path, random_seed, std::move(context));
   }
 
   std::unique_ptr<ModelTrainer> create_inference_trainer(
@@ -286,6 +303,7 @@ BOOST_AUTO_TEST_CASE(test_object_detector_iterate_training) {
         annotation.bounding_box.y = j;
 
         result[j].annotations.push_back(annotation);
+        result[j].image = std::make_shared<FakeImage>(256, 256);
         test_annotations->push_back(result[j].annotations);
       }
 
@@ -454,8 +472,7 @@ BOOST_AUTO_TEST_CASE(test_object_detector_init_training) {
   // some arbitrary dummy params.
   const std::string test_mlmodel_path = "/test/foo.mlmodel";
   model.create_trainer_calls_.emplace_back(
-      [=](const Config& config, const std::string& pretrained_model_path,
-          int random_seed,
+      [=](const Config& config, const std::string& pretrained_model_path, int random_seed,
           std::unique_ptr<neural_net::compute_context> context) {
         TS_ASSERT_EQUALS(pretrained_model_path, test_mlmodel_path);
         TS_ASSERT_EQUALS(config.num_classes, test_class_labels.size());
@@ -674,6 +691,7 @@ BOOST_AUTO_TEST_CASE(test_object_detector_auto_split) {
         annotation.bounding_box.y = j;
 
         result[j].annotations.push_back(annotation);
+        result[j].image = std::make_shared<FakeImage>(256, 256);
         test_annotations->push_back(result[j].annotations);
       }
 
@@ -769,8 +787,7 @@ BOOST_AUTO_TEST_CASE(test_object_detector_auto_split) {
   // some arbitrary dummy params.
   const std::string test_mlmodel_path = "/test/foo.mlmodel";
   model.create_trainer_calls_.emplace_back(
-      [=](const Config& config, const std::string& pretrained_model_path,
-          int random_seed,
+      [=](const Config& config, const std::string& pretrained_model_path, int random_seed,
           std::unique_ptr<neural_net::compute_context> context) {
         TS_ASSERT_EQUALS(pretrained_model_path, test_mlmodel_path);
         TS_ASSERT_EQUALS(config.num_classes, test_class_labels.size());
@@ -915,6 +932,7 @@ BOOST_AUTO_TEST_CASE(test_object_detector_predict) {
         annotation.bounding_box.y = j;
 
         result[j].annotations.push_back(annotation);
+        result[j].image = std::make_shared<FakeImage>(256, 256);
         test_annotations->push_back(result[j].annotations);
       }
 
@@ -996,8 +1014,7 @@ BOOST_AUTO_TEST_CASE(test_object_detector_predict) {
   // some arbitrary dummy params.
   const std::string test_mlmodel_path = "/test/foo.mlmodel";
   model.create_trainer_calls_.emplace_back(
-      [=](const Config& config, const std::string& pretrained_model_path,
-          int random_seed,
+      [=](const Config& config, const std::string& pretrained_model_path, int random_seed,
           std::unique_ptr<neural_net::compute_context> context) {
         TS_ASSERT_EQUALS(pretrained_model_path, test_mlmodel_path);
         TS_ASSERT_EQUALS(config.num_classes, test_class_labels.size());
@@ -1084,6 +1101,7 @@ BOOST_AUTO_TEST_CASE(test_object_detector_predict) {
       annotation.bounding_box.y = j;
 
       result[j].annotations.push_back(annotation);
+      result[j].image = std::make_shared<FakeImage>(256, 256);
       test_annotations->push_back(result[j].annotations);
     }
 

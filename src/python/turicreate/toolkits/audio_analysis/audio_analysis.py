@@ -16,6 +16,7 @@ from random import shuffle as _shuffle
 
 import turicreate as _tc
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
+from turicreate._deps.minimal_package import _minimal_package_import_check
 
 
 def load_audio(
@@ -60,7 +61,10 @@ def load_audio(
     >>> audio_path = "~/Documents/myAudioFiles/"
     >>> audio_sframe = tc.audio_analysis.load_audio(audio_path, recursive=True)
     """
-    from scipy.io import wavfile as _wavfile
+    # import scipy does fake include
+    _wavfile = _minimal_package_import_check("scipy.io.wavfile")
+
+    path = _tc.util._make_internal_url(path)
 
     all_wav_files = []
 

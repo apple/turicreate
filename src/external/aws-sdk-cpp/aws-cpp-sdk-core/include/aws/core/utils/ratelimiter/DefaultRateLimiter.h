@@ -1,5 +1,5 @@
 /*
-  * Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  * Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
   *
   * Licensed under the Apache License, Version 2.0 (the "License").
   * You may not use this file except in compliance with the License.
@@ -18,11 +18,11 @@
 #include <aws/core/Core_EXPORTS.h>
 
 #include <aws/core/utils/ratelimiter/RateLimiterInterface.h>
-#include <aws/core/utils/memory/stl/AWSFunction.h>
 
 #include <algorithm>
 #include <mutex>
 #include <thread>
+#include <functional>
 
 namespace Aws
 {
@@ -45,7 +45,7 @@ namespace Aws
                 /**
                  * Initializes state, starts counts, does some basic validation.
                  */
-                DefaultRateLimiter(int64_t maxRate, ElapsedTimeFunctionType elapsedTimeFunction = AWS_BUILD_FUNCTION(CLOCK::now)) :
+                DefaultRateLimiter(int64_t maxRate, ElapsedTimeFunctionType elapsedTimeFunction = CLOCK::now) :
                     m_elapsedTimeFunction(elapsedTimeFunction),
                     m_maxRate(0),
                     m_accumulatorLock(),
@@ -63,7 +63,7 @@ namespace Aws
                     static_assert(CLOCK::duration::period::num > 0, "RateLimiter clock duration must have positive numerator");
                     static_assert(CLOCK::duration::period::den > 0, "RateLimiter clock duration must have positive denominator");
 
-                    SetRate(maxRate, true);
+                    DefaultRateLimiter::SetRate(maxRate, true);
                 }
 
                 virtual ~DefaultRateLimiter() = default;
@@ -84,7 +84,7 @@ namespace Aws
                     m_accumulatorFraction = temp % m_replenishDenominator;
 
                     // the accumulator is capped based on the maximum rate
-                    m_accumulator = std::min(m_accumulator, m_maxRate);
+                    m_accumulator = (std::min)(m_accumulator, m_maxRate);
                     if (m_accumulator == m_maxRate)
                     {
                         m_accumulatorFraction = 0;
@@ -109,7 +109,11 @@ namespace Aws
                  */
                 virtual void ApplyAndPayForCost(int64_t cost) override
                 {
-                    std::this_thread::sleep_for(ApplyCost(cost));
+                    auto costInMilliseconds = ApplyCost(cost);
+                    if(costInMilliseconds.count() > 0)
+                    {
+                        std::this_thread::sleep_for(costInMilliseconds);
+                    }
                 }
 
                 /**
@@ -120,7 +124,7 @@ namespace Aws
                     std::lock_guard<std::recursive_mutex> lock(m_accumulatorLock);
 
                     // rate must always be positive
-                    rate = std::max(static_cast<int64_t>(1), rate);
+                    rate = (std::max)(static_cast<int64_t>(1), rate);
 
                     if (resetAccumulator)
                     {

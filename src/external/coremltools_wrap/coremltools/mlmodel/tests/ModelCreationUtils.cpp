@@ -18,7 +18,7 @@ Specification::NeuralNetwork* buildBasicUpdatableNeuralNetworkModel(Specificatio
     return buildBasicNeuralNetworkModel(m, true, &inTensorAttr, &outTensorAttr);
 }
 
-Specification::NeuralNetwork* buildBasicNeuralNetworkModel(Specification::Model& m, bool isUpdatable, const TensorAttributes *inTensorAttr, const TensorAttributes *outTensorAttr, int numberOfLayers) {
+Specification::NeuralNetwork* buildBasicNeuralNetworkModel(Specification::Model& m, bool isUpdatable, const TensorAttributes *inTensorAttr, const TensorAttributes *outTensorAttr, int numberOfLayers, bool areWeightsQuantized, bool isBiasQuantized) {
     auto inTensor = m.mutable_description()->add_input();
     inTensor->set_name(inTensorAttr->name);
     auto inTensorShape = inTensor->mutable_type()->mutable_multiarraytype();
@@ -53,9 +53,33 @@ Specification::NeuralNetwork* buildBasicNeuralNetworkModel(Specification::Model&
         Specification::InnerProductLayerParams *innerProductParams = layer->mutable_innerproduct();
         innerProductParams->set_inputchannels(1);
         innerProductParams->set_outputchannels(1);
-        innerProductParams->mutable_weights()->add_floatvalue(1.0);
+
+        // set weight
+        auto* weights = innerProductParams->mutable_weights();
+        if (areWeightsQuantized) {
+            auto *quant_params = weights->mutable_quantization();
+            quant_params->set_numberofbits(1);
+            auto *linear_quant_params = quant_params->mutable_linearquantization();
+            linear_quant_params->add_scale(1.0f);
+            linear_quant_params->add_bias(0.0f);
+            weights->set_int8rawvalue("x01"); // this is [1]
+        } else {
+            weights->add_floatvalue(1.0);
+        }
+
+        // set bias
         innerProductParams->set_hasbias(true);
-        innerProductParams->mutable_bias()->add_floatvalue(1.0);
+        auto* bias = innerProductParams->mutable_bias();
+        if (isBiasQuantized) {
+            auto *quant_params = bias->mutable_quantization();
+            quant_params->set_numberofbits(1);
+            auto *linear_quant_params = quant_params->mutable_linearquantization();
+            linear_quant_params->add_scale(1.0f);
+            linear_quant_params->add_bias(0.0f);
+            bias->set_int8rawvalue("x01"); // this is [1]
+        } else {
+            bias->add_floatvalue(1.0);
+        }
         
         if (isUpdatable) {
             layer->set_isupdatable(true);
@@ -76,7 +100,7 @@ Specification::NeuralNetwork* buildBasicNeuralNetworkModel(Specification::Model&
     return neuralNet;
 }
 
-Specification::NeuralNetwork* addInnerProductLayer(Specification::Model& m, bool isUpdatable, const char *name, const TensorAttributes *inTensorAttr, const TensorAttributes *outTensorAttr) {
+Specification::NeuralNetwork* addInnerProductLayer(Specification::Model& m, bool isUpdatable, const char *name, const TensorAttributes *inTensorAttr, const TensorAttributes *outTensorAttr, bool areWeightsQuantized, bool isBiasQuantized) {
     
     auto neuralNet = m.mutable_neuralnetwork();
     auto layer = neuralNet->add_layers();
@@ -87,9 +111,33 @@ Specification::NeuralNetwork* addInnerProductLayer(Specification::Model& m, bool
     Specification::InnerProductLayerParams *innerProductParams = layer->mutable_innerproduct();
     innerProductParams->set_inputchannels(1);
     innerProductParams->set_outputchannels(1);
-    innerProductParams->mutable_weights()->add_floatvalue(1.0);
+
+    // set weight
+    auto* weights = innerProductParams->mutable_weights();
+    if (areWeightsQuantized) {
+        auto *quant_params = weights->mutable_quantization();
+        quant_params->set_numberofbits(1);
+        auto *linear_quant_params = quant_params->mutable_linearquantization();
+        linear_quant_params->add_scale(1.0f);
+        linear_quant_params->add_bias(0.0f);
+        weights->set_int8rawvalue("x01"); // this is [1]
+    } else {
+        weights->add_floatvalue(1.0);
+    }
+
+    // set bias
     innerProductParams->set_hasbias(true);
-    innerProductParams->mutable_bias()->add_floatvalue(1.0);
+    auto* bias = innerProductParams->mutable_bias();
+    if (isBiasQuantized) {
+        auto *quant_params = bias->mutable_quantization();
+        quant_params->set_numberofbits(1);
+        auto *linear_quant_params = quant_params->mutable_linearquantization();
+        linear_quant_params->add_scale(1.0f);
+        linear_quant_params->add_bias(0.0f);
+        bias->set_int8rawvalue("x01"); // this is [1]
+    } else {
+        bias->add_floatvalue(1.0);
+    }
     
     if (isUpdatable) {
         layer->set_isupdatable(true);
@@ -187,7 +235,7 @@ Specification::NeuralNetworkClassifier* buildBasicNeuralNetworkClassifierModel(S
     float *destination_weights = weightsWrite->mutable_data();
     for (uint64_t i = 0; i < C_in; i++) {
         for (uint64_t j = 0; j < C_out; j++) {
-            float random = float(rand())/(RAND_MAX);
+            float random = float(rand())/float(RAND_MAX);
             destination_weights[i * C_out + j] = random;
         }
     }
@@ -200,7 +248,7 @@ Specification::NeuralNetworkClassifier* buildBasicNeuralNetworkClassifierModel(S
         float *destination_bias = biasWrite->mutable_data();
         for (uint64_t i = 0; i < 1; i++) {
             for (uint64_t j = 0; j < C_out; j++) {
-                float random = float(rand())/(RAND_MAX);
+                float random = float(rand())/float(RAND_MAX);
                 destination_bias[i * C_out + j] = random;
             }
         }

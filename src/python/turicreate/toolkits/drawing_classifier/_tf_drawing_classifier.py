@@ -10,11 +10,13 @@ from __future__ import absolute_import as _
 import numpy as _np
 from .._tf_model import TensorFlowModel
 import turicreate.toolkits._tf_utils as _utils
-import tensorflow.compat.v1 as _tf
+from turicreate._deps.minimal_package import _minimal_package_import_check
 
-# This toolkit is compatible with TensorFlow V2 behavior.
-# However, until all toolkits are compatible, we must call `disable_v2_behavior()`.
-_tf.disable_v2_behavior()
+# in conjunction with minimal package
+def _lazy_import_tensorflow():
+    _tf = _minimal_package_import_check("tensorflow.compat.v1")
+
+    return _tf
 
 
 class DrawingClassifierTensorFlowModel(TensorFlowModel):
@@ -31,6 +33,7 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
                 net_params[key]
             )
 
+        _tf = _lazy_import_tensorflow()
         self.dc_graph = _tf.Graph()
         self.num_classes = num_classes
         self.batch_size = batch_size
@@ -39,6 +42,7 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
             self.init_drawing_classifier_graph(net_params)
 
     def init_drawing_classifier_graph(self, net_params):
+        _tf = _lazy_import_tensorflow()
 
         self.input = _tf.placeholder(_tf.float32, [self.batch_size, 28, 28, 1])
         self.weights = _tf.placeholder(_tf.float32, [self.batch_size, 1])
@@ -55,13 +59,18 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
 
         # Weights
         weights = {
-            name: _tf.Variable(_utils.convert_conv2d_coreml_to_tf(net_params[name]), name=name)
-            for name in ("drawing_conv0_weight",
-                         "drawing_conv1_weight",
-                         "drawing_conv2_weight")
+            name: _tf.Variable(
+                _utils.convert_conv2d_coreml_to_tf(net_params[name]), name=name
+            )
+            for name in (
+                "drawing_conv0_weight",
+                "drawing_conv1_weight",
+                "drawing_conv2_weight",
+            )
         }
         weights["drawing_dense1_weight"] = _tf.Variable(
-            _utils.convert_dense_coreml_to_tf(net_params["drawing_dense1_weight"]), name="drawing_dense1_weight"
+            _utils.convert_dense_coreml_to_tf(net_params["drawing_dense1_weight"]),
+            name="drawing_dense1_weight",
         )
         """
         To make output of CoreML pool3 (NCHW) compatible with TF (NHWC).
@@ -78,11 +87,13 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
         # Biases
         biases = {
             name: _tf.Variable(net_params[name], name=name)
-            for name in ("drawing_conv0_bias",
-                         "drawing_conv1_bias",
-                         "drawing_conv2_bias",
-                         "drawing_dense0_bias",
-                         "drawing_dense1_bias")
+            for name in (
+                "drawing_conv0_bias",
+                "drawing_conv1_bias",
+                "drawing_conv2_bias",
+                "drawing_dense0_bias",
+                "drawing_dense1_bias",
+            )
         }
 
         conv_1 = _tf.nn.conv2d(
@@ -210,6 +221,8 @@ class DrawingClassifierTensorFlowModel(TensorFlowModel):
         """
 
         net_params = {}
+
+        _tf = _lazy_import_tensorflow()
         with self.dc_graph.as_default():
             layer_names = _tf.trainable_variables()
             layer_weights = self.sess.run(layer_names)

@@ -1,5 +1,5 @@
 /*
-  * Copyright 2010-2015 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  * Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
   * 
   * Licensed under the Apache License, Version 2.0 (the "License").
   * You may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
   * express or implied. See the License for the specific language governing
   * permissions and limitations under the License.
   */
-
+#define AWS_DISABLE_DEPRECATION
 #include <aws/core/http/windows/WinHttpSyncHttpClient.h>
 
 #include <aws/core/Http/HttpRequest.h>
@@ -25,6 +25,7 @@
 #include <aws/core/utils/Array.h>
 #include <aws/core/utils/memory/stl/AWSStreamFwd.h>
 #include <aws/core/utils/ratelimiter/RateLimiterInterface.h>
+#include <aws/core/utils/UnreferencedParam.h>
 
 #include <Windows.h>
 #include <winhttp.h>
@@ -39,6 +40,23 @@ using namespace Aws::Utils::Logging;
 
 static const uint32_t HTTP_REQUEST_WRITE_BUFFER_LENGTH = 8192;
 
+static void WinHttpEnableHttp2(void* handle)
+{
+#ifdef WINHTTP_HAS_H2
+    DWORD http2 = WINHTTP_PROTOCOL_FLAG_HTTP2;
+    if (!WinHttpSetOption(handle, WINHTTP_OPTION_ENABLE_HTTP_PROTOCOL, &http2, sizeof(http2))) 
+    {
+        AWS_LOGSTREAM_ERROR("WinHttpHttp2", "Failed to enable HTTP/2 on WinHttp handle: " << handle << ". Falling back to HTTP/1.1.");
+    }
+    else
+    {
+        AWS_LOGSTREAM_DEBUG("WinHttpHttp2", "HTTP/2 enabled on WinHttp handle: " << handle << ".");
+    }
+#else
+    AWS_UNREFERENCED_PARAM(handle);
+#endif
+}
+
 WinHttpSyncHttpClient::WinHttpSyncHttpClient(const ClientConfiguration& config) :
     Base()
 {
@@ -51,26 +69,29 @@ WinHttpSyncHttpClient::WinHttpSyncHttpClient(const ClientConfiguration& config) 
 
     m_allowRedirects = config.followRedirects;
 
-    bool isUsingProxy = !config.proxyHost.empty();
+    m_usingProxy = !config.proxyHost.empty();
     //setup initial proxy config.
 
     Aws::WString proxyString;
 
-    if (isUsingProxy)
+    if (m_usingProxy)
     {
-        AWS_LOGSTREAM_INFO(GetLogTag(), "Http Client is using a proxy. Setting up proxy with settings host " << config.proxyHost
-             << ", port " << config.proxyPort << ", username " << config.proxyUserName);
-
+        const char* const proxySchemeString = Aws::Http::SchemeMapper::ToString(config.proxyScheme);
+        AWS_LOGSTREAM_INFO(GetLogTag(), "Http Client is using a proxy. Setting up proxy with settings scheme " << proxySchemeString
+             << ", host " << config.proxyHost << ", port " << config.proxyPort << ", username " << config.proxyUserName);
 
         winhttpFlags = WINHTTP_ACCESS_TYPE_NAMED_PROXY;
         Aws::StringStream ss;
         const char* schemeString = Aws::Http::SchemeMapper::ToString(config.scheme);
-        ss << StringUtils::ToUpper(schemeString) << "=" << schemeString << "://" << config.proxyHost << ":" << config.proxyPort;
+        ss << StringUtils::ToUpper(schemeString) << "=" << proxySchemeString << "://" << config.proxyHost << ":" << config.proxyPort;
         strProxyHosts.assign(ss.str());
         proxyHosts = strProxyHosts.c_str();
 
         proxyString = StringUtils::ToWString(proxyHosts);
         AWS_LOGSTREAM_DEBUG(GetLogTag(), "Adding proxy host string to winhttp " << proxyHosts);
+
+        m_proxyUserName = StringUtils::ToWString(config.proxyUserName.c_str());
+        m_proxyPassword = StringUtils::ToWString(config.proxyPassword.c_str());
     }
 
     Aws::WString openString = StringUtils::ToWString(config.userAgent.c_str());
@@ -81,25 +102,9 @@ WinHttpSyncHttpClient::WinHttpSyncHttpClient(const ClientConfiguration& config) 
     {
         AWS_LOGSTREAM_WARN(GetLogTag(), "Error setting timeouts " << GetLastError());
     }
-
-    //add proxy auth credentials to everything using this handle.
-    if (isUsingProxy)
-    {
-        if (!config.proxyUserName.empty() && !WinHttpSetOption(GetOpenHandle(), WINHTTP_OPTION_PROXY_USERNAME, (LPVOID)config.proxyUserName.c_str(), (DWORD)config.proxyUserName.length()))
-            AWS_LOGSTREAM_FATAL(GetLogTag(), "Failed setting username for proxy with error code: " << GetLastError());
-        if (!config.proxyPassword.empty() && !WinHttpSetOption(GetOpenHandle(), WINHTTP_OPTION_PROXY_PASSWORD, (LPVOID)config.proxyPassword.c_str(), (DWORD)config.proxyPassword.length()))
-            AWS_LOGSTREAM_FATAL(GetLogTag(), "Failed setting password for proxy with error code: " << GetLastError());
-    }
-
-    if (!config.verifySSL)
-    {
-        AWS_LOG_WARN(GetLogTag(), "Turning ssl unknown ca verification off.");
-        DWORD flags = SECURITY_FLAG_IGNORE_UNKNOWN_CA | SECURITY_FLAG_IGNORE_CERT_CN_INVALID;
-
-        if (!WinHttpSetOption(GetOpenHandle(), WINHTTP_OPTION_SECURITY_FLAGS, &flags, sizeof(flags)))
-            AWS_LOG_FATAL(GetLogTag(), "Failed to turn ssl cert ca verification off.");
-    }
-    else
+    WinHttpEnableHttp2(GetOpenHandle());
+    m_verifySSL = config.verifySSL;
+    if (m_verifySSL)
     {
         //disable insecure tls protocols, otherwise you might as well turn ssl verification off.
         DWORD flags = WINHTTP_FLAG_SECURE_PROTOCOL_TLS1 | WINHTTP_FLAG_SECURE_PROTOCOL_TLS1_1 | WINHTTP_FLAG_SECURE_PROTOCOL_TLS1_2;
@@ -109,29 +114,65 @@ WinHttpSyncHttpClient::WinHttpSyncHttpClient(const ClientConfiguration& config) 
         }
     }
 
-    AWS_LOG_DEBUG(GetLogTag(), "API handle %p.", GetOpenHandle());
+    // WinHTTP doesn't have the option to turn off keep-alive, so we will only set the value if keep-alive is turned on.
+    // see https://docs.microsoft.com/en-us/windows/desktop/winhttp/option-flags for more information on default values.
+    if (config.enableTcpKeepAlive)
+    {
+        DWORD keepAliveIntervalMs = config.tcpKeepAliveIntervalMs;
+        if (!WinHttpSetOption(GetOpenHandle(), WINHTTP_OPTION_WEB_SOCKET_KEEPALIVE_INTERVAL, &keepAliveIntervalMs, sizeof(keepAliveIntervalMs)))
+        {
+            AWS_LOGSTREAM_WARN(GetLogTag(), "Failed setting TCP keep-alive interval with error code: " << GetLastError());
+        }
+    }
+
+    AWS_LOGSTREAM_DEBUG(GetLogTag(), "API handle " << GetOpenHandle());
     SetConnectionPoolManager(Aws::New<WinHttpConnectionPoolMgr>(GetLogTag(),
-        GetOpenHandle(), config.maxConnections, config.requestTimeoutMs, config.connectTimeoutMs));
+        GetOpenHandle(), config.maxConnections, config.requestTimeoutMs, config.connectTimeoutMs, config.enableTcpKeepAlive, config.tcpKeepAliveIntervalMs));
 }
 
 
 WinHttpSyncHttpClient::~WinHttpSyncHttpClient()
 {
-
+    WinHttpCloseHandle(GetOpenHandle());
+    SetOpenHandle(nullptr);  // the handle is already closed, annul it to avoid double-closing the handle (in the base class' destructor)
 }
 
 void* WinHttpSyncHttpClient::OpenRequest(const Aws::Http::HttpRequest& request, void* connection, const Aws::StringStream& ss) const
 {
+    LPCWSTR accept[2] = { nullptr, nullptr };
 
     DWORD requestFlags = WINHTTP_FLAG_REFRESH |
         (request.GetUri().GetScheme() == Scheme::HTTPS ? WINHTTP_FLAG_SECURE : 0);
 
-    static LPCWSTR accept[2] = { L"*/*", nullptr };
+    Aws::WString acceptHeader(L"*/*");
+
+    if (request.HasHeader(Aws::Http::ACCEPT_HEADER)) 
+    {
+        acceptHeader = Aws::Utils::StringUtils::ToWString(request.GetHeaderValue(Aws::Http::ACCEPT_HEADER).c_str());  
+    }
+
+    accept[0] = acceptHeader.c_str();
 
     Aws::WString wss = StringUtils::ToWString(ss.str().c_str());
 
     HINTERNET hHttpRequest = WinHttpOpenRequest(connection, StringUtils::ToWString(HttpMethodMapper::GetNameForHttpMethod(request.GetMethod())).c_str(),
         wss.c_str(), nullptr, nullptr, accept, requestFlags);
+
+    //add proxy auth credentials to everything using this handle.
+    if (m_usingProxy)
+    {
+        if (!m_proxyUserName.empty() && !WinHttpSetOption(hHttpRequest, WINHTTP_OPTION_PROXY_USERNAME, (LPVOID)m_proxyUserName.c_str(), (DWORD)m_proxyUserName.length()))
+            AWS_LOGSTREAM_FATAL(GetLogTag(), "Failed setting username for proxy with error code: " << GetLastError());
+        if (!m_proxyPassword.empty() && !WinHttpSetOption(hHttpRequest, WINHTTP_OPTION_PROXY_PASSWORD, (LPVOID)m_proxyPassword.c_str(), (DWORD)m_proxyPassword.length()))
+            AWS_LOGSTREAM_FATAL(GetLogTag(), "Failed setting password for proxy with error code: " << GetLastError());
+    }
+
+    if (!m_verifySSL) // Turning ssl unknown ca verification off
+    {
+        DWORD flags = SECURITY_FLAG_IGNORE_UNKNOWN_CA | SECURITY_FLAG_IGNORE_CERT_CN_INVALID;
+        if (!WinHttpSetOption(hHttpRequest, WINHTTP_OPTION_SECURITY_FLAGS, &flags, sizeof(flags)))
+            AWS_LOGSTREAM_FATAL(GetLogTag(), "Failed to turn ssl cert ca verification off.");
+    }
 
     //DISABLE_FEATURE settings need to be made after OpenRequest but before SendRequest
     if (!m_allowRedirects)
@@ -139,8 +180,10 @@ void* WinHttpSyncHttpClient::OpenRequest(const Aws::Http::HttpRequest& request, 
         requestFlags = WINHTTP_DISABLE_REDIRECTS;
 
         if (!WinHttpSetOption(hHttpRequest, WINHTTP_OPTION_DISABLE_FEATURE, &requestFlags, sizeof(requestFlags)))
-            AWS_LOG_FATAL(GetLogTag(), "Failed to turn off redirects!");
+            AWS_LOGSTREAM_FATAL(GetLogTag(), "Failed to turn off redirects!");
     }
+
+    WinHttpEnableHttp2(hHttpRequest);
     return hHttpRequest;
 }
 
@@ -149,17 +192,57 @@ void WinHttpSyncHttpClient::DoAddHeaders(void* hHttpRequest, Aws::String& header
 
     Aws::WString wHeaderString = StringUtils::ToWString(headerStr.c_str());
 
-    WinHttpAddRequestHeaders(hHttpRequest, wHeaderString.c_str(), (DWORD)wHeaderString.length(), WINHTTP_ADDREQ_FLAG_REPLACE | WINHTTP_ADDREQ_FLAG_ADD);
+    if (!WinHttpAddRequestHeaders(hHttpRequest, wHeaderString.c_str(), (DWORD)wHeaderString.length(), WINHTTP_ADDREQ_FLAG_REPLACE | WINHTTP_ADDREQ_FLAG_ADD))
+        AWS_LOGSTREAM_ERROR(GetLogTag(), "Failed to add HTTP request headers with error code: " << GetLastError());
 }
 
-uint64_t WinHttpSyncHttpClient::DoWriteData(void* hHttpRequest, char* streamBuffer, uint64_t bytesRead) const
+uint64_t WinHttpSyncHttpClient::DoWriteData(void* hHttpRequest, char* streamBuffer, uint64_t bytesRead, bool isChunked) const
 {
     DWORD bytesWritten = 0;
-    if (!WinHttpWriteData(hHttpRequest, streamBuffer, (DWORD)bytesRead, &bytesWritten))
+    uint64_t totalBytesWritten = 0;
+    const char CRLF[] = "\r\n";
+
+    if (isChunked)
+    {
+        Aws::String chunkSizeHexString = StringUtils::ToHexString(bytesRead) + CRLF;
+
+        if (!WinHttpWriteData(hHttpRequest, chunkSizeHexString.c_str(), (DWORD)chunkSizeHexString.size(), &bytesWritten))
+        {
+            return totalBytesWritten;
+        }
+        totalBytesWritten += bytesWritten;
+        if (!WinHttpWriteData(hHttpRequest, streamBuffer, (DWORD)bytesRead, &bytesWritten))
+        {
+            return totalBytesWritten;
+        }
+        totalBytesWritten += bytesWritten;
+        if (!WinHttpWriteData(hHttpRequest, CRLF, (DWORD)(sizeof(CRLF) - 1), &bytesWritten))
+        {
+            return totalBytesWritten;
+        }
+        totalBytesWritten += bytesWritten;
+    }
+    else
+    {
+        if (!WinHttpWriteData(hHttpRequest, streamBuffer, (DWORD)bytesRead, &bytesWritten))
+        {
+            return totalBytesWritten;
+        }
+        totalBytesWritten += bytesWritten;
+    }
+
+    return totalBytesWritten;
+}
+
+uint64_t WinHttpSyncHttpClient::FinalizeWriteData(void* hHttpRequest) const
+{
+    DWORD bytesWritten = 0;
+    const char trailingCRLF[] = "0\r\n\r\n";
+    if (!WinHttpWriteData(hHttpRequest, trailingCRLF, (DWORD)(sizeof(trailingCRLF) - 1), &bytesWritten))
     {
         return 0;
     }
-
+        
     return bytesWritten;
 }
 
@@ -168,7 +251,7 @@ bool WinHttpSyncHttpClient::DoReceiveResponse(void* httpRequest) const
     return (WinHttpReceiveResponse(httpRequest, nullptr) != 0);
 }
 
-bool WinHttpSyncHttpClient::DoQueryHeaders(void* hHttpRequest, std::shared_ptr<StandardHttpResponse>& response, Aws::StringStream& ss, uint64_t& read) const
+bool WinHttpSyncHttpClient::DoQueryHeaders(void* hHttpRequest, std::shared_ptr<HttpResponse>& response, Aws::StringStream& ss, uint64_t& read) const
 {
     wchar_t dwStatusCode[256];
     DWORD dwSize = sizeof(dwStatusCode);
@@ -192,7 +275,7 @@ bool WinHttpSyncHttpClient::DoQueryHeaders(void* hHttpRequest, std::shared_ptr<S
     }
        
     BOOL queryResult = false;
-    AWS_LOG_DEBUG(GetLogTag(), "Received headers:");
+    AWS_LOGSTREAM_DEBUG(GetLogTag(), "Received headers:");
     WinHttpQueryHeaders(hHttpRequest, WINHTTP_QUERY_RAW_HEADERS_CRLF, WINHTTP_HEADER_NAME_BY_INDEX, nullptr, &dwSize, WINHTTP_NO_HEADER_INDEX);
     
     //I know it's ugly, but this is how MSFT says to do it so....

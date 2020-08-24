@@ -41,6 +41,13 @@ float_array_map multiply_mps_od_loss_multiplier(float_array_map config,
   return config;
 }
 
+// At static-init time, register create_mps_compute_context().
+// TODO: Codify priority levels?
+static auto* mps_registration = new compute_context::registration(
+    /* priority */ 1, &create_mps_compute_context, nullptr, &create_mps_compute_context);
+
+}  // namespace
+
 std::unique_ptr<compute_context> create_mps_compute_context() {
   @autoreleasepool {
 
@@ -77,12 +84,6 @@ std::unique_ptr<compute_context> create_mps_compute_context() {
   }  // @autoreleasepool
 }
 
-// At static-init time, register create_mps_compute_context().
-// TODO: Codify priority levels?
-static auto* mps_registration = new compute_context::registration(
-    /* priority */ 0, &create_mps_compute_context, nullptr);
-
-}  // namespace
 
 mps_compute_context::mps_compute_context(
     std::unique_ptr<mps_command_queue> command_queue)
@@ -100,11 +101,17 @@ size_t mps_compute_context::memory_budget() const {
   }  // @autoreleasepool
 }
 
-std::vector<std::string> mps_compute_context::gpu_names() const {
+void mps_compute_context::print_training_device_info() const {
   @autoreleasepool {
 
   id <MTLDevice> dev = command_queue_->impl.device;
-  return { [dev.name cStringUsingEncoding:NSUTF8StringEncoding] };
+  std::string gpu_name = [dev.name cStringUsingEncoding:NSUTF8StringEncoding];
+
+  if (gpu_name.empty()) {
+    logprogress_stream << "Using CPU to create model.";
+  } else {
+    logprogress_stream << "Using GPU (\"" << gpu_name <<"\") to create model.";
+  }
 
   }  // @autoreleasepool
 }

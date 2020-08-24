@@ -10,10 +10,14 @@ from __future__ import absolute_import as _
 
 import numpy as _np
 from .._tf_model import TensorFlowModel
+from turicreate._deps.minimal_package import _minimal_package_import_check
 import turicreate.toolkits._tf_utils as _utils
-import tensorflow.compat.v1 as _tf
 
-_tf.disable_v2_behavior()
+
+# in conjunction with minimal package
+def _lazy_import_tensorflow():
+    _tf = _minimal_package_import_check("tensorflow.compat.v1")
+    return _tf
 
 
 class ODTensorFlowModel(TensorFlowModel):
@@ -38,6 +42,7 @@ class ODTensorFlowModel(TensorFlowModel):
                 init_weights[key]
             )
 
+        _tf = _lazy_import_tensorflow()
         self.od_graph = _tf.Graph()
         self.config = config
         self.batch_size = batch_size
@@ -69,6 +74,16 @@ class ODTensorFlowModel(TensorFlowModel):
             self.init_object_detector_graph(input_h, input_w, init_weights)
 
     def init_object_detector_graph(self, input_h, input_w, init_weights):
+      
+        _tf = _lazy_import_tensorflow()
+        
+        def ClipIfNotNone(grad, clip_value):
+            """
+            Function to check if grad value is None. If not, continue with clipping.
+            """
+            if grad is None:
+                return grad
+            return _tf.clip_by_value(grad, -clip_value, clip_value)
 
         self.is_train = _tf.placeholder(_tf.bool)  # Set flag for training or val
 
@@ -88,7 +103,7 @@ class ODTensorFlowModel(TensorFlowModel):
             name="labels",
         )
 
-        self.tf_model = self.tiny_yolo(inputs=self.images, output_size=self.output_size)
+        self.tf_model = self.tiny_yolo(self.images, init_weights)
         self.global_step = _tf.Variable(0, trainable=False, name="global_step")
 
         self.loss = self.loss_layer(self.tf_model, self.labels)
@@ -121,7 +136,7 @@ class ODTensorFlowModel(TensorFlowModel):
 
         grads_and_vars = self.opt.compute_gradients(self.loss)
         clipped_gradients = [
-            (self.ClipIfNotNone(g, self.clip_value), v) for g, v in grads_and_vars
+            (ClipIfNotNone(g, self.clip_value), v) for g, v in grads_and_vars
         ]
         self.train_op = self.opt.apply_gradients(
             clipped_gradients, global_step=self.global_step
@@ -130,52 +145,12 @@ class ODTensorFlowModel(TensorFlowModel):
         self.sess.run(_tf.global_variables_initializer())
         self.sess.run(_tf.local_variables_initializer())
 
-        self.load_weights(init_weights)
-
     def __del__(self):
         self.sess.close()
         self.gpu_policy.stop()
 
-    def load_weights(self, tf_net_params):
-        """
-        Function to load C++ weights into TensorFlow
-
-        Parameters
-        ----------
-        tf_net_params: Dictionary
-            Dict with C++ weights and names.
-
-        """
-        for keys in tf_net_params:
-            if tf_net_params[keys].ndim == 1:
-                self.sess.run(
-                    _tf.assign(
-                        _tf.get_default_graph().get_tensor_by_name(keys + ":0"),
-                        tf_net_params[keys],
-                    )
-                )
-            elif tf_net_params[keys].ndim == 4:
-                # Converting from [output_channels, input_channels, filter_height, filter_width] to
-                # [filter_height, filter_width, input_channels, output_channels]
-                self.sess.run(
-                    _tf.assign(
-                        _tf.get_default_graph().get_tensor_by_name(keys + ":0"),
-                        tf_net_params[keys].transpose(2, 3, 1, 0),
-                    )
-                )
-            else:
-                continue
-
-    def ClipIfNotNone(self, grad, clip_value):
-        """
-        Function to check if grad value is None. If not, continue with clipping.
-        """
-        if grad is None:
-            return grad
-        return _tf.clip_by_value(grad, -clip_value, clip_value)
-
     def batch_norm_wrapper(
-        self, inputs, batch_name, is_training=True, epsilon=1e-05, decay=0.9
+            self, inputs, batch_name, init_weights, is_training=True, epsilon=1e-05, decay=0.9
     ):
         """
         Layer to handle batch norm training and inference
@@ -186,6 +161,8 @@ class ODTensorFlowModel(TensorFlowModel):
             4d tensor of NHWC format
         batch_name: string
             Name for the batch norm layer
+        init_weights: Dict of numpy arrays
+            A mapping of layer names to init weights
         is_training: bool
             True if training and False if running validation; updates based on is_train from params
         epsilon: float
@@ -199,16 +176,18 @@ class ODTensorFlowModel(TensorFlowModel):
         return: TensorFlow Tensor
             Result of batch norm layer
         """
+        _tf = _lazy_import_tensorflow()
+
         dim_of_x = inputs.get_shape()[-1]
 
         shadow_mean = _tf.Variable(
-            _tf.zeros(shape=[dim_of_x], dtype="float32"),
+            init_weights[batch_name + "running_mean"],
             name=batch_name + "running_mean",
             trainable=False,
         )
 
         shadow_var = _tf.Variable(
-            _tf.ones(shape=[dim_of_x], dtype="float32"),
+            init_weights[batch_name + "running_var"],
             name=batch_name + "running_var",
             trainable=False,
         )
@@ -240,19 +219,19 @@ class ODTensorFlowModel(TensorFlowModel):
             lambda: (_tf.identity(shadow_mean), _tf.identity(shadow_var)),
         )
         beta = _tf.Variable(
-            _tf.zeros(shape=dim_of_x, dtype="float32"),
+            init_weights[batch_name + "beta"],
             name=batch_name + "beta",
             trainable=True,
         )  # Offset/Shift
         gamma = _tf.Variable(
-            _tf.ones(shape=dim_of_x, dtype="float32"),
+            init_weights[batch_name + "gamma"],
             name=batch_name + "gamma",
             trainable=True,
         )  # Scale
 
         return _tf.nn.batch_normalization(inputs, mean, variance, beta, gamma, epsilon)
 
-    def conv_layer(self, inputs, shape, name, batch_name, batch_norm=True):
+    def conv_layer(self, inputs, shape, name, batch_name, init_weights, batch_norm=True):
         """
         Defines conv layer, batch norm and leaky ReLU
 
@@ -260,12 +239,14 @@ class ODTensorFlowModel(TensorFlowModel):
         ----------
         inputs: TensorFlow Tensor
             4d tensor of NHWC format
-        shape: TensorFlow Tensor
+        shape: list
             Shape of the conv layer
         batch_norm: Bool
             (True or False) to add batch norm layer. This is used to add batch norm to all conv layers but the last.
         name: string
             Name for the conv layer
+        init_weights: Dict of numpy arrays
+            A mapping of layer names to init weights
         batch_name: string
             Name for the batch norm layer
 
@@ -274,8 +255,10 @@ class ODTensorFlowModel(TensorFlowModel):
         conv: TensorFlow Tensor
             Return result from combining conv, batch norm and leaky ReLU or conv and bias as needed
         """
+        _tf = _lazy_import_tensorflow()
+
         weight = _tf.Variable(
-            _tf.random.truncated_normal(shape, stddev=0.1),
+            init_weights[name + "weight"].transpose(2, 3, 1, 0),
             trainable=True,
             name=name + "weight",
         )
@@ -285,8 +268,7 @@ class ODTensorFlowModel(TensorFlowModel):
         )
 
         if batch_norm:
-
-            conv = self.batch_norm_wrapper(conv, batch_name, is_training=self.is_train)
+            conv = self.batch_norm_wrapper(conv, batch_name, init_weights, is_training=self.is_train)
             alpha = 0.1
             conv = _tf.maximum(alpha * conv, conv)
         else:
@@ -295,7 +277,7 @@ class ODTensorFlowModel(TensorFlowModel):
 
         return conv
 
-    def pooling_layer(self, inputs, pool_size, strides, padding, name="1_pool"):
+    def pooling_layer(self, inputs, pool_size, strides, padding, name):
         """
         Define pooling layer
 
@@ -315,13 +297,14 @@ class ODTensorFlowModel(TensorFlowModel):
         pool: TensorFlow Tensor
             Return pooling layer
         """
+        _tf = _lazy_import_tensorflow()
 
         pool = _tf.nn.max_pool2d(
             inputs, ksize=pool_size, strides=strides, padding=padding, name=name
         )
         return pool
 
-    def tiny_yolo(self, inputs, output_size=125):
+    def tiny_yolo(self, inputs, init_weights):
         """
         Building the Tiny yolov2 network
 
@@ -330,8 +313,8 @@ class ODTensorFlowModel(TensorFlowModel):
         inputs: TensorFlow Tensor
             Images sent as input for the network.
             This is an input tensor of shape [batch, in_height, in_width, in_channels]
-        output_size: int
-            Result of (num_classes + 5) * num_boxes
+        init_weights: Dict of numpy arrays
+            A mapping of layer names to init weights
 
         Returns
         -------
@@ -347,16 +330,18 @@ class ODTensorFlowModel(TensorFlowModel):
                 net = self.conv_layer(
                     inputs,
                     [3, 3, 3, f],
-                    name="conv%d_" % (idx - 1),
-                    batch_name=batch_name,
+                    "conv%d_" % (idx - 1),
+                    batch_name,
+                    init_weights,
                     batch_norm=True,
                 )
             else:
                 net = self.conv_layer(
                     net,
                     [3, 3, filter_sizes[idx - 2], filter_sizes[idx - 1]],
-                    name="conv%d_" % (idx - 1),
-                    batch_name=batch_name,
+                    "conv%d_" % (idx - 1),
+                    batch_name,
+                    init_weights,
                     batch_norm=True,
                 )
 
@@ -380,12 +365,13 @@ class ODTensorFlowModel(TensorFlowModel):
                         name="pool%d_" % idx,
                     )
 
-        if output_size is not None:
+        if self.output_size is not None:
             net = self.conv_layer(
                 net,
-                [1, 1, filter_sizes[idx - 1], output_size],
-                name="conv8_",
-                batch_name=None,
+                [1, 1, filter_sizes[idx - 1], self.output_size],
+                "conv8_",
+                None,
+                init_weights,
                 batch_norm=False,
             )
 
@@ -407,6 +393,8 @@ class ODTensorFlowModel(TensorFlowModel):
         loss: TensorFlow Tensor
             Loss (combination of regression and classification losses)
         """
+        _tf = _lazy_import_tensorflow()
+
         POS_IOU = 0.7
         NEG_IOU = 0.3
 
@@ -627,6 +615,8 @@ class ODTensorFlowModel(TensorFlowModel):
         tf_export_params: Dictionary
             Dictionary of weights from TensorFlow stored as {weight_name: weight_value}
         """
+        _tf = _lazy_import_tensorflow()
+
         tf_export_params = {}
 
         # collect all TF variables to include running_mean and running_variance

@@ -8,14 +8,16 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 from .._tf_model import TensorFlowModel
 import turicreate.toolkits._tf_utils as _utils
+from turicreate._deps.minimal_package import _minimal_package_import_check
 
-# Suppresses verbosity to only errors
-_utils.suppress_tensorflow_warnings()
-import tensorflow.compat.v1 as _tf
 
-# This toolkit is compatible with TensorFlow V2 behavior.
-# However, until all toolkits are compatible, we must call `disable_v2_behavior()`.
-_tf.disable_v2_behavior()
+# in conjunction with minimal package
+def _lazy_import_tensorflow():
+    # Suppresses verbosity to only errors
+    _utils.suppress_tensorflow_warnings()
+
+    _tf = _minimal_package_import_check("tensorflow.compat.v1")
+    return _tf
 
 
 class SoundClassifierTensorFlowModel(TensorFlowModel):
@@ -23,6 +25,7 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         """
         Defines the TensorFlow model, loss, optimisation and accuracy.
         """
+        _tf = _lazy_import_tensorflow()
         self.num_inputs = num_inputs
         self.num_classes = num_classes
         self.custom_layer_sizes = custom_layer_sizes
@@ -42,6 +45,7 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
     @staticmethod
     def _build_network(x, weights, biases):
         # Add customized layers
+        _tf = _lazy_import_tensorflow()
         for i in range(len(weights.keys())):
             weight_name = "sound_dense{}_weight".format(i)
             bias_name = "sound_dense{}_bias".format(i)
@@ -67,6 +71,7 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         self.is_initialized = True
 
     def init_sound_classifier_graph(self):
+        _tf = _lazy_import_tensorflow()
         self.x = _tf.placeholder("float", [None, self.num_inputs])
         self.y = _tf.placeholder("float", [None, self.num_classes])
 
@@ -102,7 +107,9 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
             initializer([self.num_classes]), name=bias_name
         )
 
-        self.predictions, curr_dense = SoundClassifierTensorFlowModel._build_network(self.x, weights, biases)
+        self.predictions, curr_dense = SoundClassifierTensorFlowModel._build_network(
+            self.x, weights, biases
+        )
 
         # Loss
         self.cost = _tf.reduce_mean(
@@ -126,6 +133,7 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         self.sess.run(_tf.global_variables_initializer())
 
     def train(self, data, label):
+        _tf = _lazy_import_tensorflow()
         assert self.is_initialized
 
         data_shape = data.shape[0]
@@ -143,6 +151,7 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
 
     def evaluate(self, data, label):
         assert self.is_initialized
+        _tf = _lazy_import_tensorflow()
 
         data_shape = data.shape[0]
         pred_probs, final_accuracy = self.sess.run(
@@ -181,6 +190,7 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
             respective activation applied to the layer.
         """
         assert self.is_initialized
+        _tf = _lazy_import_tensorflow()
 
         with self.sc_graph.as_default():
             layer_names = _tf.trainable_variables()
@@ -216,6 +226,7 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
 
         """
         assert self.is_initialized
+        _tf = _lazy_import_tensorflow()
 
         with self.sc_graph.as_default():
             layer_names = _tf.trainable_variables()
@@ -240,17 +251,24 @@ class SoundClassifierTensorFlowModel(TensorFlowModel):
         need to be transposed to match TF format.
 
         """
+        _tf = _lazy_import_tensorflow()
         with self.sc_graph.as_default():
             weights, biases = {}, {}
             for cur_name, cur_layer in net_params["data"].items():
                 if "bias" in cur_name:
-                    biases[cur_name] = _tf.Variable(cur_layer.astype('float32'), name=cur_name)
+                    biases[cur_name] = _tf.Variable(
+                        cur_layer.astype("float32"), name=cur_name
+                    )
                 else:
                     assert "weight" in cur_name
-                    weights[cur_name] = _tf.Variable(cur_layer.transpose(1, 0).astype('float32'), name=cur_name)
+                    weights[cur_name] = _tf.Variable(
+                        cur_layer.transpose(1, 0).astype("float32"), name=cur_name
+                    )
 
             self.x = _tf.placeholder("float", [None, self.num_inputs])
-            self.predictions, _ = SoundClassifierTensorFlowModel._build_network(self.x, weights, biases)
+            self.predictions, _ = SoundClassifierTensorFlowModel._build_network(
+                self.x, weights, biases
+            )
 
             self.sess.run(_tf.global_variables_initializer())
 

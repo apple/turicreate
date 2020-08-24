@@ -8,6 +8,7 @@
 #include <vector>
 #include <string>
 #include <turi_common.h>
+#include <boost/optional/optional.hpp>
 
 namespace turi {
 namespace fileio {
@@ -16,6 +17,17 @@ namespace fileio {
  * Returns a complete list of all available S3 region-specific endpoints.
  */
 std::vector<std::string> get_s3_endpoints();
+
+
+/**
+ * set by env var AWS_DEFAULT_REGION or TURI_S3_REGION
+ */
+boost::optional<std::string> get_auth_region_from_env();
+
+/**
+ * set by env var TURI_S3_ENDPOINT
+ */
+boost::optional<std::string> get_endpoint_from_env();
 
 /**
  * \ingroup fileio

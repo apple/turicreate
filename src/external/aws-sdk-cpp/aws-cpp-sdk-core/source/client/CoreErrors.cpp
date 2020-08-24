@@ -1,5 +1,5 @@
 /*
-* Copyright 2010-2015 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -13,124 +13,149 @@
 * permissions and limitations under the License.
 */
 
-#include "aws/core/client/AWSError.h"
-#include "aws/core/client/CoreErrors.h"
-#include "aws/core/utils/HashingUtils.h"  
+#include <aws/core/client/AWSError.h>
+#include <aws/core/client/CoreErrors.h>
+#include <aws/core/utils/memory/stl/AWSMap.h>
+#include <aws/core/utils/HashingUtils.h>
 
 using namespace Aws::Client;
 using namespace Aws::Utils;
+using namespace Aws::Http;
 
-//we can't use a static map here due to memory allocation ordering. 
-//instead we compute the hash of these strings to avoid so many string compares.
-static const int INCOMPLETE_SIGNATURE_EXCEPTION_HASH = HashingUtils::HashString("IncompleteSignatureException");
-static const int INCOMPLETE_SIGNATURE_HASH = HashingUtils::HashString("IncompleteSignature");
-static const int INTERNAL_FAILURE_HASH = HashingUtils::HashString("InternalFailure");
-static const int INTERNAL_SERVER_ERROR_HASH = HashingUtils::HashString("InternalServerError");
-static const int INVALID_ACTION_HASH = HashingUtils::HashString("InvalidAction");
-static const int INVALID_CLIENT_TOKEN_ID_HASH = HashingUtils::HashString("InvalidClientTokenId");
-static const int INVALID_CLIENT_TOKEN_ID_EXCEPTION_HASH = HashingUtils::HashString("InvalidClientTokenIdException");
-static const int INVALID_PARAMETER_COMBINATION_HASH = HashingUtils::HashString("InvalidParameterCombination");
-static const int INVALID_PARAMETER_VALUE_HASH = HashingUtils::HashString("InvalidParameterValue");
-static const int INVALID_QUERY_PARAMETER_HASH = HashingUtils::HashString("InvalidQueryParameter");
-static const int INVALID_QUERY_PARAMETER_EXCEPTION_HASH = HashingUtils::HashString("InvalidQueryParameterException");
-static const int MALFORMED_QUERY_STRING_HASH = HashingUtils::HashString("MalformedQueryString");
-static const int MALFORMED_QUERY_STRING_EXCEPTION_HASH = HashingUtils::HashString("MalformedQueryStringException");
-static const int MISSING_AUTHENTICATION_TOKEN_HASH = HashingUtils::HashString("MissingAuthenticationToken");
-static const int MISSING_AUTHENTICATION_TOKEN_EXCEPTION_HASH = HashingUtils::HashString("MissingAuthenticationTokenException");
-static const int MISSING_PARAMETER_HASH = HashingUtils::HashString("MissingParameterException");
-static const int OPT_IN_REQUIRED_HASH = HashingUtils::HashString("OptInRequired");
-static const int REQUEST_EXPIRED_HASH = HashingUtils::HashString("RequestExpired");
-static const int REQUEST_EXPIRED_EXCEPTION_HASH = HashingUtils::HashString("RequestExpiredException");
-static const int SERVICE_UNAVAILABLE_HASH = HashingUtils::HashString("ServiceUnavailable");
-static const int SERVICE_UNAVAILABLE_EXCEPTION_HASH = HashingUtils::HashString("ServiceUnavailableException");
-static const int THROTTLING_HASH = HashingUtils::HashString("Throttling");
-static const int THROTTLING_EXCEPTION_HASH = HashingUtils::HashString("ThrottlingException");
-static const int VALIDATION_ERROR_HASH = HashingUtils::HashString("ValidationError");
-static const int VALIDATION_ERROR_EXCEPTION_HASH = HashingUtils::HashString("ValidationErrorException");
-static const int VALIDATION_EXCEPTION_HASH = HashingUtils::HashString("ValidationException");
-static const int ACCESS_DENIED_HASH = HashingUtils::HashString("AccessDenied");
-static const int ACCESS_DENIED_EXCEPTION_HASH = HashingUtils::HashString("AccessDeniedException");
-static const int RESOURCE_NOT_FOUND_HASH = HashingUtils::HashString("ResourceNotFound");
-static const int RESOURCE_NOT_FOUND_EXCEPTION_HASH = HashingUtils::HashString("ResourceNotFoundException");
-static const int UNRECOGNIZED_CLIENT_HASH = HashingUtils::HashString("UnrecognizedClient");
-static const int UNRECOGNIZED_CLIENT_EXCEPTION_HASH = HashingUtils::HashString("UnrecognizedClientException");
+#ifdef _MSC_VER
+#pragma warning(push)
+// VS2015 compiler's bug, warning s_CoreErrorsMapper: symbol will be dynamically initialized (implementation limitation)
+#pragma warning(disable : 4592)
+#endif
+
+static Aws::UniquePtr<Aws::Map<Aws::String, AWSError<CoreErrors> > > s_CoreErrorsMapper(nullptr);
+
+#ifdef _MSC_VER
+#pragma warning(pop)
+#endif
+
+void CoreErrorsMapper::InitCoreErrorsMapper()
+{
+    if (s_CoreErrorsMapper)
+    {
+      return;
+    }
+    s_CoreErrorsMapper = Aws::MakeUnique<Aws::Map<Aws::String, AWSError<CoreErrors> > >("InitCoreErrorsMapper");
+
+    s_CoreErrorsMapper->emplace("IncompleteSignature", AWSError<CoreErrors>(CoreErrors::INCOMPLETE_SIGNATURE, false));
+    s_CoreErrorsMapper->emplace("IncompleteSignatureException", AWSError<CoreErrors>(CoreErrors::INCOMPLETE_SIGNATURE, false));
+    s_CoreErrorsMapper->emplace("InvalidSignatureException", AWSError<CoreErrors>(CoreErrors::INVALID_SIGNATURE, false));
+    s_CoreErrorsMapper->emplace("InvalidSignature", AWSError<CoreErrors>(CoreErrors::INVALID_SIGNATURE, false));
+    s_CoreErrorsMapper->emplace("InternalFailureException", AWSError<CoreErrors>(CoreErrors::INTERNAL_FAILURE, true));
+    s_CoreErrorsMapper->emplace("InternalFailure", AWSError<CoreErrors>(CoreErrors::INTERNAL_FAILURE, true));
+    s_CoreErrorsMapper->emplace("InternalServerError", AWSError<CoreErrors>(CoreErrors::INTERNAL_FAILURE, true));
+    s_CoreErrorsMapper->emplace("InternalError", AWSError<CoreErrors>(CoreErrors::INTERNAL_FAILURE, true));
+    s_CoreErrorsMapper->emplace("InvalidActionException", AWSError<CoreErrors>(CoreErrors::INVALID_ACTION, false));
+    s_CoreErrorsMapper->emplace("InvalidAction", AWSError<CoreErrors>(CoreErrors::INVALID_ACTION, false));
+    s_CoreErrorsMapper->emplace("InvalidClientTokenIdException", AWSError<CoreErrors>(CoreErrors::INVALID_CLIENT_TOKEN_ID, false));
+    s_CoreErrorsMapper->emplace("InvalidClientTokenId", AWSError<CoreErrors>(CoreErrors::INVALID_CLIENT_TOKEN_ID, false));
+    s_CoreErrorsMapper->emplace("InvalidParameterCombinationException", AWSError<CoreErrors>(CoreErrors::INVALID_PARAMETER_COMBINATION, false));
+    s_CoreErrorsMapper->emplace("InvalidParameterCombination", AWSError<CoreErrors>(CoreErrors::INVALID_PARAMETER_COMBINATION, false));
+    s_CoreErrorsMapper->emplace("InvalidParameterValueException", AWSError<CoreErrors>(CoreErrors::INVALID_PARAMETER_VALUE, false));
+    s_CoreErrorsMapper->emplace("InvalidParameterValue", AWSError<CoreErrors>(CoreErrors::INVALID_PARAMETER_VALUE, false));
+    s_CoreErrorsMapper->emplace("InvalidQueryParameterException", AWSError<CoreErrors>(CoreErrors::INVALID_QUERY_PARAMETER, false));
+    s_CoreErrorsMapper->emplace("InvalidQueryParameter", AWSError<CoreErrors>(CoreErrors::INVALID_QUERY_PARAMETER, false));
+    s_CoreErrorsMapper->emplace("MalformedQueryStringException", AWSError<CoreErrors>(CoreErrors::MALFORMED_QUERY_STRING, false));
+    s_CoreErrorsMapper->emplace("MalformedQueryString", AWSError<CoreErrors>(CoreErrors::MALFORMED_QUERY_STRING, false));
+    s_CoreErrorsMapper->emplace("MissingActionException", AWSError<CoreErrors>(CoreErrors::MISSING_ACTION, false));
+    s_CoreErrorsMapper->emplace("MissingAction", AWSError<CoreErrors>(CoreErrors::MISSING_ACTION, false));
+    s_CoreErrorsMapper->emplace("MissingAuthenticationTokenException", AWSError<CoreErrors>(CoreErrors::MISSING_AUTHENTICATION_TOKEN, false));
+    s_CoreErrorsMapper->emplace("MissingAuthenticationToken", AWSError<CoreErrors>(CoreErrors::MISSING_AUTHENTICATION_TOKEN, false));
+    s_CoreErrorsMapper->emplace("MissingParameterException", AWSError<CoreErrors>(CoreErrors::MISSING_PARAMETER, false));
+    s_CoreErrorsMapper->emplace("MissingParameter", AWSError<CoreErrors>(CoreErrors::MISSING_PARAMETER, false));
+    s_CoreErrorsMapper->emplace("OptInRequired", AWSError<CoreErrors>(CoreErrors::OPT_IN_REQUIRED, false));
+    s_CoreErrorsMapper->emplace("RequestExpiredException", AWSError<CoreErrors>(CoreErrors::REQUEST_EXPIRED, true));
+    s_CoreErrorsMapper->emplace("RequestExpired", AWSError<CoreErrors>(CoreErrors::REQUEST_EXPIRED, true));
+    s_CoreErrorsMapper->emplace("ServiceUnavailableException", AWSError<CoreErrors>(CoreErrors::SERVICE_UNAVAILABLE, true));
+    s_CoreErrorsMapper->emplace("ServiceUnavailableError", AWSError<CoreErrors>(CoreErrors::SERVICE_UNAVAILABLE, true));
+    s_CoreErrorsMapper->emplace("ServiceUnavailable", AWSError<CoreErrors>(CoreErrors::SERVICE_UNAVAILABLE, true));
+    s_CoreErrorsMapper->emplace("RequestThrottledException", AWSError<CoreErrors>(CoreErrors::THROTTLING, true));
+    s_CoreErrorsMapper->emplace("RequestThrottled", AWSError<CoreErrors>(CoreErrors::THROTTLING, true));
+    s_CoreErrorsMapper->emplace("ThrottlingException", AWSError<CoreErrors>(CoreErrors::THROTTLING, true));
+    s_CoreErrorsMapper->emplace("ThrottledException", AWSError<CoreErrors>(CoreErrors::THROTTLING, true));
+    s_CoreErrorsMapper->emplace("Throttling", AWSError<CoreErrors>(CoreErrors::THROTTLING, true));
+    s_CoreErrorsMapper->emplace("ValidationErrorException", AWSError<CoreErrors>(CoreErrors::VALIDATION, false));
+    s_CoreErrorsMapper->emplace("ValidationException", AWSError<CoreErrors>(CoreErrors::VALIDATION, false));
+    s_CoreErrorsMapper->emplace("ValidationError", AWSError<CoreErrors>(CoreErrors::VALIDATION, false));
+    s_CoreErrorsMapper->emplace("AccessDeniedException", AWSError<CoreErrors>(CoreErrors::ACCESS_DENIED, false));
+    s_CoreErrorsMapper->emplace("AccessDenied", AWSError<CoreErrors>(CoreErrors::ACCESS_DENIED, false));
+    s_CoreErrorsMapper->emplace("ResourceNotFoundException", AWSError<CoreErrors>(CoreErrors::RESOURCE_NOT_FOUND, false));
+    s_CoreErrorsMapper->emplace("ResourceNotFound", AWSError<CoreErrors>(CoreErrors::RESOURCE_NOT_FOUND, false));
+    s_CoreErrorsMapper->emplace("UnrecognizedClientException", AWSError<CoreErrors>(CoreErrors::UNRECOGNIZED_CLIENT, false));
+    s_CoreErrorsMapper->emplace("UnrecognizedClient", AWSError<CoreErrors>(CoreErrors::UNRECOGNIZED_CLIENT, false));
+    s_CoreErrorsMapper->emplace("SlowDownException", AWSError<CoreErrors>(CoreErrors::SLOW_DOWN, true));
+    s_CoreErrorsMapper->emplace("SlowDown", AWSError<CoreErrors>(CoreErrors::SLOW_DOWN, true));
+    s_CoreErrorsMapper->emplace("SignatureDoesNotMatchException", AWSError<CoreErrors>(CoreErrors::SIGNATURE_DOES_NOT_MATCH, false));
+    s_CoreErrorsMapper->emplace("SignatureDoesNotMatch", AWSError<CoreErrors>(CoreErrors::SIGNATURE_DOES_NOT_MATCH, false));
+    s_CoreErrorsMapper->emplace("InvalidAccessKeyIdException", AWSError<CoreErrors>(CoreErrors::INVALID_ACCESS_KEY_ID, false));
+    s_CoreErrorsMapper->emplace("InvalidAccessKeyId", AWSError<CoreErrors>(CoreErrors::INVALID_ACCESS_KEY_ID, false));
+    s_CoreErrorsMapper->emplace("RequestTimeTooSkewedException", AWSError<CoreErrors>(CoreErrors::REQUEST_TIME_TOO_SKEWED, true));
+    s_CoreErrorsMapper->emplace("RequestTimeTooSkewed", AWSError<CoreErrors>(CoreErrors::REQUEST_TIME_TOO_SKEWED, true));
+    s_CoreErrorsMapper->emplace("RequestTimeoutException", AWSError<CoreErrors>(CoreErrors::REQUEST_TIMEOUT, true));
+    s_CoreErrorsMapper->emplace("RequestTimeout", AWSError<CoreErrors>(CoreErrors::REQUEST_TIMEOUT, true));
+}
+
+void CoreErrorsMapper::CleanupCoreErrorsMapper()
+{
+    if (s_CoreErrorsMapper)
+    {
+      s_CoreErrorsMapper = nullptr;
+    }
+}
 
 AWSError<CoreErrors> CoreErrorsMapper::GetErrorForName(const char* errorName)
 {
-  int errorHash = HashingUtils::HashString(errorName);
+    auto iter = s_CoreErrorsMapper->find(errorName);
+    if (iter != s_CoreErrorsMapper->end())
+    {
+      return iter->second;
+    }
+    return AWSError<CoreErrors>(CoreErrors::UNKNOWN, false);
+}
 
-  if (errorHash == INCOMPLETE_SIGNATURE_HASH || errorHash == INCOMPLETE_SIGNATURE_EXCEPTION_HASH)
-  {
-    return AWSError<CoreErrors>(CoreErrors::INCOMPLETE_SIGNATURE, false);
-  }
-  else if (errorHash == INTERNAL_FAILURE_HASH || errorHash == INTERNAL_SERVER_ERROR_HASH)
-  {
-    return AWSError<CoreErrors>(CoreErrors::INTERNAL_FAILURE, true);
-  }
-  else if (errorHash == INVALID_ACTION_HASH)
-  {
-    return AWSError<CoreErrors>(CoreErrors::INVALID_ACTION, false);
-  }
-  else if (errorHash == INVALID_CLIENT_TOKEN_ID_HASH || errorHash == INVALID_CLIENT_TOKEN_ID_EXCEPTION_HASH)
-  {
-    return AWSError<CoreErrors>(CoreErrors::INVALID_CLIENT_TOKEN_ID, false);
-  }
-  else if (errorHash == INVALID_PARAMETER_COMBINATION_HASH)
-  {
-    return AWSError<CoreErrors>(CoreErrors::INVALID_PARAMETER_COMBINATION, false);
-  }
-  else if (errorHash == INVALID_PARAMETER_VALUE_HASH)
-  {
-    return AWSError<CoreErrors>(CoreErrors::INVALID_PARAMETER_VALUE, false);
-  }
-  else if (errorHash == INVALID_QUERY_PARAMETER_HASH || errorHash == INVALID_QUERY_PARAMETER_EXCEPTION_HASH)
-  {
-    return AWSError<CoreErrors>(CoreErrors::INVALID_QUERY_PARAMETER, false);
-  }
-  else if (errorHash == MALFORMED_QUERY_STRING_HASH || errorHash == MALFORMED_QUERY_STRING_EXCEPTION_HASH)
-  {
-    return AWSError<CoreErrors>(CoreErrors::MALFORMED_QUERY_STRING, false);
-  }
-  else if (errorHash == MISSING_AUTHENTICATION_TOKEN_HASH || errorHash == MISSING_AUTHENTICATION_TOKEN_EXCEPTION_HASH)
-  {
-    return AWSError<CoreErrors>(CoreErrors::MISSING_AUTHENTICATION_TOKEN, false);
-  }
-  else if (errorHash == MISSING_PARAMETER_HASH)
-  {
-    return AWSError<CoreErrors>(CoreErrors::MISSING_PARAMETER, false);
-  }
-  else if (errorHash == OPT_IN_REQUIRED_HASH)
-  {
-    return AWSError<CoreErrors>(CoreErrors::OPT_IN_REQUIRED, false);
-  }
-  else if (errorHash == REQUEST_EXPIRED_HASH || errorHash == REQUEST_EXPIRED_EXCEPTION_HASH)
-  {
-    return AWSError<CoreErrors>(CoreErrors::REQUEST_EXPIRED, true);
-  }
-  else if (errorHash == SERVICE_UNAVAILABLE_HASH || errorHash == SERVICE_UNAVAILABLE_EXCEPTION_HASH)
-  {
-    return AWSError<CoreErrors>(CoreErrors::SERVICE_UNAVAILABLE, true);
-  }
-  else if (errorHash == THROTTLING_HASH || errorHash == THROTTLING_EXCEPTION_HASH)
-  {
-    return AWSError<CoreErrors>(CoreErrors::THROTTLING, true);
-  }
-  else if (errorHash == VALIDATION_ERROR_HASH || errorHash == VALIDATION_ERROR_EXCEPTION_HASH || errorHash == VALIDATION_EXCEPTION_HASH)
-  {
-    return AWSError<CoreErrors>(CoreErrors::VALIDATION, false);
-  }
-  else if (errorHash == ACCESS_DENIED_HASH || errorHash == ACCESS_DENIED_EXCEPTION_HASH)
-  {
-    return AWSError<CoreErrors>(CoreErrors::ACCESS_DENIED, false);
-  }
-  else if (errorHash == RESOURCE_NOT_FOUND_HASH || errorHash == RESOURCE_NOT_FOUND_EXCEPTION_HASH)
-  {
-    return AWSError<CoreErrors>(CoreErrors::RESOURCE_NOT_FOUND, false);
-  }
-  else if (errorHash == UNRECOGNIZED_CLIENT_HASH || errorHash == UNRECOGNIZED_CLIENT_EXCEPTION_HASH)
-  {
-    return AWSError<CoreErrors>(CoreErrors::UNRECOGNIZED_CLIENT, false);
-  }
-
-  return AWSError<CoreErrors>(CoreErrors::UNKNOWN, false);
+AWS_CORE_API AWSError<CoreErrors> CoreErrorsMapper::GetErrorForHttpResponseCode(HttpResponseCode code)
+{
+    // best effort attempt to map HTTP response codes to CoreErrors
+    bool retryable = IsRetryableHttpResponseCode(code);
+    AWSError<CoreErrors> error;
+    switch (code)
+    {
+        case HttpResponseCode::UNAUTHORIZED:
+        case HttpResponseCode::FORBIDDEN:
+            error =  AWSError<CoreErrors>(CoreErrors::ACCESS_DENIED, retryable);
+            break;
+        case HttpResponseCode::NOT_FOUND:
+            error = AWSError<CoreErrors>(CoreErrors::RESOURCE_NOT_FOUND, retryable);
+            break;
+        case HttpResponseCode::TOO_MANY_REQUESTS:
+            error = AWSError<CoreErrors>(CoreErrors::SLOW_DOWN, retryable);
+            break;
+        case HttpResponseCode::INTERNAL_SERVER_ERROR:
+            error = AWSError<CoreErrors>(CoreErrors::INTERNAL_FAILURE, retryable);
+            break;
+        case HttpResponseCode::BANDWIDTH_LIMIT_EXCEEDED:
+            error = AWSError<CoreErrors>(CoreErrors::THROTTLING, retryable);
+            break;
+        case HttpResponseCode::SERVICE_UNAVAILABLE:
+            error = AWSError<CoreErrors>(CoreErrors::SERVICE_UNAVAILABLE, retryable);
+            break;
+        case HttpResponseCode::REQUEST_TIMEOUT:
+        case HttpResponseCode::AUTHENTICATION_TIMEOUT:
+        case HttpResponseCode::LOGIN_TIMEOUT:
+        case HttpResponseCode::GATEWAY_TIMEOUT:
+        case HttpResponseCode::NETWORK_READ_TIMEOUT:
+        case HttpResponseCode::NETWORK_CONNECT_TIMEOUT:
+            error = AWSError<CoreErrors>(CoreErrors::REQUEST_TIMEOUT, retryable);
+            break;
+        default:
+            int codeValue = static_cast<int>(code);
+            error = AWSError<CoreErrors>(CoreErrors::UNKNOWN, codeValue >= 500 && codeValue < 600);
+    }
+    error.SetResponseCode(code);
+    return error;
 }

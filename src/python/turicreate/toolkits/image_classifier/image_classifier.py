@@ -18,9 +18,11 @@ import turicreate.toolkits._internal_utils as _tkutl
 from turicreate.toolkits import _coreml_utils
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
+from turicreate._deps.minimal_package import _minimal_package_import_check
 from .._internal_utils import _mac_ver
 from .. import _pre_trained_models
 from .. import _image_feature_extractor
+from ..image_analysis import image_analysis
 from ._evaluation import Evaluation as _Evaluation
 
 _DEFAULT_SOLVER_OPTIONS = {
@@ -70,10 +72,10 @@ def create(
         the order in which the classes are mapped.
 
     feature : string, optional
-        indicates that the SFrame has only column of Image type and that will
-        Name of the column containing the input images. 'None' (the default)
-        indicates the only image column in `dataset` should be used as the
-        feature.
+        indicates that the SFrame has either column of Image type or array type 
+        (extracted features) and that will be the name of the column containing the input
+        images or features. 'None' (the default) indicates that only feature column or the 
+        only image column in `dataset` should be used as the feature.
 
     l2_penalty : float, optional
         Weight on l2 regularization of the model. The larger this weight, the
@@ -250,29 +252,66 @@ def create(
         raise TypeError("Unrecognized value for 'validation_set'.")
 
     if feature is None:
-        feature = _tkutl._find_only_image_column(dataset)
+        try:
+            feature = image_analysis._find_only_image_extracted_features_column(dataset, model)
+            feature_type = "extracted_features_array"
+        except:
+            feature = None
+
+        if feature is None:
+            feature = _tkutl._find_only_image_column(dataset)
+            feature_type = "image"
+    else:
+        if image_analysis._is_image_deep_feature_sarray(dataset[feature], model):
+            feature_type = "extracted_features_array"
+        elif dataset[feature].dtype is _tc.Image:
+            feature_type = "image"
+        else:
+            raise _ToolkitError('The "{feature}" column of the sFrame neither has the dataype image or extracted features array.'.format(feature=feature)
+                + ' "Datasets" consists of columns with types: '
+                + ", ".join([x.__name__ for x in dataset.column_types()])
+                + "."
+            )
+
     _tkutl._handle_missing_values(dataset, feature, "training_dataset")
     feature_extractor = _image_feature_extractor._create_feature_extractor(model)
-
-    # Extract features
-    extracted_features = _tc.SFrame(
-        {
-            target: dataset[target],
-            "__image_features__": feature_extractor.extract_features(
-                dataset, feature, verbose=verbose, batch_size=batch_size
-            ),
-        }
-    )
-    if isinstance(validation_set, _tc.SFrame):
-        _tkutl._handle_missing_values(dataset, feature, "validation_set")
-        extracted_features_validation = _tc.SFrame(
+    if feature_type == "image":
+        # Extract features
+        extracted_features = _tc.SFrame(
             {
-                target: validation_set[target],
+                target: dataset[target],
                 "__image_features__": feature_extractor.extract_features(
-                    validation_set, feature, verbose=verbose, batch_size=batch_size
+                    dataset, feature, verbose=verbose, batch_size=batch_size
                 ),
             }
         )
+    else:
+        extracted_features = _tc.SFrame(
+            {
+                target: dataset[target],
+                "__image_features__": dataset[feature]
+            }
+        )
+
+    # Validation set
+    if isinstance(validation_set, _tc.SFrame):
+        if feature_type == "image":
+            _tkutl._handle_missing_values(validation_set, feature, "validation_set")
+            extracted_features_validation = _tc.SFrame(
+                {
+                    target: validation_set[target],
+                    "__image_features__": feature_extractor.extract_features(
+                        validation_set, feature, verbose=verbose, batch_size=batch_size
+                    ),
+                }
+            )
+        else:
+            extracted_features_validation = _tc.SFrame(
+                {
+                    target: validation_set[target],
+                    "__image_features__": validation_set[feature]
+                }
+            )
     else:
         extracted_features_validation = validation_set
 
@@ -359,7 +398,9 @@ class ImageClassifier(_CustomModel):
         """
         _tkutl._model_version_check(version, cls._PYTHON_IMAGE_CLASSIFIER_VERSION)
         from turicreate.toolkits._main import ToolkitError
-        from turicreate.toolkits.classifier.logistic_classifier import LogisticClassifier
+        from turicreate.toolkits.classifier.logistic_classifier import (
+            LogisticClassifier,
+        )
 
         state["classifier"] = LogisticClassifier(state["classifier"])
         state["classes"] = state["classifier"].classes
@@ -441,12 +482,15 @@ class ImageClassifier(_CustomModel):
         along with an unpack callback function that can be applied to
         prediction results to "undo" the canonization.
         """
+        from array import array
+
         unpack = lambda x: x
         if isinstance(dataset, _tc.SArray):
             dataset = _tc.SFrame({self.feature: dataset})
-        elif isinstance(dataset, _tc.Image):
+        elif isinstance(dataset, (_tc.Image, array)):
             dataset = _tc.SFrame({self.feature: [dataset]})
             unpack = lambda x: x[0]
+
         return dataset, unpack
 
     def predict(self, dataset, output_type="class", batch_size=64):
@@ -468,8 +512,8 @@ class ImageClassifier(_CustomModel):
 
         Parameters
         ----------
-        dataset : SFrame | SArray | turicreate.Image
-            The images to be classified.
+        dataset : SFrame | SArray | turicreate.Image | array
+            The images to be classified or extracted features.
             If dataset is an SFrame, it must have columns with the same names as
             the features used for model training, but does not require a target
             column. Additional columns are ignored.
@@ -507,7 +551,9 @@ class ImageClassifier(_CustomModel):
         >>> class_predictions = model.predict(data, output_type='class')
 
         """
-        if not isinstance(dataset, (_tc.SFrame, _tc.SArray, _tc.Image)):
+        from array import array
+
+        if not isinstance(dataset, (_tc.SFrame, _tc.SArray, _tc.Image, array)):
             raise TypeError(
                 "dataset must be either an SFrame, SArray or turicreate.Image"
             )
@@ -556,7 +602,9 @@ class ImageClassifier(_CustomModel):
         >>> classes = model.classify(data)
 
         """
-        if not isinstance(dataset, (_tc.SFrame, _tc.SArray, _tc.Image)):
+        from array import array
+
+        if not isinstance(dataset, (_tc.SFrame, _tc.SArray, _tc.Image, array)):
             raise TypeError(
                 "dataset must be either an SFrame, SArray or turicreate.Image"
             )
@@ -623,7 +671,9 @@ class ImageClassifier(_CustomModel):
         +----+-------+-------------------+
         [35688 rows x 3 columns]
         """
-        if not isinstance(dataset, (_tc.SFrame, _tc.SArray, _tc.Image)):
+        from array import array
+
+        if not isinstance(dataset, (_tc.SFrame, _tc.SArray, _tc.Image, array)):
             raise TypeError(
                 "dataset must be either an SFrame, SArray or turicreate.Image"
             )
@@ -833,13 +883,26 @@ class ImageClassifier(_CustomModel):
         return _Evaluation(evaluation_result)
 
     def _extract_features(self, dataset, verbose=False, batch_size=64):
-        return _tc.SFrame(
-            {
-                "__image_features__": self.feature_extractor.extract_features(
-                    dataset, self.feature, verbose=verbose, batch_size=batch_size
-                )
-            }
-        )
+        if image_analysis._is_image_deep_feature_sarray(dataset[self.feature], self.model):
+            return _tc.SFrame(
+                {
+                    "__image_features__": dataset[self.feature]
+                }
+            )
+        elif dataset[self.feature].dtype is _tc.Image:
+            return _tc.SFrame(
+                {
+                    "__image_features__": self.feature_extractor.extract_features(
+                        dataset, self.feature, verbose=verbose, batch_size=batch_size
+                    )
+                }
+            )
+        else:
+            raise _ToolkitError('The "{feature}" column of the SFrame neither has the dataype image or extracted features array.'.format(feature=feature)
+                + ' "Datasets" consists of columns with types: '
+                + ", ".join([x.__name__ for x in dataset.column_types()])
+                + "."
+            )
 
     def export_coreml(self, filename):
         """
@@ -853,8 +916,7 @@ class ImageClassifier(_CustomModel):
         --------
         >>> model.export_coreml('myModel.mlmodel')
         """
-        import coremltools
-
+        coremltools = _minimal_package_import_check("coremltools")
         # First define three internal helper functions
 
         # Internal helper function

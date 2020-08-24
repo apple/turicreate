@@ -43,9 +43,9 @@ if [[ -n $PERSIST_TO_REPO_DIR ]]; then
 fi
 
 # Load images from registry if possible
-(docker pull ${TC_BUILD_IMAGE_CENTOS6}) || true
-(docker pull ${TC_BUILD_IMAGE_1204}) || true
-(docker pull ${TC_BUILD_IMAGE_1404}) || true
+(docker pull -q ${TC_BUILD_IMAGE_CENTOS6}) || true
+(docker pull -q ${TC_BUILD_IMAGE_1204}) || true
+(docker pull -q ${TC_BUILD_IMAGE_1404}) || true
 (docker pull ${TC_BUILD_IMAGE_1804}) || true
 
 (docker image ls ${TC_BUILD_IMAGE_CENTOS6} | grep turicreate/build-image) || \
@@ -69,4 +69,3 @@ if [[ -n $PERSIST_TO_REPO_DIR ]]; then
   docker save ${TC_BUILD_IMAGE_1404} | gzip -c > .docker_images/image-14.04.gz
   docker save ${TC_BUILD_IMAGE_1804} | gzip -c > .docker_images/image-18.04.gz
 fi
-

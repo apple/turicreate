@@ -161,7 +161,7 @@ struct node_info {
 
         DASSERT_TRUE(pnode->inputs[i] == inputs[i]->pnode);
         size_t n_present = 0;
-        for(const cnode_info_ptr& out : inputs[i]->outputs) {
+        for(const auto& out : inputs[i]->outputs) {
 
           if(out.get() == this)
             ++n_present;
@@ -179,7 +179,7 @@ struct node_info {
 
       for(size_t i = 0; i < outputs.size(); ++i) {
         size_t n_present = 0;
-        for(const cnode_info_ptr& out : outputs[i]->inputs) {
+        for(const auto& out : outputs[i]->inputs) {
           if(out.get() == this)
             ++n_present;
         }

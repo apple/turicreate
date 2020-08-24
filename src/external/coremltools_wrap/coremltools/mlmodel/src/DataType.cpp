@@ -279,7 +279,7 @@ FeatureType FeatureType::T() { return FeatureType(U); }
     static std::string dimensionsToString(const std::vector<int64_t> &dims, bool useArrayFormat = false) {
 
         std::stringstream ss;
-        std::string separator = useArrayFormat ? ", " : " x ";
+        std::string separator = useArrayFormat ? ", " : " × ";
 
         if (useArrayFormat) {
             ss << "[";
@@ -336,7 +336,7 @@ FeatureType FeatureType::T() { return FeatureType(U); }
 
     static std::string dimensionRangesToString(const std::vector<std::pair<int64_t,int64_t>> &rangePerDimension, bool useArrayFormat = false) {
         std::stringstream ss;
-        std::string separator = useArrayFormat ? ", " : " x ";
+        std::string separator = useArrayFormat ? ", " : " × ";
 
         if (useArrayFormat) {
             ss << "[";

@@ -12,8 +12,10 @@
 #include <cstdio>
 
 #include <toolkits/object_detection/od_yolo.hpp>
+#include <toolkits/util/float_array_serialization.hpp>
 
 #include <ml/coreml_export/mlmodel_include.hpp>
+#include <ml/coreml_export/neural_net_models_exporter.hpp>
 
 namespace turi {
 namespace object_detection {
@@ -28,6 +30,9 @@ using CoreML::Specification::ModelDescription;
 using CoreML::Specification::NeuralNetwork;
 using CoreML::Specification::Pipeline;
 
+using turi::confidence_threshold_description;
+using turi::iou_threshold_description;
+using turi::set_array_feature;
 using turi::neural_net::float_array_map;
 using turi::neural_net::model_spec;
 using turi::neural_net::pipeline_spec;
@@ -35,10 +40,9 @@ using turi::neural_net::zero_weight_initializer;
 
 using padding_type = model_spec::padding_type;
 
-constexpr char CONFIDENCE_STR[] =
+constexpr char kConfidenceDesc[] =
     "Boxes × Class confidence (see user-defined metadata \"classes\")";
-constexpr char COORDINATES_STR[] =
-    "Boxes × [x, y, width, height] (relative to image size)";
+constexpr char kCoordinatesDesc[] = "Boxes × [x, y, width, height] (relative to image size)";
 
 }  // namespace
 
@@ -49,7 +53,7 @@ void _save_impl(oarchive& oarc,
   variant_deep_save(state, oarc);
 
   // Save neural net weights.
-  oarc << weights;
+  save_float_array_map(weights, oarc);
 }
 
 void _load_version(iarchive& iarc, size_t version,
@@ -59,7 +63,7 @@ void _load_version(iarchive& iarc, size_t version,
   variant_deep_load(*state, iarc);
 
   // Load neural net weights.
-  iarc >> *weights;
+  *weights = load_float_array_map(iarc);
 }
 
 void init_darknet_yolo(model_spec& nn_spec, size_t num_classes,
@@ -146,24 +150,31 @@ void init_darknet_yolo(model_spec& nn_spec, size_t num_classes,
   nn_spec.add_preprocessing(input_name, 1.0);
 }
 
-pipeline_spec export_darknet_yolo(
-    const float_array_map& weights, const std::string& input_name,
-    const std::string& coordinates_name, const std::string& confidence_name,
-    const std::vector<std::pair<float, float>>& anchor_boxes,
-    size_t num_classes, size_t output_grid_height, size_t output_grid_width,
-    size_t spatial_reduction) {
+pipeline_spec export_darknet_yolo(const float_array_map& weights, const std::string& input_name,
+                                  const std::string& coordinates_name,
+                                  const std::string& confidence_name,
+                                  const std::vector<std::pair<float, float>>& anchor_boxes,
+                                  size_t num_classes, bool use_nms_layer, size_t output_grid_height,
+                                  size_t output_grid_width, float iou_threshold,
+                                  float confidence_threshold, size_t spatial_reduction)
+{
   // Initialize the result with the learned layers from the model_backend.
   std::unique_ptr<model_spec> nn_spec(new model_spec);
   init_darknet_yolo(*nn_spec, num_classes, anchor_boxes.size(), input_name);
-  nn_spec->update_params(weights);
+  nn_spec->update_params(weights, /* use_quantization */ true);
 
   // Add the layers that convert to intelligible predictions.
-  add_yolo(nn_spec.get(), coordinates_name, confidence_name, "conv8_fwd",
-           anchor_boxes, num_classes, output_grid_height, output_grid_width);
+  add_yolo(nn_spec.get(), coordinates_name, confidence_name, "conv8_fwd", anchor_boxes, num_classes,
+           use_nms_layer, iou_threshold, confidence_threshold, output_grid_height,
+           output_grid_width);
 
   // Extract the underlying Core ML spec and move it into a new Pipeline.
   std::unique_ptr<NeuralNetwork> network =
       std::move(*nn_spec).move_coreml_spec();
+  if (use_nms_layer) {
+    network->set_arrayinputshapemapping(
+        CoreML::Specification::NeuralNetworkMultiArrayShapeMapping::EXACT_ARRAY_MAPPING);
+  }
   std::unique_ptr<Pipeline> pipeline(new Pipeline);
   Model* model = pipeline->add_models();
   model->mutable_neuralnetwork()->Swap(network.get());
@@ -181,33 +192,59 @@ pipeline_spec export_darknet_yolo(
   image_feature->set_height(output_grid_height * spatial_reduction);
   image_feature->set_colorspace(ImageFeatureType::RGB);
 
+  if (use_nms_layer) {
+    // Set CoreML spec version.
+    FeatureDescription* iou_threshold_desc = model_desc->add_input();
+    set_array_feature(iou_threshold_desc, "iouThreshold", iou_threshold_description(iou_threshold),
+                      {1});
+    iou_threshold_desc->mutable_type()->set_isoptional(true);
+
+    FeatureDescription* confidence_threshold_desc = model_desc->add_input();
+    set_array_feature(confidence_threshold_desc, "confidenceThreshold",
+                      confidence_threshold_description(confidence_threshold), {1});
+    confidence_threshold_desc->mutable_type()->set_isoptional(true);
+
+    model->set_specificationversion(CoreML::MLMODEL_SPECIFICATION_VERSION);
+
+  } else {
+    // Set CoreML spec version.
+    model->set_specificationversion(1);
+  }
+
   // Create a helper function for writing the shapes of the confidence and
   // coordinates outputs.
   size_t num_predictions =
       output_grid_width * output_grid_height * anchor_boxes.size();
-  auto set_shape = [num_predictions](FeatureDescription* feature_desc,
-                                     size_t num_features_per_prediction) {
+  auto set_shape = [num_predictions, use_nms_layer](FeatureDescription* feature_desc,
+                                                    size_t num_features_per_prediction) {
     ArrayFeatureType* array_feature =
         feature_desc->mutable_type()->mutable_multiarraytype();
-    array_feature->set_datatype(ArrayFeatureType::DOUBLE);
-    array_feature->add_shape(num_predictions);
-    array_feature->add_shape(num_features_per_prediction);
+    if (use_nms_layer) {
+      array_feature->set_datatype(ArrayFeatureType::FLOAT32);
+      auto* shape1 = array_feature->mutable_shaperange()->add_sizeranges();
+      shape1->set_upperbound(-1);
+      auto* shape2 = array_feature->mutable_shaperange()->add_sizeranges();
+      shape2->set_lowerbound(num_features_per_prediction);
+      shape2->set_upperbound(num_features_per_prediction);
+    } else {
+      array_feature->set_datatype(ArrayFeatureType::DOUBLE);
+      array_feature->add_shape(num_predictions);
+      array_feature->add_shape(num_features_per_prediction);
+    }
   };
 
   // Write FeatureDescription for the confidence output.
   FeatureDescription* confidence_desc = model_desc->add_output();
   confidence_desc->set_name(confidence_name);
-  confidence_desc->set_shortdescription(CONFIDENCE_STR);
+  confidence_desc->set_shortdescription(kConfidenceDesc);
   set_shape(confidence_desc, num_classes);
 
   // Write FeatureDescription for the coordinates output.
   FeatureDescription* coordinates_desc = model_desc->add_output();
   coordinates_desc->set_name(coordinates_name);
-  coordinates_desc->set_shortdescription(COORDINATES_STR);
+  coordinates_desc->set_shortdescription(kCoordinatesDesc);
   set_shape(coordinates_desc, 4);
 
-  // Set CoreML spec version.
-  model->set_specificationversion(1);
 
   return pipeline_spec(std::move(pipeline));
 }

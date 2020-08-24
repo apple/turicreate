@@ -10,33 +10,54 @@
 #include <algorithm>
 #include <fstream>
 #include <memory>
+#include <string>
 #include <vector>
 
 #include <core/logging/assertions.hpp>
 #include <core/logging/logger.hpp>
 #include <ml/coreml_export/mlmodel_include.hpp>
+#include <core/util/Span.hpp>
+#include <ml/neural_net/quantization_utils.hpp>
+#include <toolkits/coreml_export/mlmodel_include.hpp>
 
 namespace turi {
 namespace neural_net {
 
 namespace {
 
+using CoreML::Specification::AddBroadcastableLayerParams;
 using CoreML::Specification::BatchnormLayerParams;
 using CoreML::Specification::BorderAmounts_EdgeSizes;
+using CoreML::Specification::ConcatNDLayerParams;
 using CoreML::Specification::ConvolutionLayerParams;
+using CoreML::Specification::ExpandDimsLayerParams;
+using CoreML::Specification::GatherLayerParams;
+using CoreML::Specification::GetShapeLayerParams;
 using CoreML::Specification::InnerProductLayerParams;
+using CoreML::Specification::LoadConstantNDLayerParams;
 using CoreML::Specification::Model;
 using CoreML::Specification::NeuralNetwork;
 using CoreML::Specification::NeuralNetworkImageScaler;
 using CoreML::Specification::NeuralNetworkLayer;
 using CoreML::Specification::NeuralNetworkPreprocessing;
+using CoreML::Specification::NonMaximumSuppressionLayerParams;
 using CoreML::Specification::PaddingLayerParams;
+using CoreML::Specification::PaddingLayerParams_PaddingConstant;
 using CoreML::Specification::Pipeline;
 using CoreML::Specification::PoolingLayerParams;
+using CoreML::Specification::ReshapeDynamicLayerParams;
+using CoreML::Specification::ReshapeStaticLayerParams;
 using CoreML::Specification::SamePadding;
+using CoreML::Specification::SliceDynamicLayerParams;
+using CoreML::Specification::SplitNDLayerParams;
+using CoreML::Specification::SqueezeLayerParams;
+using CoreML::Specification::TransposeLayerParams;
 using CoreML::Specification::UniDirectionalLSTMLayerParams;
 using CoreML::Specification::UpsampleLayerParams;
 using CoreML::Specification::WeightParams;
+using CoreML::Specification::PoolingLayerParams_PoolingType::PoolingLayerParams_PoolingType_AVERAGE;
+using CoreML::Specification::PoolingLayerParams_PoolingType::PoolingLayerParams_PoolingType_L2;
+using CoreML::Specification::PoolingLayerParams_PoolingType::PoolingLayerParams_PoolingType_MAX;
 
 size_t multiply(size_t a, size_t b) { return a * b; }
 
@@ -77,9 +98,9 @@ private:
   const WeightParams& weights_;
 };
 
-void update_weight_params(const std::string& name, const float_array& value,
-                          WeightParams* weights) {
-
+void update_weight_params(const std::string& name, const float_array& value, WeightParams* weights,
+                          bool use_quantization)
+{
   if (weights->floatvalue_size() != static_cast<int>(value.size())) {
     std::stringstream ss;
     ss << "float_array " << name << " has size " << value.size()
@@ -87,8 +108,25 @@ void update_weight_params(const std::string& name, const float_array& value,
     log_and_throw(ss.str());
   }
 
-  std::copy(value.data(), value.data() + value.size(),
-            weights->mutable_floatvalue()->begin());
+  Span<const float> out(value.data(), value.size());
+#ifdef TURI_USE_FLOAT16
+
+  if (use_quantization && is_convertible_to_fp16(out)) {
+    std::vector<__fp16> weights_fp16 = get_half_precision_weights(out);
+
+    weights->set_float16value(static_cast<void*>(weights_fp16.data()),
+                              weights_fp16.size() * sizeof(__fp16));
+    weights->clear_floatvalue();
+
+  } else {
+#endif
+
+    std::copy(out.begin(), out.end(), weights->mutable_floatvalue()->begin());
+
+#ifdef TURI_USE_FLOAT16
+  }
+
+#endif
 }
 
 // The overloaded wrap_network_params functions below traverse a CoreML spec
@@ -120,21 +158,20 @@ void wrap_network_params(const std::string& name,
   }
 }
 
-void update_network_params(const std::string& name,
-                           const float_array_map& params,
-                           ConvolutionLayerParams* convolution) {
-
+void update_network_params(const std::string& name, const float_array_map& params,
+                           ConvolutionLayerParams* convolution, bool use_quantization)
+{
   std::string key = name + "_weight";
   auto it = params.find(key);
   if (it != params.end()) {
-    update_weight_params(key, it->second, convolution->mutable_weights());
+    update_weight_params(key, it->second, convolution->mutable_weights(), use_quantization);
   }
 
   if (convolution->has_bias()) {
     key = name + "_bias";
     it = params.find(key);
     if (it != params.end()) {
-      update_weight_params(key, it->second, convolution->mutable_bias());
+      update_weight_params(key, it->second, convolution->mutable_bias(), use_quantization);
     }
   }
 }
@@ -157,21 +194,20 @@ void wrap_network_params(const std::string& name,
   }
 }
 
-void update_network_params(const std::string& name,
-                           const float_array_map& params,
-                           InnerProductLayerParams* inner_product) {
-
+void update_network_params(const std::string& name, const float_array_map& params,
+                           InnerProductLayerParams* inner_product, bool use_quantization)
+{
   std::string key = name + "_weight";
   auto it = params.find(key);
   if (it != params.end()) {
-    update_weight_params(key, it->second, inner_product->mutable_weights());
+    update_weight_params(key, it->second, inner_product->mutable_weights(), use_quantization);
   }
 
   if (inner_product->has_bias()) {
     key = name + "_bias";
     it = params.find(key);
     if (it != params.end()) {
-      update_weight_params(key, it->second, inner_product->mutable_bias());
+      update_weight_params(key, it->second, inner_product->mutable_bias(), use_quantization);
     }
   }
 }
@@ -208,32 +244,31 @@ void wrap_network_params(const std::string& name,
   }
 }
 
-void update_network_params(const std::string& name,
-                           const float_array_map& params,
-                           BatchnormLayerParams* batch_norm) {
-
+void update_network_params(const std::string& name, const float_array_map& params,
+                           BatchnormLayerParams* batch_norm, bool use_quantization)
+{
   std::string key = name + "_gamma";
   auto it = params.find(key);
   if (it != params.end()) {
-    update_weight_params(key, it->second, batch_norm->mutable_gamma());
+    update_weight_params(key, it->second, batch_norm->mutable_gamma(), use_quantization);
   }
 
   key = name + "_beta";
   it = params.find(key);
   if (it != params.end()) {
-    update_weight_params(key, it->second, batch_norm->mutable_beta());
+    update_weight_params(key, it->second, batch_norm->mutable_beta(), use_quantization);
   }
 
   key = name + "_running_mean";
   it = params.find(key);
   if (it != params.end()) {
-    update_weight_params(key, it->second, batch_norm->mutable_mean());
+    update_weight_params(key, it->second, batch_norm->mutable_mean(), use_quantization);
   }
 
   key = name + "_running_var";
   it = params.find(key);
   if (it != params.end()) {
-    update_weight_params(key, it->second, batch_norm->mutable_variance());
+    update_weight_params(key, it->second, batch_norm->mutable_variance(), use_quantization);
   }
 }
 
@@ -293,94 +328,93 @@ void wrap_network_params(const std::string& name,
   params_out->emplace(name + "_h2h_o_bias", std::move(h2h_o_bias));
 }
 
-void update_network_params(const std::string& name,
-                           const float_array_map& params,
-                           UniDirectionalLSTMLayerParams* lstm) {
-
+void update_network_params(const std::string& name, const float_array_map& params,
+                           UniDirectionalLSTMLayerParams* lstm, bool use_quantization)
+{
   auto* lstm_params = lstm->mutable_weightparams();
 
   std::string key = name + "_i2h_i_weight";
   auto it = params.find(key);
   if (it != params.end()) {
-    update_weight_params(key, it->second,
-                         lstm_params->mutable_inputgateweightmatrix());
+    update_weight_params(key, it->second, lstm_params->mutable_inputgateweightmatrix(),
+                         use_quantization);
   }
 
   key = name + "_i2h_f_weight";
   it = params.find(key);
   if (it != params.end()) {
-    update_weight_params(key, it->second,
-                         lstm_params->mutable_forgetgateweightmatrix());
+    update_weight_params(key, it->second, lstm_params->mutable_forgetgateweightmatrix(),
+                         use_quantization);
   }
 
   key = name + "_i2h_c_weight";
   it = params.find(key);
   if (it != params.end()) {
-    update_weight_params(key, it->second,
-                         lstm_params->mutable_blockinputweightmatrix());
+    update_weight_params(key, it->second, lstm_params->mutable_blockinputweightmatrix(),
+                         use_quantization);
   }
 
   key = name + "_i2h_o_weight";
   it = params.find(key);
   if (it != params.end()) {
-    update_weight_params(key, it->second,
-                         lstm_params->mutable_outputgateweightmatrix());
+    update_weight_params(key, it->second, lstm_params->mutable_outputgateweightmatrix(),
+                         use_quantization);
   }
 
   key = name + "_h2h_i_weight";
   it = params.find(key);
   if (it != params.end()) {
-    update_weight_params(key, it->second,
-                         lstm_params->mutable_inputgaterecursionmatrix());
+    update_weight_params(key, it->second, lstm_params->mutable_inputgaterecursionmatrix(),
+                         use_quantization);
   }
 
   key = name + "_h2h_f_weight";
   it = params.find(key);
   if (it != params.end()) {
-    update_weight_params(key, it->second,
-                         lstm_params->mutable_forgetgaterecursionmatrix());
+    update_weight_params(key, it->second, lstm_params->mutable_forgetgaterecursionmatrix(),
+                         use_quantization);
   }
 
   key = name + "_h2h_c_weight";
   it = params.find(key);
   if (it != params.end()) {
-    update_weight_params(key, it->second,
-                         lstm_params->mutable_blockinputrecursionmatrix());
+    update_weight_params(key, it->second, lstm_params->mutable_blockinputrecursionmatrix(),
+                         use_quantization);
   }
 
   key = name + "_h2h_o_weight";
   it = params.find(key);
   if (it != params.end()) {
-    update_weight_params(key, it->second,
-                         lstm_params->mutable_outputgaterecursionmatrix());
+    update_weight_params(key, it->second, lstm_params->mutable_outputgaterecursionmatrix(),
+                         use_quantization);
   }
 
   key = name + "_h2h_i_bias";
   it = params.find(key);
   if (it != params.end()) {
-    update_weight_params(key, it->second,
-                         lstm_params->mutable_inputgatebiasvector());
+    update_weight_params(key, it->second, lstm_params->mutable_inputgatebiasvector(),
+                         use_quantization);
   }
 
   key = name + "_h2h_f_bias";
   it = params.find(key);
   if (it != params.end()) {
-    update_weight_params(key, it->second,
-                         lstm_params->mutable_forgetgatebiasvector());
+    update_weight_params(key, it->second, lstm_params->mutable_forgetgatebiasvector(),
+                         use_quantization);
   }
 
   key = name + "_h2h_c_bias";
   it = params.find(key);
   if (it != params.end()) {
-    update_weight_params(key, it->second,
-                         lstm_params->mutable_blockinputbiasvector());
+    update_weight_params(key, it->second, lstm_params->mutable_blockinputbiasvector(),
+                         use_quantization);
   }
 
   key = name + "_h2h_o_bias";
   it = params.find(key);
   if (it != params.end()) {
-    update_weight_params(key, it->second,
-                         lstm_params->mutable_outputgatebiasvector());
+    update_weight_params(key, it->second, lstm_params->mutable_outputgatebiasvector(),
+                         use_quantization);
   }
 }
 
@@ -409,25 +443,25 @@ void wrap_network_params(const NeuralNetworkLayer& neural_net_layer,
   }
 }
 
-void update_network_params(const float_array_map& params,
-                           NeuralNetworkLayer* neural_net_layer) {
-
+void update_network_params(const float_array_map& params, NeuralNetworkLayer* neural_net_layer,
+                           bool use_quantization)
+{
   switch (neural_net_layer->layer_case()) {
   case NeuralNetworkLayer::kConvolution:
-    update_network_params(neural_net_layer->name(), params,
-                          neural_net_layer->mutable_convolution());
+    update_network_params(neural_net_layer->name(), params, neural_net_layer->mutable_convolution(),
+                          use_quantization);
     break;
   case NeuralNetworkLayer::kInnerProduct:
     update_network_params(neural_net_layer->name(), params,
-                          neural_net_layer->mutable_innerproduct());
+                          neural_net_layer->mutable_innerproduct(), use_quantization);
     break;
   case NeuralNetworkLayer::kBatchnorm:
-    update_network_params(neural_net_layer->name(), params,
-                          neural_net_layer->mutable_batchnorm());
+    update_network_params(neural_net_layer->name(), params, neural_net_layer->mutable_batchnorm(),
+                          use_quantization);
     break;
   case NeuralNetworkLayer::kUniDirectionalLSTM:
     update_network_params(neural_net_layer->name(), params,
-                          neural_net_layer->mutable_unidirectionallstm());
+                          neural_net_layer->mutable_unidirectionallstm(), use_quantization);
     break;
   default:
     break;
@@ -442,11 +476,11 @@ void wrap_network_params(const NeuralNetwork& neural_net,
   }
 }
 
-void update_network_params(const float_array_map& params,
-                           NeuralNetwork* neural_net) {
-
+void update_network_params(const float_array_map& params, NeuralNetwork* neural_net,
+                           bool use_quantization)
+{
   for (NeuralNetworkLayer& layer : *neural_net->mutable_layers()) {
-    update_network_params(params, &layer);
+    update_network_params(params, &layer, use_quantization);
   }
 }
 
@@ -507,6 +541,8 @@ model_spec::model_spec(const std::string& mlmodel_path)
   impl_->Swap(mlmodel.mutable_neuralnetwork());
 }
 
+model_spec::model_spec(model_spec&&) = default;
+model_spec& model_spec::operator=(model_spec&&) = default;
 model_spec::~model_spec() = default;
 
 std::unique_ptr<NeuralNetwork> model_spec::move_coreml_spec() && {
@@ -519,8 +555,9 @@ float_array_map model_spec::export_params_view() const {
   return result;
 }
 
-void model_spec::update_params(const float_array_map& weights) {
-  update_network_params(weights, impl_.get());
+void model_spec::update_params(const float_array_map& weights, bool use_quantization)
+{
+  update_network_params(weights, impl_.get(), use_quantization);
 }
 
 bool model_spec::has_layer_output(const std::string& layer_name) const {
@@ -569,10 +606,10 @@ void model_spec::add_sigmoid(const std::string& name,
 }
 
 void model_spec::add_pooling(const std::string& name, const std::string& input,
-                             size_t kernel_height, size_t kernel_width,
-                             size_t stride_h, size_t stride_w,
-                             padding_type padding,
-                             bool use_poolexcludepadding) {
+                             size_t kernel_height, size_t kernel_width, size_t stride_h,
+                             size_t stride_w, padding_type padding, bool use_poolexcludepadding,
+                             pooling_type pooling)
+{
   NeuralNetworkLayer* layer = impl_->add_layers();
   layer->set_name(name);
   layer->add_input(input);
@@ -592,8 +629,24 @@ void model_spec::add_pooling(const std::string& name, const std::string& input,
       params->mutable_same();
       break;
   }
+
   if (use_poolexcludepadding) {
     params->set_avgpoolexcludepadding(true);
+  }
+
+  switch (pooling) {
+    case pooling_type::MAX:
+      // set to max
+      params->set_type(PoolingLayerParams_PoolingType_MAX);
+      break;
+    case pooling_type::AVERAGE:
+      // set to average
+      params->set_type(PoolingLayerParams_PoolingType_AVERAGE);
+      break;
+    case pooling_type::L2:
+      // set to L2
+      params->set_type(PoolingLayerParams_PoolingType_L2);
+      break;
   }
 }
 
@@ -641,10 +694,10 @@ void model_spec::add_convolution(
   }
 }
 
-void model_spec::add_padding(
-    const std::string& name, const std::string& input,
-    size_t padding_top, size_t padding_bottom, size_t padding_left,
-    size_t padding_right) {
+void model_spec::add_padding(const std::string& name, const std::string& input,
+                             size_t padding_top, size_t padding_bottom,
+                             size_t padding_left, size_t padding_right,
+                             padding_policy policy) {
   NeuralNetworkLayer* layer = impl_->add_layers();
   layer->set_name(name);
   layer->add_input(input);
@@ -661,12 +714,19 @@ void model_spec::add_padding(
   left_right->set_startedgesize(padding_left);
   left_right->set_endedgesize(padding_right);
 
-  /**
-   * TODO: Currently we only handle reflective padding in our CoreMLmodels.
-   * If you need to support more type of padding in this particular layer
-   * please modify the code below to extent functionality.
-   */
-  params->mutable_reflection();
+  switch (policy) {
+    case padding_policy::REFLECTIVE:
+      params->mutable_reflection();
+      break;
+    case padding_policy::REPLICATION:
+      params->mutable_replication();
+      break;
+    case padding_policy::ZERO:
+      PaddingLayerParams_PaddingConstant* constant_padding =
+          params->mutable_constant();
+      constant_padding->set_value(0);
+      break;
+  }
 }
 
 void model_spec::add_upsampling(
@@ -974,6 +1034,204 @@ void model_spec::add_preprocessing(const std::string& feature_name,
   layer->set_featurename(feature_name);
   NeuralNetworkImageScaler* image_scaler = layer->mutable_scaler();
   image_scaler->set_channelscale(image_scale);
+}
+
+void model_spec::add_transpose(const std::string& name,
+                               const std::string& input,
+                               std::vector<size_t> axes) {
+  NeuralNetworkLayer* layer = impl_->add_layers();
+  layer->set_name(name);
+  layer->add_input(input);
+  layer->add_output(name);
+  TransposeLayerParams* params = layer->mutable_transpose();
+  for (size_t a : axes) {
+    params->add_axes(a);
+  }
+}
+
+void model_spec::add_split_nd(const std::string& name, const std::string& input,
+                              size_t axis, size_t num_splits,
+                              const std::vector<size_t>& split_sizes) {
+  NeuralNetworkLayer* layer = impl_->add_layers();
+  layer->set_name(name);
+  layer->add_input(input);
+
+  for (size_t i = 0; i < num_splits; i++) {
+    layer->add_output(name + "_" + std::to_string(i));
+  }
+
+  SplitNDLayerParams* params = layer->mutable_splitnd();
+  params->set_axis(axis);
+  params->set_numsplits(num_splits);
+  for (size_t s : split_sizes) {
+    params->add_splitsizes(s);
+  }
+}
+
+void model_spec::add_concat_nd(const std::string& name,
+                               const std::vector<std::string>& inputs,
+                               size_t axis) {
+  NeuralNetworkLayer* layer = impl_->add_layers();
+  layer->set_name(name);
+  for (const std::string& input : inputs) {
+    layer->add_input(input);
+  }
+  layer->add_output(name);
+
+  ConcatNDLayerParams* params = layer->mutable_concatnd();
+  params->set_axis(axis);
+}
+
+void model_spec::add_reshape_static(const std::string& name,
+                                    const std::string& input,
+                                    const std::vector<size_t>& targetShape) {
+  NeuralNetworkLayer* layer = impl_->add_layers();
+  layer->set_name(name);
+  layer->add_input(input);
+  layer->add_output(name);
+
+  ReshapeStaticLayerParams* params = layer->mutable_reshapestatic();
+  for (size_t i = 0; i < targetShape.size(); i++) {
+    params->add_targetshape(targetShape[i]);
+  }
+}
+
+void model_spec::add_reshape_dynamic(const std::string& name,
+                                     const std::vector<std::string>& inputs) {
+  NeuralNetworkLayer* layer = impl_->add_layers();
+  layer->set_name(name);
+  for (const std::string& input : inputs) {
+    layer->add_input(input);
+  }
+  layer->add_output(name);
+  layer->mutable_reshapedynamic();
+}
+
+void model_spec::add_expand_dims(const std::string& name,
+                                 const std::string& input,
+                                 const std::vector<size_t>& axes,
+                                 const std::vector<size_t>& inputVector,
+                                 const std::vector<size_t>& outputVector) {
+  NeuralNetworkLayer* layer = impl_->add_layers();
+  layer->set_name(name);
+  layer->add_input(input);
+  auto* inputTensor = layer->add_inputtensor();
+  inputTensor->set_rank(static_cast<unsigned>(inputVector.size()));
+  for (size_t i = 0; i < inputVector.size(); ++i) {
+    inputTensor->add_dimvalue(inputVector[i]);
+  }
+  layer->add_output(name);
+  auto* outputTensor = layer->add_outputtensor();
+  outputTensor->set_rank(static_cast<unsigned>(outputVector.size()));
+  for (size_t i = 0; i < outputVector.size(); ++i) {
+    outputTensor->add_dimvalue(outputVector[i]);
+  }
+  ExpandDimsLayerParams* params = layer->mutable_expanddims();
+  for (size_t i = 0; i < axes.size(); ++i) {
+    params->add_axes(axes[i]);
+  }
+}
+
+void model_spec::add_squeeze(const std::string& name, const std::string& input,
+                             const std::vector<size_t>& axes,
+                             const std::vector<size_t>& inputVector,
+                             const std::vector<size_t>& outputVector) {
+  NeuralNetworkLayer* layer = impl_->add_layers();
+  layer->set_name(name);
+  layer->add_input(input);
+  auto* inputTensor = layer->add_inputtensor();
+  inputTensor->set_rank(static_cast<unsigned>(inputVector.size()));
+  for (size_t i = 0; i < inputVector.size(); ++i) {
+    inputTensor->add_dimvalue(inputVector[i]);
+  }
+  layer->add_output(name);
+  auto* outputTensor = layer->add_outputtensor();
+  outputTensor->set_rank(static_cast<unsigned>(outputVector.size()));
+  for (size_t i = 0; i < outputVector.size(); ++i) {
+    outputTensor->add_dimvalue(outputVector[i]);
+  }
+
+  SqueezeLayerParams* params = layer->mutable_squeeze();
+  for (size_t i = 0; i < axes.size(); ++i) {
+    params->add_axes(axes[i]);
+  }
+}
+
+void model_spec::add_add_broadcastable(const std::string& name,
+                                       const std::vector<std::string>& inputs) {
+  NeuralNetworkLayer* layer = impl_->add_layers();
+  layer->set_name(name);
+  for (const std::string& input : inputs) {
+    layer->add_input(input);
+  }
+  layer->add_output(name);
+  layer->mutable_addbroadcastable();
+}
+
+void model_spec::add_gather(const std::string& name,
+                            const std::vector<std::string>& inputs) {
+  NeuralNetworkLayer* layer = impl_->add_layers();
+  layer->set_name(name);
+  for (const std::string& input : inputs) {
+    layer->add_input(input);
+  }
+  layer->add_output(name);
+  layer->mutable_gather();
+}
+
+void model_spec::add_constant_nd(const std::string& name,
+                                 const std::vector<size_t>& shape,
+                                 const weight_initializer& data) {
+  NeuralNetworkLayer* layer = impl_->add_layers();
+  layer->set_name(name);
+  layer->add_output(name);
+  LoadConstantNDLayerParams* params = layer->mutable_loadconstantnd();
+  size_t size = 1;
+  for (size_t i = 0; i < shape.size(); ++i) {
+    params->add_shape(shape[i]);
+    size *= shape[i];
+  }
+  init_weight_params(params->mutable_data(), size, data);
+}
+
+void model_spec::add_get_shape(const std::string& name,
+                               const std::string& input) {
+  NeuralNetworkLayer* layer = impl_->add_layers();
+  layer->set_name(name);
+  layer->add_input(input);
+  layer->add_output(name);
+  layer->mutable_getshape();
+}
+
+void model_spec::add_nms_layer(const std::string& name, const std::vector<std::string>& inputs,
+                               const std::vector<std::string>& outputs, float iou_threshold,
+                               float confidence_threshold, size_t max_boxes,
+                               bool per_class_supression)
+{
+  NeuralNetworkLayer* layer = impl_->add_layers();
+  layer->set_name(name);
+  for (const std::string& input : inputs) {
+    layer->add_input(input);
+  }
+  for (const std::string& output : outputs) {
+    layer->add_output(output);
+  }
+  NonMaximumSuppressionLayerParams* nms_params = layer->mutable_nonmaximumsuppression();
+  nms_params->set_iouthreshold(iou_threshold);
+  nms_params->set_scorethreshold(confidence_threshold);
+  nms_params->set_maxboxes(static_cast<::_tc_google::protobuf::uint64>(max_boxes));
+  nms_params->set_perclasssuppression(per_class_supression);
+}
+
+void model_spec::add_slice_dynamic(const std::string& name, const std::vector<std::string>& inputs)
+{
+  NeuralNetworkLayer* layer = impl_->add_layers();
+  layer->set_name(name);
+  for (const std::string& input : inputs) {
+    layer->add_input(input);
+  }
+  layer->add_output(name);
+  layer->mutable_slicedynamic();
 }
 
 pipeline_spec::pipeline_spec(std::unique_ptr<Pipeline> impl)

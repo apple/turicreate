@@ -1,5 +1,5 @@
 /*
-  * Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  * Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
   *
   * Licensed under the Apache License, Version 2.0 (the "License").
   * You may not use this file except in compliance with the License.
@@ -56,7 +56,7 @@ namespace Aws
                  * mode of operation for cipher encryption or decryption
                  * cipher to use on the data
                  */
-                SymmetricCryptoStream(Aws::OStream& sink, CipherMode mode, SymmetricCipher& cipher, size_t bufLen = DEFAULT_BUF_SIZE);
+                SymmetricCryptoStream(Aws::OStream& sink, CipherMode mode, SymmetricCipher& cipher, size_t bufLen = DEFAULT_BUF_SIZE, int16_t blockOffset = 0 );
                 /**
                  * bufSrc streambuf to use
                  */

@@ -18,12 +18,13 @@ using CoreML::Specification::ArrayFeatureType;
 using CoreML::Specification::FeatureDescription;
 using CoreML::Specification::ImageFeatureType;
 using CoreML::Specification::ImageFeatureType_ImageSizeRange;
+using CoreML::Specification::Model;
 using CoreML::Specification::ModelDescription;
 using CoreML::Specification::NeuralNetworkLayer;
 using CoreML::Specification::NeuralNetworkPreprocessing;
+using CoreML::Specification::NonMaximumSuppressionLayerParams;
 using CoreML::Specification::SizeRange;
 using turi::coreml::MLModelWrapper;
-
 
 namespace turi {
 
@@ -31,20 +32,6 @@ namespace {
 
 constexpr char CONFIDENCE_STR[] = "Boxes × Class confidence (see user-defined metadata \"classes\")";
 constexpr char COORDINATES_STR[] = "Boxes × [x, y, width, height] (relative to image size)";
-
-std::string iou_threshold_description(float default_value) {
-  std::stringstream ss;
-  ss << "The maximum allowed overlap (as intersection-over-union ratio) for any"
-     << " pair of output bounding boxes (default: " << default_value << ")";
-  return ss.str();
-}
-
-std::string confidence_threshold_description(float default_value) {
-  std::stringstream ss;
-  ss << "The minimum confidence score for an output bounding box"
-     << " (default: " << default_value << ")";
-  return ss.str();
-}
 
 void set_string_feature(FeatureDescription* feature_desc, std::string name,
                         std::string short_description)
@@ -60,25 +47,6 @@ void set_int64_feature(FeatureDescription* feature_desc, std::string name,
   feature_desc->set_name(std::move(name));
   feature_desc->set_shortdescription(std::move(short_description));
   feature_desc->mutable_type()->mutable_int64type();
-}
-
-void set_array_feature(FeatureDescription* feature_desc, std::string name,
-                       std::string short_description,
-                       const std::vector<size_t>& shape)
-{
-  // Set string values.
-  feature_desc->set_name(std::move(name));
-  feature_desc->set_shortdescription(std::move(short_description));
-
-  // Set shape.
-  ArrayFeatureType* array =
-      feature_desc->mutable_type()->mutable_multiarraytype();
-  for (size_t s : shape) {
-    array->add_shape(s);
-  }
-
-  // Set data type.
-  array->set_datatype(ArrayFeatureType::DOUBLE);
 }
 
 void set_dictionary_string_feature(FeatureDescription* feature_desc,
@@ -98,8 +66,9 @@ void set_feature_optional(FeatureDescription* feature_desc) {
 }
 
 void set_predictions_feature(FeatureDescription* feature_desc, std::string feature_name,
-    size_t num_predictions, size_t num_classes, bool include_shape, bool use_flexible_shape,
-    std::string short_desc) {
+                             size_t num_predictions, size_t num_classes, bool include_shape,
+                             bool use_flexible_shape, std::string short_desc, bool is_double = true)
+{
   feature_desc->set_name(feature_name);
 
   if (!short_desc.empty())
@@ -110,7 +79,11 @@ void set_predictions_feature(FeatureDescription* feature_desc, std::string featu
     feature_desc_feature->add_shape(num_predictions);
     feature_desc_feature->add_shape(num_classes);
   }
-  feature_desc_feature->set_datatype(ArrayFeatureType::DOUBLE);
+  if (is_double) {
+    feature_desc_feature->set_datatype(ArrayFeatureType::DOUBLE);
+  } else {
+    feature_desc_feature->set_datatype(ArrayFeatureType::FLOAT32);
+  }
 
   if (use_flexible_shape) {
     auto *shape1 = feature_desc_feature->mutable_shaperange()
@@ -165,46 +138,22 @@ ImageFeatureType* set_image_feature(
   return image_feature;
 }
 
-} //namespace
-
-std::shared_ptr<MLModelWrapper> export_object_detector_model(
-    neural_net::pipeline_spec raw_pipeline, size_t num_classes,
-    size_t num_predictions, flex_list class_labels,
-    std::map<std::string, flexible_type> options) {
-  // Set up Pipeline
-  CoreML::Specification::Model model_pipeline;
-  model_pipeline.set_specificationversion(3);
-  ModelDescription* pipeline_desc = model_pipeline.mutable_description();
-
-  // Adopt the model pipeline passed to us as input.
-  std::unique_ptr<CoreML::Specification::Pipeline> raw_pipeline_spec =
-      std::move(raw_pipeline).move_coreml_spec();
-  model_pipeline.mutable_pipeline()->Swap(raw_pipeline_spec.get());
-
-  if (!options["include_non_maximum_suppression"].to<bool>()){
-    // Only support this case for models supporting spec version 1, which means
-    // no pipeline models.
-    ASSERT_EQ(model_pipeline.pipeline().models_size(), 1);
-
-    auto model_wrapper = std::make_shared<MLModelWrapper>(
-        std::make_shared<CoreML::Model>(model_pipeline.pipeline().models(0)));
-
-    return model_wrapper;
-  }
-
-  // Add Non Maximum Suppression model to pipeline
-  auto* model_nms = model_pipeline.mutable_pipeline()->add_models();
-  model_nms->set_specificationversion(3);
+void set_non_maximum_suppression_model(Model* model_nms, ModelDescription* pipeline_desc,
+                                       float num_classes, float num_predictions,
+                                       const flex_list& class_labels, float confidence_threshold,
+                                       float iou_threshold, bool use_most_confident_class)
+{
+  model_nms->set_specificationversion(CoreML::MLMODEL_SPECIFICATION_VERSION);
 
   ModelDescription* nms_desc = model_nms->mutable_description();
 
   // Write FeatureDescription for the Raw Confidence input.
   set_predictions_feature(nms_desc->add_input(), "raw_confidence", num_predictions, num_classes,
-    true, true, "");
+                          true, true, "");
 
   // Write FeatureDescription for the Raw Coordinates input.
-  set_predictions_feature(nms_desc->add_input(), "raw_coordinates", num_predictions, 4,
-    true, true, "");
+  set_predictions_feature(nms_desc->add_input(), "raw_coordinates", num_predictions, 4, true, true,
+                          "");
 
   // Write FeatureDescription for the IOU Threshold input.
   set_threshold_feature(nms_desc->add_input(), "iouThreshold", "");
@@ -213,12 +162,12 @@ std::shared_ptr<MLModelWrapper> export_object_detector_model(
   set_threshold_feature(nms_desc->add_input(), "confidenceThreshold", "");
 
   // Write FeatureDescription for the Confidence output.
-  set_predictions_feature(nms_desc->add_output(), "confidence", num_predictions, num_classes,
-    false, true, CONFIDENCE_STR);
+  set_predictions_feature(nms_desc->add_output(), "confidence", num_predictions, num_classes, false,
+                          true, CONFIDENCE_STR);
 
   // Write FeatureDescription for the Coordinates input.
-  set_predictions_feature(nms_desc->add_output(), "coordinates", num_predictions, 4,
-    false, true, COORDINATES_STR);
+  set_predictions_feature(nms_desc->add_output(), "coordinates", num_predictions, 4, false, true,
+                          COORDINATES_STR);
 
   CoreML::Specification::NonMaximumSuppression* first_layer_nms =
     model_nms->mutable_nonmaximumsuppression();
@@ -230,8 +179,8 @@ std::shared_ptr<MLModelWrapper> export_object_detector_model(
   }
 
   //Write Features for Non Maximum Suppression
-  first_layer_nms->set_iouthreshold(options["iou_threshold"]);
-  first_layer_nms->set_confidencethreshold(options["confidence_threshold"]);
+  first_layer_nms->set_iouthreshold(iou_threshold);
+  first_layer_nms->set_confidencethreshold(confidence_threshold);
   first_layer_nms->set_confidenceinputfeaturename("raw_confidence");
   first_layer_nms->set_coordinatesinputfeaturename("raw_coordinates");
   first_layer_nms->set_iouthresholdinputfeaturename("iouThreshold");
@@ -239,31 +188,162 @@ std::shared_ptr<MLModelWrapper> export_object_detector_model(
   first_layer_nms->set_confidenceoutputfeaturename("confidence");
   first_layer_nms->set_coordinatesoutputfeaturename("coordinates");
 
+  first_layer_nms->mutable_picktop()->set_perclass(use_most_confident_class);
+
+  // Write FeatureDescription for the IOU Threshold input.
+  FeatureDescription* iou_threshold_desc = pipeline_desc->add_input();
+  set_threshold_feature(iou_threshold_desc, "iouThreshold",
+                        iou_threshold_description(iou_threshold));
+  set_feature_optional(iou_threshold_desc);
+
+  // Write FeatureDescription for the Confidence Threshold input.
+  FeatureDescription* confidence_threshold_desc = pipeline_desc->add_input();
+  set_threshold_feature(confidence_threshold_desc, "confidenceThreshold",
+                        confidence_threshold_description(confidence_threshold));
+  set_feature_optional(confidence_threshold_desc);
+
+  // Write FeatureDescription for the Confidence output.
+  set_predictions_feature(pipeline_desc->add_output(), "confidence", num_predictions, num_classes,
+                          false, true, CONFIDENCE_STR);
+
+  // Write FeatureDescription for the Coordinates output.
+  set_predictions_feature(pipeline_desc->add_output(), "coordinates", num_predictions, 4, false,
+                          true, COORDINATES_STR);
+}
+
+void set_non_maximum_suppression_layer_description(ModelDescription* pipeline_desc,
+                                                   float num_classes, float num_predictions,
+                                                   const flex_list& class_labels,
+                                                   float confidence_threshold, float iou_threshold)
+{
+  // Write FeatureDescription for the IOU Threshold input.
+  FeatureDescription* iou_threshold_desc = pipeline_desc->add_input();
+  set_array_feature(iou_threshold_desc, "iouThreshold",
+                    iou_threshold_description(iou_threshold), {1});
+  set_feature_optional(iou_threshold_desc);
+
+  // Write FeatureDescription for the Confidence Threshold input.
+  FeatureDescription* confidence_threshold_desc = pipeline_desc->add_input();
+  set_array_feature(confidence_threshold_desc, "confidenceThreshold",
+                    confidence_threshold_description(confidence_threshold),
+                    {1});
+  set_feature_optional(confidence_threshold_desc);
+
+  // Write FeatureDescription for the Confidence output.
+  set_predictions_feature(pipeline_desc->add_output(), "confidence", num_predictions, num_classes,
+                          false, true, CONFIDENCE_STR, false);
+
+  // Write FeatureDescription for the Coordinates output.
+  set_predictions_feature(pipeline_desc->add_output(), "coordinates", num_predictions, 4, false,
+                          true, COORDINATES_STR, false);
+}
+
+}  // namespace
+
+std::string iou_threshold_description(float default_value)
+{
+  std::stringstream ss;
+  ss << "The maximum allowed overlap (as intersection-over-union ratio) for any"
+     << " pair of output bounding boxes (default: " << default_value << ")";
+  return ss.str();
+}
+
+std::string confidence_threshold_description(float default_value)
+{
+  std::stringstream ss;
+  ss << "The minimum confidence score for an output bounding box"
+     << " (default: " << default_value << ")";
+  return ss.str();
+}
+
+void set_threshold_array_feature(FeatureDescription* feature_desc, std::string name,
+                                 std::string short_description, const std::vector<size_t>& shape,
+                                 float value)
+{
+  // Set string values.
+  feature_desc->set_name(std::move(name));
+  feature_desc->set_shortdescription(std::move(short_description));
+
+  // Set shape.
+  ArrayFeatureType* array = feature_desc->mutable_type()->mutable_multiarraytype();
+  feature_desc->mutable_type()->set_isoptional(true);
+  // Set data type.
+  array->set_datatype(ArrayFeatureType::DOUBLE);
+
+  for (size_t s : shape) {
+    array->add_shape(s);
+  }
+
+  array->set_doubledefaultvalue(value);
+}
+
+void set_array_feature(FeatureDescription* feature_desc, std::string name,
+                       std::string short_description, const std::vector<size_t>& shape)
+{
+  // Set string values.
+  feature_desc->set_name(std::move(name));
+  feature_desc->set_shortdescription(std::move(short_description));
+
+  // Set shape.
+  ArrayFeatureType* array = feature_desc->mutable_type()->mutable_multiarraytype();
+
+  // Set data type.
+  array->set_datatype(ArrayFeatureType::DOUBLE);
+
+  for (size_t s : shape) {
+    array->add_shape(s);
+  }
+}
+
+std::shared_ptr<MLModelWrapper> export_object_detector_model(
+    neural_net::pipeline_spec raw_pipeline, size_t num_classes, size_t num_predictions,
+    flex_list class_labels, float confidence_threshold, float iou_threshold,
+    bool include_non_maximum_suppression, bool use_nms_layer, bool use_most_confident_class)
+{
+  // Set up Pipeline
+  CoreML::Specification::Model model_pipeline;
+  model_pipeline.set_specificationversion(
+      CoreML::MLMODEL_SPECIFICATION_VERSION);
+  ModelDescription* pipeline_desc = model_pipeline.mutable_description();
+
+  // Adopt the model pipeline passed to us as input.
+  std::unique_ptr<CoreML::Specification::Pipeline> raw_pipeline_spec =
+      std::move(raw_pipeline).move_coreml_spec();
+  model_pipeline.mutable_pipeline()->Swap(raw_pipeline_spec.get());
+
+  if (!include_non_maximum_suppression) {
+    // Only support this case for models supporting spec version 1, which means
+    // no pipeline models.
+    ASSERT_EQ(model_pipeline.pipeline().models_size(), 1);
+
+    auto model_wrapper = std::make_shared<MLModelWrapper>(
+        std::make_shared<CoreML::Model>(model_pipeline.pipeline().models(0)));
+
+    return model_wrapper;
+  }
+
   // Copy input feature descriptions from the first model in the pipeline.
   *pipeline_desc->mutable_input() =
       model_pipeline.pipeline().models(0).description().input();
 
-  // Write FeatureDescription for the IOU Threshold input.
-  FeatureDescription* iou_threshold = pipeline_desc->add_input();
-  set_threshold_feature(iou_threshold, "iouThreshold",
-                        iou_threshold_description(options["iou_threshold"]));
-  set_feature_optional(iou_threshold);
+  if (use_nms_layer) {
+    int num_models = model_pipeline.pipeline().models_size();
+    ASSERT_GT(num_models, 0);
+    Model* model_nn =
+        model_pipeline.mutable_pipeline()->mutable_models(num_models - 1);
+    ASSERT_TRUE(model_nn->has_neuralnetwork());
 
-  // Write FeatureDescription for the Confidence Threshold input.
-  FeatureDescription* confidence_threshold = pipeline_desc->add_input();
-  set_threshold_feature(
-      confidence_threshold, "confidenceThreshold",
-      confidence_threshold_description(options["confidence_threshold"]));
-  set_feature_optional(confidence_threshold);
+    set_non_maximum_suppression_layer_description(pipeline_desc, num_classes, num_predictions,
+                                                  class_labels, confidence_threshold,
+                                                  iou_threshold);
 
-  // Write FeatureDescription for the Confidence output.
-  set_predictions_feature(pipeline_desc->add_output(), "confidence", num_predictions, num_classes,
-    false, true, CONFIDENCE_STR);
-
-  // Write FeatureDescription for the Coordinates output.
-  set_predictions_feature(pipeline_desc->add_output(), "coordinates", num_predictions, 4,
-    false, true, COORDINATES_STR);
-
+  } else {
+    // Add Non Maximum Suppression model to pipeline
+    auto* model_nms = model_pipeline.mutable_pipeline()->add_models();
+    set_non_maximum_suppression_model(model_nms, pipeline_desc, num_classes, num_predictions,
+                                      class_labels, confidence_threshold, iou_threshold,
+                                      use_most_confident_class);
+  }
 
   // Wrap the pipeline
   auto pipeline_wrapper = std::make_shared<MLModelWrapper>(
@@ -339,7 +419,7 @@ std::shared_ptr<coreml::MLModelWrapper> export_style_transfer_model(
     std::string content_feature, std::string style_feature, size_t num_styles) {
 
   CoreML::Specification::Model model;
-  model.set_specificationversion(3);
+  model.set_specificationversion(CoreML::MLMODEL_SPECIFICATION_VERSION);
 
   ModelDescription* model_desc = model.mutable_description();
 

@@ -17,11 +17,7 @@ import pytest
 import sys
 import os
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
-from turicreate.toolkits._internal_utils import (
-    _raise_error_if_not_sarray,
-    _mac_ver
-)
-import coremltools
+from turicreate.toolkits._internal_utils import _raise_error_if_not_sarray, _mac_ver
 
 _CLASSES = ["logo_a", "logo_b", "logo_c", "logo_d"]
 
@@ -230,11 +226,11 @@ class OneObjectDetectorSmokeTest(unittest.TestCase):
                 "include_non_maximum_suppression": "False",
                 "annotations": "annotation",
                 "max_iterations": "1",
-                "model": "darknet-yolo",
+                "model": "YOLOv2",
                 "training_iterations": "1",
                 "version": "1",
             },
-            dict(coreml_model.user_defined_metadata),
+            dict([(str(k), v) for k, v in coreml_model.user_defined_metadata.items()]),
         )
         expected_result = (
             "One shot object detector created by Turi Create (version %s)"

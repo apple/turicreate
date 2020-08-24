@@ -13,6 +13,10 @@ import array
 import datetime as dt
 from .._cython.cy_flexible_type import GMT
 
+import pytest
+
+pytestmark = [pytest.mark.minimal]
+
 
 class SArrayBuilderTest(unittest.TestCase):
     def __test_equal(self, _sarray, _data, _type):

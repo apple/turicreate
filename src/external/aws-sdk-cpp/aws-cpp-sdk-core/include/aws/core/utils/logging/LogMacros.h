@@ -1,5 +1,5 @@
 /*
-  * Copyright 2010-2015 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  * Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
   * 
   * Licensed under the Apache License, Version 2.0 (the "License").
   * You may not use this file except in compliance with the License.
@@ -37,6 +37,7 @@
     #define AWS_LOG_INFO(tag, ...) 
     #define AWS_LOG_DEBUG(tag, ...) 
     #define AWS_LOG_TRACE(tag, ...) 
+    #define AWS_LOG_FLUSH()
 
     #define AWS_LOGSTREAM(level, tag, streamExpression) 
     #define AWS_LOGSTREAM_FATAL(tag, streamExpression)
@@ -45,8 +46,18 @@
     #define AWS_LOGSTREAM_INFO(tag, streamExpression)
     #define AWS_LOGSTREAM_DEBUG(tag, streamExpression)
     #define AWS_LOGSTREAM_TRACE(tag, streamExpression)
+    #define AWS_LOGSTREAM_FLUSH()
 
 #else
+
+    #define AWS_LOG_FLUSH() \
+        { \
+            Aws::Utils::Logging::LogSystemInterface* logSystem = Aws::Utils::Logging::GetLogSystem(); \
+            if ( logSystem ) \
+            { \
+                logSystem->Flush(); \
+            } \
+        }
 
     #define AWS_LOG(level, tag, ...) \
         { \
@@ -187,5 +198,7 @@
                 logSystem->LogStream( Aws::Utils::Logging::LogLevel::Trace, tag, logStream ); \
             } \
         }
+
+    #define AWS_LOGSTREAM_FLUSH()  AWS_LOG_FLUSH()
 
 #endif // DISABLE_AWS_LOGGING

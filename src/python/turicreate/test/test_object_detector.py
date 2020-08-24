@@ -17,12 +17,8 @@ import pytest
 import sys
 import os
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
-from turicreate.toolkits._internal_utils import (
-    _raise_error_if_not_sarray,
-    _mac_ver
-)
+from turicreate.toolkits._internal_utils import _raise_error_if_not_sarray, _mac_ver
 from six import StringIO
-import coremltools
 
 _CLASSES = ["person", "cat", "dog", "chair"]
 
@@ -153,7 +149,7 @@ class ObjectDetectorTest(unittest.TestCase):
         self.get_ans["annotation_origin"] = lambda x: isinstance(x, str)
         self.get_ans["grid_height"] = lambda x: x > 0
         self.get_ans["grid_width"] = lambda x: x > 0
-        self.get_ans["random_seed"] = lambda x: True
+        self.get_ans["random_seed"] = lambda x: isinstance(x, int)
         self.get_ans["verbose"] = lambda x: True
         del self.get_ans["_model"]
         del self.get_ans["_class_to_index"]
@@ -291,6 +287,25 @@ class ObjectDetectorTest(unittest.TestCase):
         kwargs = {"max_iterations": 1, "model": self.pre_trained_model}
         test_util.assert_longer_verbose_logs(tc.object_detector.create, args, kwargs)
 
+    def test_create_with_fixed_random_seed(self):
+        random_seed = 86
+        max_iterations = 3
+
+        model_1 = tc.object_detector.create(
+            self.sf, max_iterations=max_iterations, random_seed=random_seed
+        )
+        pred_1 = model_1.predict(self.sf)
+        model_2 = tc.object_detector.create(
+            self.sf, max_iterations=max_iterations, random_seed=random_seed
+        )
+        pred_2 = model_2.predict(self.sf)
+
+        self.assertEqual(len(pred_1), len(pred_2))
+        for i in range(len(pred_1)):
+            self.assertEqual(len(pred_1[i]), len(pred_2[i]))
+            for j in range(len(pred_1[i])):
+                self.assertEqual(pred_1[i][j], pred_2[i][j])
+
     def test_dict_annotations(self):
         sf_copy = self.sf[:]
         sf_copy[self.annotations] = sf_copy[self.annotations].apply(
@@ -323,12 +338,12 @@ class ObjectDetectorTest(unittest.TestCase):
 
     def test_different_grip_shape(self):
         # Should able to give different input grip shape
-        shapes = [[1, 1], [5, 5], [13, 13], [26, 26]]
+        shapes = [[1, 1], [5, 5], [26, 26], [10, 20], [7, 19]]
         for shape in shapes:
             model = tc.object_detector.create(
-                self.sf, max_iterations=1, grid_shape=shape
+                self.sf[:2], max_iterations=1, grid_shape=shape
             )
-            pred = model.predict(self.sf)
+            pred = model.predict(self.sf[:2])
 
     def test_predict(self):
         sf = self.sf.head()
@@ -462,11 +477,11 @@ class ObjectDetectorTest(unittest.TestCase):
                 "feature": self.feature,
                 "include_non_maximum_suppression": "False",
                 "max_iterations": "1",
-                "model": "darknet-yolo",
+                "model": "YOLOv2",
                 "training_iterations": "1",
                 "version": "1",
             },
-            dict(coreml_model.user_defined_metadata),
+            dict([(str(k), v) for k, v in coreml_model.user_defined_metadata.items()]),
         )
         expected_result = "Object detector created by Turi Create (version %s)" % (
             tc.__version__
@@ -503,6 +518,7 @@ class ObjectDetectorTest(unittest.TestCase):
     )
     def test_export_coreml_with_non_maximum_suppression(self):
         from PIL import Image
+        import coremltools
 
         filename = tempfile.NamedTemporaryFile(suffix=".mlmodel").name
         self.model.export_coreml(filename, include_non_maximum_suppression=True)

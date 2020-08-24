@@ -11,6 +11,7 @@
 
 #include <turi_common.h>
 #include <core/export.hpp>
+#include <core/system/exceptions/TuriException.hpp>
 #include <ml/neural_net/image_augmentation.hpp>
 #include <ml/neural_net/model_backend.hpp>
 
@@ -52,7 +53,7 @@ struct ac_parameters {
  * network module instances, used to abstract across backend implementations and
  * hardware resources.
  */
-EXPORT class compute_context {
+class EXPORT compute_context {
  public:
   /** Function that yields a compute context. */
   using factory = std::function<std::unique_ptr<compute_context>()>;
@@ -65,7 +66,7 @@ EXPORT class compute_context {
   class registration {
    public:
     // Registers `factory_fn` at the given priority.
-    registration(int priority, factory factory_fn, factory tf_factory_fn_);
+    registration(int priority, factory factory_fn, factory tf_factory_fn_, factory mlc_factory_fn_);
 
     // Removes the registration. In practice, simplest just not to deallocate...
     ~registration();
@@ -77,13 +78,18 @@ EXPORT class compute_context {
 
     std::unique_ptr<compute_context> create_tensorflow_context() const {
       return tf_factory_fn_ ? tf_factory_fn_() : nullptr;
-      ;
+    }
+
+    std::unique_ptr<compute_context> create_mlc_context() const
+    {
+      return mlc_factory_fn_ ? mlc_factory_fn_() : nullptr;
     }
 
    private:
     int priority_;
     factory factory_fn_;
     factory tf_factory_fn_;
+    factory mlc_factory_fn_;
   };
 
   /**
@@ -96,13 +102,14 @@ EXPORT class compute_context {
 
   static std::unique_ptr<compute_context> create_tf();
 
+  static std::unique_ptr<compute_context> create_mlc();
+
   virtual ~compute_context();
 
   /**
-   * Returns the (human readable) names of the GPUs used by this context, for
-   * reporting to the user.
+   * Prints (human readable) device information.
    */
-  virtual std::vector<std::string> gpu_names() const = 0;
+  virtual void print_training_device_info() const = 0;
 
   /**
    * Provides a measure of the memory resources available.
@@ -120,9 +127,13 @@ EXPORT class compute_context {
    * \todo Initialize the network directly from a model_spec, in lieu of passing
    *       weights as a float_array_map.
    */
-  virtual std::unique_ptr<model_backend> create_object_detector(
-      int n, int c_in, int h_in, int w_in, int c_out, int h_out, int w_out,
-      const float_array_map& config, const float_array_map& weights) { ASSERT_TRUE(false); }
+  virtual std::unique_ptr<model_backend> create_object_detector(int n, int c_in, int h_in, int w_in,
+                                                                int c_out, int h_out, int w_out,
+                                                                const float_array_map& config,
+                                                                const float_array_map& weights)
+  {
+    throw TuriException(TuriErrorCode::NotImplemented);
+  }
 
   /**
    * Creates an activity classification network.
@@ -134,7 +145,7 @@ EXPORT class compute_context {
    */
   virtual std::unique_ptr<model_backend> create_activity_classifier(
       const ac_parameters& ac_params) {
-    ASSERT_TRUE(false);
+    throw TuriException(TuriErrorCode::NotImplemented);
   }
 
   /**
@@ -145,8 +156,11 @@ EXPORT class compute_context {
    * \todo Initialize the network directly from a model_spec, in lieu of passing
    *       weights as a float_array_map.
    */
-  virtual std::unique_ptr<model_backend> create_style_transfer(
-      const float_array_map& config, const float_array_map& weights) { ASSERT_TRUE(false); }
+  virtual std::unique_ptr<model_backend> create_style_transfer(const float_array_map& config,
+                                                               const float_array_map& weights)
+  {
+    throw TuriException(TuriErrorCode::NotImplemented);
+  }
 
   /**
    * Creates a drawing classification network.
@@ -160,23 +174,27 @@ EXPORT class compute_context {
   virtual std::unique_ptr<model_backend> create_drawing_classifier(
       /* TODO: const float_array_map& config if needed */
       const float_array_map& weights, size_t batch_size, size_t num_classes) {
-    ASSERT_TRUE(false);
+    throw TuriException(TuriErrorCode::NotImplemented);
   }
 
   /**
    * Creates an image augmenter.
    */
   virtual std::unique_ptr<image_augmenter> create_image_augmenter(
-      const image_augmenter::options &opts) { ASSERT_TRUE(false); }
+      const image_augmenter::options& opts)
+  {
+    throw TuriException(TuriErrorCode::NotImplemented);
+  }
 
   /**
    * Creates a multilevel perceptron classifier.
    */
-   virtual std::unique_ptr<turi::neural_net::model_backend> create_multilayer_perceptron_classifier(
-    int n, int c_in, int c_out, const std::vector<size_t> &layer_sizes, 
-    const turi::neural_net::float_array_map& config) { ASSERT_TRUE(false); }
-
-
+  virtual std::unique_ptr<turi::neural_net::model_backend> create_multilayer_perceptron_classifier(
+      int n, int c_in, int c_out, const std::vector<size_t>& layer_sizes,
+      const turi::neural_net::float_array_map& config)
+  {
+    throw TuriException(TuriErrorCode::NotImplemented);
+  }
 };
 
 }  // namespace neural_net

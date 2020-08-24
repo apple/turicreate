@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   name='FeatureTypes.proto',
   package='CoreML.Specification',
   syntax='proto3',
-  serialized_pb=_b('\n\x12\x46\x65\x61tureTypes.proto\x12\x14\x43oreML.Specification\"\x12\n\x10Int64FeatureType\"\x13\n\x11\x44oubleFeatureType\"\x13\n\x11StringFeatureType\"3\n\tSizeRange\x12\x12\n\nlowerBound\x18\x01 \x01(\x04\x12\x12\n\nupperBound\x18\x02 \x01(\x03\"\xfe\x04\n\x10ImageFeatureType\x12\r\n\x05width\x18\x01 \x01(\x03\x12\x0e\n\x06height\x18\x02 \x01(\x03\x12V\n\x0f\x65numeratedSizes\x18\x15 \x01(\x0b\x32;.CoreML.Specification.ImageFeatureType.EnumeratedImageSizesH\x00\x12O\n\x0eimageSizeRange\x18\x1f \x01(\x0b\x32\x35.CoreML.Specification.ImageFeatureType.ImageSizeRangeH\x00\x12\x45\n\ncolorSpace\x18\x03 \x01(\x0e\x32\x31.CoreML.Specification.ImageFeatureType.ColorSpace\x1a*\n\tImageSize\x12\r\n\x05width\x18\x01 \x01(\x04\x12\x0e\n\x06height\x18\x02 \x01(\x04\x1aW\n\x14\x45numeratedImageSizes\x12?\n\x05sizes\x18\x01 \x03(\x0b\x32\x30.CoreML.Specification.ImageFeatureType.ImageSize\x1a{\n\x0eImageSizeRange\x12\x33\n\nwidthRange\x18\x01 \x01(\x0b\x32\x1f.CoreML.Specification.SizeRange\x12\x34\n\x0bheightRange\x18\x02 \x01(\x0b\x32\x1f.CoreML.Specification.SizeRange\"F\n\nColorSpace\x12\x17\n\x13INVALID_COLOR_SPACE\x10\x00\x12\r\n\tGRAYSCALE\x10\n\x12\x07\n\x03RGB\x10\x14\x12\x07\n\x03\x42GR\x10\x1e\x42\x11\n\x0fSizeFlexibility\"\xa0\x04\n\x10\x41rrayFeatureType\x12\r\n\x05shape\x18\x01 \x03(\x03\x12\x46\n\x08\x64\x61taType\x18\x02 \x01(\x0e\x32\x34.CoreML.Specification.ArrayFeatureType.ArrayDataType\x12S\n\x10\x65numeratedShapes\x18\x15 \x01(\x0b\x32\x37.CoreML.Specification.ArrayFeatureType.EnumeratedShapesH\x00\x12G\n\nshapeRange\x18\x1f \x01(\x0b\x32\x31.CoreML.Specification.ArrayFeatureType.ShapeRangeH\x00\x1a\x16\n\x05Shape\x12\r\n\x05shape\x18\x01 \x03(\x03\x1aP\n\x10\x45numeratedShapes\x12<\n\x06shapes\x18\x01 \x03(\x0b\x32,.CoreML.Specification.ArrayFeatureType.Shape\x1a\x41\n\nShapeRange\x12\x33\n\nsizeRanges\x18\x01 \x03(\x0b\x32\x1f.CoreML.Specification.SizeRange\"V\n\rArrayDataType\x12\x1b\n\x17INVALID_ARRAY_DATA_TYPE\x10\x00\x12\r\n\x07\x46LOAT32\x10\xa0\x80\x04\x12\x0c\n\x06\x44OUBLE\x10\xc0\x80\x04\x12\x0b\n\x05INT32\x10\xa0\x80\x08\x42\x12\n\x10ShapeFlexibility\"\xa4\x01\n\x15\x44ictionaryFeatureType\x12>\n\x0cint64KeyType\x18\x01 \x01(\x0b\x32&.CoreML.Specification.Int64FeatureTypeH\x00\x12@\n\rstringKeyType\x18\x02 \x01(\x0b\x32\'.CoreML.Specification.StringFeatureTypeH\x00\x42\t\n\x07KeyType\"\xcd\x01\n\x13SequenceFeatureType\x12;\n\tint64Type\x18\x01 \x01(\x0b\x32&.CoreML.Specification.Int64FeatureTypeH\x00\x12=\n\nstringType\x18\x03 \x01(\x0b\x32\'.CoreML.Specification.StringFeatureTypeH\x00\x12\x32\n\tsizeRange\x18\x65 \x01(\x0b\x32\x1f.CoreML.Specification.SizeRangeB\x06\n\x04Type\"\xee\x03\n\x0b\x46\x65\x61tureType\x12;\n\tint64Type\x18\x01 \x01(\x0b\x32&.CoreML.Specification.Int64FeatureTypeH\x00\x12=\n\ndoubleType\x18\x02 \x01(\x0b\x32\'.CoreML.Specification.DoubleFeatureTypeH\x00\x12=\n\nstringType\x18\x03 \x01(\x0b\x32\'.CoreML.Specification.StringFeatureTypeH\x00\x12;\n\timageType\x18\x04 \x01(\x0b\x32&.CoreML.Specification.ImageFeatureTypeH\x00\x12@\n\x0emultiArrayType\x18\x05 \x01(\x0b\x32&.CoreML.Specification.ArrayFeatureTypeH\x00\x12\x45\n\x0e\x64ictionaryType\x18\x06 \x01(\x0b\x32+.CoreML.Specification.DictionaryFeatureTypeH\x00\x12\x41\n\x0csequenceType\x18\x07 \x01(\x0b\x32).CoreML.Specification.SequenceFeatureTypeH\x00\x12\x13\n\nisOptional\x18\xe8\x07 \x01(\x08\x42\x06\n\x04TypeB\x02H\x03\x62\x06proto3')
+  serialized_pb=_b('\n\x12\x46\x65\x61tureTypes.proto\x12\x14\x43oreML.Specification\"\x12\n\x10Int64FeatureType\"\x13\n\x11\x44oubleFeatureType\"\x13\n\x11StringFeatureType\"3\n\tSizeRange\x12\x12\n\nlowerBound\x18\x01 \x01(\x04\x12\x12\n\nupperBound\x18\x02 \x01(\x03\"\xfe\x04\n\x10ImageFeatureType\x12\r\n\x05width\x18\x01 \x01(\x03\x12\x0e\n\x06height\x18\x02 \x01(\x03\x12V\n\x0f\x65numeratedSizes\x18\x15 \x01(\x0b\x32;.CoreML.Specification.ImageFeatureType.EnumeratedImageSizesH\x00\x12O\n\x0eimageSizeRange\x18\x1f \x01(\x0b\x32\x35.CoreML.Specification.ImageFeatureType.ImageSizeRangeH\x00\x12\x45\n\ncolorSpace\x18\x03 \x01(\x0e\x32\x31.CoreML.Specification.ImageFeatureType.ColorSpace\x1a*\n\tImageSize\x12\r\n\x05width\x18\x01 \x01(\x04\x12\x0e\n\x06height\x18\x02 \x01(\x04\x1aW\n\x14\x45numeratedImageSizes\x12?\n\x05sizes\x18\x01 \x03(\x0b\x32\x30.CoreML.Specification.ImageFeatureType.ImageSize\x1a{\n\x0eImageSizeRange\x12\x33\n\nwidthRange\x18\x01 \x01(\x0b\x32\x1f.CoreML.Specification.SizeRange\x12\x34\n\x0bheightRange\x18\x02 \x01(\x0b\x32\x1f.CoreML.Specification.SizeRange\"F\n\nColorSpace\x12\x17\n\x13INVALID_COLOR_SPACE\x10\x00\x12\r\n\tGRAYSCALE\x10\n\x12\x07\n\x03RGB\x10\x14\x12\x07\n\x03\x42GR\x10\x1e\x42\x11\n\x0fSizeFlexibility\"\x8e\x05\n\x10\x41rrayFeatureType\x12\r\n\x05shape\x18\x01 \x03(\x03\x12\x46\n\x08\x64\x61taType\x18\x02 \x01(\x0e\x32\x34.CoreML.Specification.ArrayFeatureType.ArrayDataType\x12S\n\x10\x65numeratedShapes\x18\x15 \x01(\x0b\x32\x37.CoreML.Specification.ArrayFeatureType.EnumeratedShapesH\x00\x12G\n\nshapeRange\x18\x1f \x01(\x0b\x32\x31.CoreML.Specification.ArrayFeatureType.ShapeRangeH\x00\x12\x19\n\x0fintDefaultValue\x18) \x01(\x05H\x01\x12\x1b\n\x11\x66loatDefaultValue\x18\x33 \x01(\x02H\x01\x12\x1c\n\x12\x64oubleDefaultValue\x18= \x01(\x01H\x01\x1a\x16\n\x05Shape\x12\r\n\x05shape\x18\x01 \x03(\x03\x1aP\n\x10\x45numeratedShapes\x12<\n\x06shapes\x18\x01 \x03(\x0b\x32,.CoreML.Specification.ArrayFeatureType.Shape\x1a\x41\n\nShapeRange\x12\x33\n\nsizeRanges\x18\x01 \x03(\x0b\x32\x1f.CoreML.Specification.SizeRange\"V\n\rArrayDataType\x12\x1b\n\x17INVALID_ARRAY_DATA_TYPE\x10\x00\x12\r\n\x07\x46LOAT32\x10\xa0\x80\x04\x12\x0c\n\x06\x44OUBLE\x10\xc0\x80\x04\x12\x0b\n\x05INT32\x10\xa0\x80\x08\x42\x12\n\x10ShapeFlexibilityB\x16\n\x14\x64\x65\x66\x61ultOptionalValue\"\xa4\x01\n\x15\x44ictionaryFeatureType\x12>\n\x0cint64KeyType\x18\x01 \x01(\x0b\x32&.CoreML.Specification.Int64FeatureTypeH\x00\x12@\n\rstringKeyType\x18\x02 \x01(\x0b\x32\'.CoreML.Specification.StringFeatureTypeH\x00\x42\t\n\x07KeyType\"\xcd\x01\n\x13SequenceFeatureType\x12;\n\tint64Type\x18\x01 \x01(\x0b\x32&.CoreML.Specification.Int64FeatureTypeH\x00\x12=\n\nstringType\x18\x03 \x01(\x0b\x32\'.CoreML.Specification.StringFeatureTypeH\x00\x12\x32\n\tsizeRange\x18\x65 \x01(\x0b\x32\x1f.CoreML.Specification.SizeRangeB\x06\n\x04Type\"\xee\x03\n\x0b\x46\x65\x61tureType\x12;\n\tint64Type\x18\x01 \x01(\x0b\x32&.CoreML.Specification.Int64FeatureTypeH\x00\x12=\n\ndoubleType\x18\x02 \x01(\x0b\x32\'.CoreML.Specification.DoubleFeatureTypeH\x00\x12=\n\nstringType\x18\x03 \x01(\x0b\x32\'.CoreML.Specification.StringFeatureTypeH\x00\x12;\n\timageType\x18\x04 \x01(\x0b\x32&.CoreML.Specification.ImageFeatureTypeH\x00\x12@\n\x0emultiArrayType\x18\x05 \x01(\x0b\x32&.CoreML.Specification.ArrayFeatureTypeH\x00\x12\x45\n\x0e\x64ictionaryType\x18\x06 \x01(\x0b\x32+.CoreML.Specification.DictionaryFeatureTypeH\x00\x12\x41\n\x0csequenceType\x18\x07 \x01(\x0b\x32).CoreML.Specification.SequenceFeatureTypeH\x00\x12\x13\n\nisOptional\x18\xe8\x07 \x01(\x08\x42\x06\n\x04TypeB\x02H\x03\x62\x06proto3')
 )
 
 
@@ -79,8 +79,8 @@ _ARRAYFEATURETYPE_ARRAYDATATYPE = _descriptor.EnumDescriptor(
   ],
   containing_type=None,
   options=None,
-  serialized_start=1239,
-  serialized_end=1325,
+  serialized_start=1325,
+  serialized_end=1411,
 )
 _sym_db.RegisterEnumDescriptor(_ARRAYFEATURETYPE_ARRAYDATATYPE)
 
@@ -388,8 +388,8 @@ _ARRAYFEATURETYPE_SHAPE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1066,
-  serialized_end=1088,
+  serialized_start=1152,
+  serialized_end=1174,
 )
 
 _ARRAYFEATURETYPE_ENUMERATEDSHAPES = _descriptor.Descriptor(
@@ -418,8 +418,8 @@ _ARRAYFEATURETYPE_ENUMERATEDSHAPES = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1090,
-  serialized_end=1170,
+  serialized_start=1176,
+  serialized_end=1256,
 )
 
 _ARRAYFEATURETYPE_SHAPERANGE = _descriptor.Descriptor(
@@ -448,8 +448,8 @@ _ARRAYFEATURETYPE_SHAPERANGE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1172,
-  serialized_end=1237,
+  serialized_start=1258,
+  serialized_end=1323,
 )
 
 _ARRAYFEATURETYPE = _descriptor.Descriptor(
@@ -487,6 +487,27 @@ _ARRAYFEATURETYPE = _descriptor.Descriptor(
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       options=None),
+    _descriptor.FieldDescriptor(
+      name='intDefaultValue', full_name='CoreML.Specification.ArrayFeatureType.intDefaultValue', index=4,
+      number=41, type=5, cpp_type=1, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='floatDefaultValue', full_name='CoreML.Specification.ArrayFeatureType.floatDefaultValue', index=5,
+      number=51, type=2, cpp_type=6, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
+    _descriptor.FieldDescriptor(
+      name='doubleDefaultValue', full_name='CoreML.Specification.ArrayFeatureType.doubleDefaultValue', index=6,
+      number=61, type=1, cpp_type=5, label=1,
+      has_default_value=False, default_value=float(0),
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      options=None),
   ],
   extensions=[
   ],
@@ -502,9 +523,12 @@ _ARRAYFEATURETYPE = _descriptor.Descriptor(
     _descriptor.OneofDescriptor(
       name='ShapeFlexibility', full_name='CoreML.Specification.ArrayFeatureType.ShapeFlexibility',
       index=0, containing_type=None, fields=[]),
+    _descriptor.OneofDescriptor(
+      name='defaultOptionalValue', full_name='CoreML.Specification.ArrayFeatureType.defaultOptionalValue',
+      index=1, containing_type=None, fields=[]),
   ],
   serialized_start=801,
-  serialized_end=1345,
+  serialized_end=1455,
 )
 
 
@@ -544,8 +568,8 @@ _DICTIONARYFEATURETYPE = _descriptor.Descriptor(
       name='KeyType', full_name='CoreML.Specification.DictionaryFeatureType.KeyType',
       index=0, containing_type=None, fields=[]),
   ],
-  serialized_start=1348,
-  serialized_end=1512,
+  serialized_start=1458,
+  serialized_end=1622,
 )
 
 
@@ -592,8 +616,8 @@ _SEQUENCEFEATURETYPE = _descriptor.Descriptor(
       name='Type', full_name='CoreML.Specification.SequenceFeatureType.Type',
       index=0, containing_type=None, fields=[]),
   ],
-  serialized_start=1515,
-  serialized_end=1720,
+  serialized_start=1625,
+  serialized_end=1830,
 )
 
 
@@ -675,8 +699,8 @@ _FEATURETYPE = _descriptor.Descriptor(
       name='Type', full_name='CoreML.Specification.FeatureType.Type',
       index=0, containing_type=None, fields=[]),
   ],
-  serialized_start=1723,
-  serialized_end=2217,
+  serialized_start=1833,
+  serialized_end=2327,
 )
 
 _IMAGEFEATURETYPE_IMAGESIZE.containing_type = _IMAGEFEATURETYPE
@@ -710,6 +734,15 @@ _ARRAYFEATURETYPE.fields_by_name['enumeratedShapes'].containing_oneof = _ARRAYFE
 _ARRAYFEATURETYPE.oneofs_by_name['ShapeFlexibility'].fields.append(
   _ARRAYFEATURETYPE.fields_by_name['shapeRange'])
 _ARRAYFEATURETYPE.fields_by_name['shapeRange'].containing_oneof = _ARRAYFEATURETYPE.oneofs_by_name['ShapeFlexibility']
+_ARRAYFEATURETYPE.oneofs_by_name['defaultOptionalValue'].fields.append(
+  _ARRAYFEATURETYPE.fields_by_name['intDefaultValue'])
+_ARRAYFEATURETYPE.fields_by_name['intDefaultValue'].containing_oneof = _ARRAYFEATURETYPE.oneofs_by_name['defaultOptionalValue']
+_ARRAYFEATURETYPE.oneofs_by_name['defaultOptionalValue'].fields.append(
+  _ARRAYFEATURETYPE.fields_by_name['floatDefaultValue'])
+_ARRAYFEATURETYPE.fields_by_name['floatDefaultValue'].containing_oneof = _ARRAYFEATURETYPE.oneofs_by_name['defaultOptionalValue']
+_ARRAYFEATURETYPE.oneofs_by_name['defaultOptionalValue'].fields.append(
+  _ARRAYFEATURETYPE.fields_by_name['doubleDefaultValue'])
+_ARRAYFEATURETYPE.fields_by_name['doubleDefaultValue'].containing_oneof = _ARRAYFEATURETYPE.oneofs_by_name['defaultOptionalValue']
 _DICTIONARYFEATURETYPE.fields_by_name['int64KeyType'].message_type = _INT64FEATURETYPE
 _DICTIONARYFEATURETYPE.fields_by_name['stringKeyType'].message_type = _STRINGFEATURETYPE
 _DICTIONARYFEATURETYPE.oneofs_by_name['KeyType'].fields.append(

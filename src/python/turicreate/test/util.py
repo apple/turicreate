@@ -18,6 +18,10 @@ import turicreate as tc
 import sys
 from six import StringIO
 
+import pytest
+
+pytestmark = pytest.mark.minimal
+
 
 class SFrameComparer:
     """

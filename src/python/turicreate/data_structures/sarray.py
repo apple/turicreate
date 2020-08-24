@@ -2285,6 +2285,10 @@ class SArray(object):
         out : float | turicreate.Image
             Mean of all values in SArray, or image holding per-pixel mean
             across the input SArray.
+
+        See Also
+        --------
+        median
         """
         with cython_context():
             if self.dtype == _Image:
@@ -2293,6 +2297,35 @@ class SArray(object):
                 return extensions.generate_mean(self)
             else:
                 return self.__proxy__.mean()
+
+    def median(self, approximate=False):
+        """
+        Median of all the values in the SArray.
+
+        Note: no linear smoothing is performed. If the lenght of the SArray is
+        an odd number. Then a value between `a` and `b` will be used, where
+        `a` and `b` are the two middle values.
+
+        Parameters
+        ----------
+        approximate : bool
+            If True an approximate value will be returned. Calculating
+            an approximate value is faster. The approximate value will
+            be within 5% of the exact value.
+
+        Returns
+        -------
+        out : float | turicreate.Image
+            Median of all values in SArray
+
+        See Also
+        --------
+        mean
+        """
+        if not isinstance(approximate, bool):
+            raise("\"approximate\" must be a bool.")
+
+        return self.__proxy__.median(approximate)
 
     def std(self, ddof=0):
         """
@@ -3097,6 +3130,28 @@ class SArray(object):
 
         with cython_context():
             return SArray(_proxy=self.__proxy__.item_length())
+
+    def shuffle(self):
+        """
+        Randomly shuffles the elements of the SArray.
+
+        Returns
+        -------
+        out : [SArray]
+            An SArray with all the same elements but in a random order.
+
+        Examples
+        --------
+        >>> sa = turicreate.SArray(["a", "b", "c", "d", "x", "Y", "z"])
+        >>> shuffled_sa = sa.shuffle()
+        >>> print(shuffled_sa)
+        ['z', 'd', 'Y', 'c', 'a', 'x', 'b']
+        """
+        from .sframe import SFrame
+
+        sf = SFrame({'content': self})
+        sf = sf.shuffle()
+        return sf['content']
 
     def random_split(self, fraction, seed=None):
         """

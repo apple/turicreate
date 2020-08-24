@@ -1,5 +1,5 @@
 /*
-  * Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  * Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
   *
   * Licensed under the Apache License, Version 2.0 (the "License").
   * You may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 #pragma once
 
 #include <aws/core/Core_EXPORTS.h>
+#include <aws/core/utils/memory/AWSMemory.h>
 #include <aws/core/utils/memory/stl/AWSStreamFwd.h>
 
 namespace Aws
@@ -42,6 +43,10 @@ namespace Aws
                  * Uses factory to allocate underlying stream
                  */
                 ResponseStream(const Aws::IOStreamFactory& factory);
+                /**
+                 * Takes ownership of an underlying stream.
+                 */
+                ResponseStream(IOStream* underlyingStreamToManage);
                 ResponseStream(const ResponseStream&) = delete;
                 ~ResponseStream();
 
@@ -68,6 +73,7 @@ namespace Aws
                 using Base = Aws::IOStream;
 
                 DefaultUnderlyingStream();
+                DefaultUnderlyingStream(Aws::UniquePtr<std::streambuf> buf);
                 virtual ~DefaultUnderlyingStream();
             };
 

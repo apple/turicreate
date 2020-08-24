@@ -1,5 +1,5 @@
-/*
-* Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+﻿/*
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -12,9 +12,11 @@
 * express or implied. See the License for the specific language governing
 * permissions and limitations under the License.
 */
+
 #pragma once
 #include <aws/s3/S3_EXPORTS.h>
 #include <aws/s3/model/LoggingEnabled.h>
+#include <utility>
 
 namespace Aws
 {
@@ -30,6 +32,11 @@ namespace S3
 namespace Model
 {
 
+  /**
+   * <p>Container for logging status information.</p><p><h3>See Also:</h3>   <a
+   * href="http://docs.aws.amazon.com/goto/WebAPI/s3-2006-03-01/BucketLoggingStatus">AWS
+   * API Reference</a></p>
+   */
   class AWS_S3_API BucketLoggingStatus
   {
   public:
@@ -39,22 +46,27 @@ namespace Model
 
     void AddToNode(Aws::Utils::Xml::XmlNode& parentNode) const;
 
+
     
     inline const LoggingEnabled& GetLoggingEnabled() const{ return m_loggingEnabled; }
+
+    
+    inline bool LoggingEnabledHasBeenSet() const { return m_loggingEnabledHasBeenSet; }
 
     
     inline void SetLoggingEnabled(const LoggingEnabled& value) { m_loggingEnabledHasBeenSet = true; m_loggingEnabled = value; }
 
     
-    inline void SetLoggingEnabled(LoggingEnabled&& value) { m_loggingEnabledHasBeenSet = true; m_loggingEnabled = value; }
+    inline void SetLoggingEnabled(LoggingEnabled&& value) { m_loggingEnabledHasBeenSet = true; m_loggingEnabled = std::move(value); }
 
     
     inline BucketLoggingStatus& WithLoggingEnabled(const LoggingEnabled& value) { SetLoggingEnabled(value); return *this;}
 
     
-    inline BucketLoggingStatus& WithLoggingEnabled(LoggingEnabled&& value) { SetLoggingEnabled(value); return *this;}
+    inline BucketLoggingStatus& WithLoggingEnabled(LoggingEnabled&& value) { SetLoggingEnabled(std::move(value)); return *this;}
 
   private:
+
     LoggingEnabled m_loggingEnabled;
     bool m_loggingEnabledHasBeenSet;
   };

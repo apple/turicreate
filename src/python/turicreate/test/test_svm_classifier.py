@@ -15,11 +15,18 @@ import numpy as np
 import array
 from turicreate.toolkits._main import ToolkitError
 from turicreate.toolkits.classifier.svm_classifier import _DEFAULT_SOLVER_OPTIONS
-from sklearn import svm
-from sklearn.metrics import *
 import shutil
 
 import os as _os
+
+try:
+    from sklearn.metrics import *
+    from sklearn import svm
+except ImportError as e:
+    # ignore extra dependencies for minimal pkg
+    # https://github.com/apple/turicreate/pull/3156
+    if not tc._deps.is_minimal_pkg():
+        raise e
 
 
 class SVMClassifierTest(unittest.TestCase):

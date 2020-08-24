@@ -1,5 +1,5 @@
-/*
-* Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+﻿/*
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 * express or implied. See the License for the specific language governing
 * permissions and limitations under the License.
 */
+
 #include <aws/s3/model/LambdaFunctionConfiguration.h>
 #include <aws/core/utils/xml/XmlSerializer.h>
 #include <aws/core/utils/StringUtils.h>
@@ -55,13 +56,13 @@ LambdaFunctionConfiguration& LambdaFunctionConfiguration::operator =(const XmlNo
     XmlNode idNode = resultNode.FirstChild("Id");
     if(!idNode.IsNull())
     {
-      m_id = StringUtils::Trim(idNode.GetText().c_str());
+      m_id = Aws::Utils::Xml::DecodeEscapedXmlText(idNode.GetText());
       m_idHasBeenSet = true;
     }
     XmlNode lambdaFunctionArnNode = resultNode.FirstChild("CloudFunction");
     if(!lambdaFunctionArnNode.IsNull())
     {
-      m_lambdaFunctionArn = StringUtils::Trim(lambdaFunctionArnNode.GetText().c_str());
+      m_lambdaFunctionArn = Aws::Utils::Xml::DecodeEscapedXmlText(lambdaFunctionArnNode.GetText());
       m_lambdaFunctionArnHasBeenSet = true;
     }
     XmlNode eventsNode = resultNode.FirstChild("Event");
@@ -98,7 +99,7 @@ void LambdaFunctionConfiguration::AddToNode(XmlNode& parentNode) const
 
   if(m_lambdaFunctionArnHasBeenSet)
   {
-   XmlNode lambdaFunctionArnNode = parentNode.CreateChildElement("LambdaFunctionArn");
+   XmlNode lambdaFunctionArnNode = parentNode.CreateChildElement("CloudFunction");
    lambdaFunctionArnNode.SetText(m_lambdaFunctionArn);
   }
 
@@ -113,7 +114,7 @@ void LambdaFunctionConfiguration::AddToNode(XmlNode& parentNode) const
 
   if(m_filterHasBeenSet)
   {
-   XmlNode filterNode = parentNode.CreateChildElement("Event");
+   XmlNode filterNode = parentNode.CreateChildElement("Filter");
    m_filter.AddToNode(filterNode);
   }
 

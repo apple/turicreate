@@ -1,0 +1,39 @@
+if(HAS_CORE_ML)
+  project(Turi)
+
+  find_library(core_ml NAMES CoreML)
+  message("CoreML found at ${core_ml}.")
+
+  find_library(core_foundation NAMES CoreFoundation)
+  message("CoreFoundation found at ${core_foundation}.")
+
+  find_library(foundation NAMES Foundation)
+  message("Foundation found at ${foundation}.")
+
+  find_library(core_video NAMES CoreVideo)
+  message("CoreVideo found at ${core_video}.")
+
+  if(HAS_MACOS_10_15 AND NOT TC_BUILD_IOS)
+    # On macOS 10.15+, we can use TCMPSDeviceManager to pass eGPUs to CoreML.
+    set(additional_image_deep_feature_extractor_requirements tcmps)
+  else()
+    set(additional_image_deep_feature_extractor_requirements "")
+  endif()
+
+  make_library(image_deep_feature_extractor OBJECT
+    SOURCES
+      mlmodel_image_feature_extractor.mm
+      class_registrations.cpp
+      image_deep_feature_extractor_toolkit.cpp
+    REQUIRES
+      fileio
+      objc
+      coremltools_mlmodel
+      ${CORE_ML}
+      ${FOUNDATION}
+      ${CORE_VIDEO}
+      ${additional_image_deep_feature_extractor_requirements}
+    EXTERNAL_VISIBILITY
+  )
+
+endif()

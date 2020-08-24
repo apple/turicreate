@@ -17,11 +17,10 @@ import turicreate._connect.main as glconnect
 from turicreate.data_structures.sframe import SFrame as _SFrame
 import turicreate.extensions as _extensions
 from turicreate.extensions import _wrap_function_return
-from turicreate.toolkits._internal_utils import (
-    _toolkit_serialize_summary_struct
-)
+from turicreate.toolkits._internal_utils import _toolkit_serialize_summary_struct
 from turicreate.util import _make_internal_url
 from turicreate.toolkits._main import ToolkitError
+from turicreate._deps.minimal_package import _minimal_package_import_check
 import turicreate.util._file_util as file_util
 import os
 from copy import copy as _copy
@@ -103,7 +102,7 @@ def load_model(location):
                     "style_transfer",
                     "drawing_classifier",
                 ]:
-                    import turicreate.toolkits.libtctensorflow
+                    _minimal_package_import_check("turicreate.toolkits.libtctensorflow")
                 # this is a native model
                 return cls(saved_state["model"])
             else:
@@ -113,35 +112,35 @@ def load_model(location):
                 del model_data["model_version"]
 
                 if name == "activity_classifier":
-                    import turicreate.toolkits.libtctensorflow
+                    _minimal_package_import_check("turicreate.toolkits.libtctensorflow")
 
                     model = _extensions.activity_classifier()
                     model.import_from_custom_model(model_data, model_version)
                     return cls(model)
 
                 if name == "object_detector":
-                    import turicreate.toolkits.libtctensorflow
+                    _minimal_package_import_check("turicreate.toolkits.libtctensorflow")
 
                     model = _extensions.object_detector()
                     model.import_from_custom_model(model_data, model_version)
                     return cls(model)
 
                 if name == "style_transfer":
-                    import turicreate.toolkits.libtctensorflow
+                    _minimal_package_import_check("turicreate.toolkits.libtctensorflow")
 
                     model = _extensions.style_transfer()
                     model.import_from_custom_model(model_data, model_version)
                     return cls(model)
 
                 if name == "drawing_classifier":
-                    import turicreate.toolkits.libtctensorflow
+                    _minimal_package_import_check("turicreate.toolkits.libtctensorflow")
 
                     model = _extensions.drawing_classifier()
                     model.import_from_custom_model(model_data, model_version)
                     return cls(model)
 
                 if name == "one_shot_object_detector":
-                    import turicreate.toolkits.libtctensorflow
+                    _minimal_package_import_check("turicreate.toolkits.libtctensorflow")
 
                     od_cls = MODEL_NAME_MAP["object_detector"]
                     if "detector_model" in model_data["detector"]:

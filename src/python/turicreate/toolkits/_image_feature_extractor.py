@@ -8,6 +8,7 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 
 from ._pre_trained_models import _get_cache_dir
+from turicreate._deps.minimal_package import _minimal_package_import_check
 import turicreate.toolkits._tf_utils as _utils
 
 
@@ -72,7 +73,7 @@ class TensorFlowFeatureExtractor(ImageFeatureExtractor):
         # Suppresses verbosity to only errors
         _utils.suppress_tensorflow_warnings()
 
-        from tensorflow import keras
+        keras = _minimal_package_import_check("tensorflow.keras")
 
         self.gpu_policy = _utils.TensorFlowGPUPolicy()
         self.gpu_policy.start()
@@ -213,10 +214,10 @@ class TensorFlowFeatureExtractor(ImageFeatureExtractor):
         #     # Tell the worker thread to shut down.
         #     request_queue.put(None)
 
-        return state['out']
+        return state["out"]
 
     def get_coreml_model(self):
-        import coremltools
+        coremltools = _minimal_package_import_check("coremltools")
 
         model_path = self.ptModel.get_model_path("coreml")
         return coremltools.models.MLModel(model_path)

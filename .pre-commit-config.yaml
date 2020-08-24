@@ -12,6 +12,7 @@ repos:
   - id: check-yaml
   - id: check-added-large-files
   - id: flake8
+    args: [ "--config=tox.ini"]
 - repo: https://github.com/psf/black
   rev: 19.10b0
   hooks:

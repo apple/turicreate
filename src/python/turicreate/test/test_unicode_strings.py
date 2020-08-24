@@ -14,6 +14,10 @@ import six
 import unittest
 import turicreate as tc
 
+import pytest
+
+pytestmark = [pytest.mark.minimal]
+
 
 class UnicodeStringTest(unittest.TestCase):
     def test_unicode_column_accessor(self):

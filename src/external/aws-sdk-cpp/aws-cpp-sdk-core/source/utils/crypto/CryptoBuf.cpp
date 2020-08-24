@@ -1,5 +1,5 @@
 /*
-  * Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  * Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
   *
   * Licensed under the Apache License, Version 2.0 (the "License").
   * You may not use this file except in compliance with the License.
@@ -236,11 +236,11 @@ namespace Aws
                 }
             }
 
-            SymmetricCryptoBufSink::SymmetricCryptoBufSink(Aws::OStream& stream, SymmetricCipher& cipher, CipherMode cipherMode, size_t bufferSize)
+            SymmetricCryptoBufSink::SymmetricCryptoBufSink(Aws::OStream& stream, SymmetricCipher& cipher, CipherMode cipherMode, size_t bufferSize, int16_t blockOffset)
                     :
-                    m_osBuf(bufferSize), m_cipher(cipher), m_stream(stream), m_cipherMode(cipherMode), m_isFinalized(false),
-                    m_bufferSize(bufferSize)
+                    m_osBuf(bufferSize), m_cipher(cipher), m_stream(stream), m_cipherMode(cipherMode), m_isFinalized(false), m_blockOffset(blockOffset)
             {
+                assert(m_blockOffset < 16 && m_blockOffset >= 0);
                 char* outputBase = reinterpret_cast<char*>(m_osBuf.GetUnderlyingData());
                 setp(outputBase, outputBase + bufferSize - 1);
             }
@@ -303,7 +303,11 @@ namespace Aws
                     {
                         if(cryptoBuf.GetLength())
                         {
-                            m_stream.write(reinterpret_cast<char*>(cryptoBuf.GetUnderlyingData()), cryptoBuf.GetLength());
+                            //allow mid block decryption. We have to decrypt it, but we don't have to write it to the stream.
+                            //the assumption here is that tellp() will always be 0 or >= 16 bytes. The block offset should only 
+                            //be the offset of the first block read.
+                            auto blockOffset = m_stream.tellp() > m_blockOffset ? 0 : m_blockOffset;
+                            m_stream.write(reinterpret_cast<char*>(cryptoBuf.GetUnderlyingData() + blockOffset), cryptoBuf.GetLength() - blockOffset);
                         }
                         return true;
                     }

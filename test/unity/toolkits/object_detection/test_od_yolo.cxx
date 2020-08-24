@@ -138,7 +138,6 @@ BOOST_AUTO_TEST_CASE(test_add_tiny_darknet_yolo) {
   static constexpr size_t NUM_CLASSES = 6;
   static constexpr size_t NUM_PREDS = NUM_CLASSES + 5;  // 4 for bbox, 1 conf
 
-  const std::string prefix = "__test__";
   const std::vector<std::pair<float, float>> anchor_boxes = {
       {1.f, 2.f}, {1.f, 1.f}, {2.f, 1.f},
       {2.f, 4.f}, {2.f, 2.f}, {4.f, 2.f},
@@ -148,14 +147,19 @@ BOOST_AUTO_TEST_CASE(test_add_tiny_darknet_yolo) {
   };
 
   model_spec nn_spec;
-  add_yolo(&nn_spec, COORDINATES_NAME, CONFIDENCE_NAME, INPUT_NAME,
-           anchor_boxes, NUM_CLASSES, OUTPUT_GRID_SIZE, OUTPUT_GRID_SIZE,
-           prefix);
+
+  bool use_nms_layer = false;
+  float iou_threshold = 0.33;
+  float confidence_threshold = 0.001;
+
+  add_yolo(&nn_spec, COORDINATES_NAME, CONFIDENCE_NAME, INPUT_NAME, anchor_boxes, NUM_CLASSES,
+           use_nms_layer, iou_threshold, confidence_threshold, OUTPUT_GRID_SIZE, OUTPUT_GRID_SIZE);
 
   // The add_yolo function simply appends a mostly fixed sequence of 24 layers
   // to an existing model_spec. Assert that the resulting proto is what we want.
   // In theory, some of the layers could be reordered or have different names,
   // but it's much easier to test for exact equality.
+  const std::string prefix = "__tc_internal__";
 
   const CoreML::Specification::NeuralNetwork& nn = nn_spec.get_coreml_spec();
   TS_ASSERT_EQUALS(nn.layers_size(), 24);
@@ -336,24 +340,7 @@ BOOST_AUTO_TEST_CASE(test_add_tiny_darknet_yolo) {
   TS_ASSERT_EQUALS(boxes_out.permute().axis(2), 1);
   TS_ASSERT_EQUALS(boxes_out.permute().axis(3), 3);
 
-  const auto& coordinates = nn.layers(15);
-  TS_ASSERT_EQUALS(coordinates.input_size(), 1);
-  TS_ASSERT_EQUALS(coordinates.input(0), prefix + "boxes_out");
-  TS_ASSERT_EQUALS(coordinates.output_size(), 1);
-  TS_ASSERT_EQUALS(coordinates.output(0), COORDINATES_NAME);
-  TS_ASSERT_EQUALS(coordinates.scale().shapescale_size(), 3);
-  TS_ASSERT_EQUALS(coordinates.scale().shapescale(0),
-                   OUTPUT_GRID_AREA * anchor_boxes.size());
-  TS_ASSERT_EQUALS(coordinates.scale().shapescale(1), 4);
-  TS_ASSERT_EQUALS(coordinates.scale().shapescale(2), 1);
-  TS_ASSERT_EQUALS(coordinates.scale().scale().floatvalue_size(),
-                   OUTPUT_GRID_AREA * anchor_boxes.size() * 4 * 1);
-  for (int i = 0; i < coordinates.scale().scale().floatvalue_size(); ++i) {
-    TS_ASSERT_EQUALS(coordinates.scale().scale().floatvalue(i),
-                     1.f / OUTPUT_GRID_SIZE);
-  }
-
-  const auto& scores_sp = nn.layers(16);
+  const auto& scores_sp = nn.layers(15);
   TS_ASSERT_EQUALS(scores_sp.input_size(), 1);
   TS_ASSERT_EQUALS(scores_sp.input(0), prefix + "ymap_sp");
   TS_ASSERT_EQUALS(scores_sp.output_size(), 1);
@@ -364,14 +351,14 @@ BOOST_AUTO_TEST_CASE(test_add_tiny_darknet_yolo) {
   TS_ASSERT_EQUALS(scores_sp.slice().axis(),
                    CoreML::Specification::SliceLayerParams::CHANNEL_AXIS);
 
-  const auto& probs_sp = nn.layers(17);
+  const auto& probs_sp = nn.layers(16);
   TS_ASSERT_EQUALS(probs_sp.input_size(), 1);
   TS_ASSERT_EQUALS(probs_sp.input(0), prefix + "scores_sp");
   TS_ASSERT_EQUALS(probs_sp.output_size(), 1);
   TS_ASSERT_EQUALS(probs_sp.output(0), prefix + "probs_sp");
   TS_ASSERT(probs_sp.has_softmax());
 
-  const auto& logit_conf_sp = nn.layers(18);
+  const auto& logit_conf_sp = nn.layers(17);
   TS_ASSERT_EQUALS(logit_conf_sp.input_size(), 1);
   TS_ASSERT_EQUALS(logit_conf_sp.input(0), prefix + "ymap_sp");
   TS_ASSERT_EQUALS(logit_conf_sp.output_size(), 1);
@@ -382,14 +369,14 @@ BOOST_AUTO_TEST_CASE(test_add_tiny_darknet_yolo) {
   TS_ASSERT_EQUALS(logit_conf_sp.slice().axis(),
                    CoreML::Specification::SliceLayerParams::CHANNEL_AXIS);
 
-  const auto& conf_sp = nn.layers(19);
+  const auto& conf_sp = nn.layers(18);
   TS_ASSERT_EQUALS(conf_sp.input_size(), 1);
   TS_ASSERT_EQUALS(conf_sp.input(0), prefix + "logit_conf_sp");
   TS_ASSERT_EQUALS(conf_sp.output_size(), 1);
   TS_ASSERT_EQUALS(conf_sp.output(0), prefix + "conf_sp");
   TS_ASSERT(conf_sp.activation().has_sigmoid());
 
-  const auto& conf_tiled_sp = nn.layers(20);
+  const auto& conf_tiled_sp = nn.layers(19);
   TS_ASSERT_EQUALS(conf_tiled_sp.input_size(), NUM_CLASSES);
   for (int i = 0; i < static_cast<int>(NUM_CLASSES); ++i) {
     TS_ASSERT_EQUALS(conf_tiled_sp.input(i), prefix + "conf_sp");
@@ -399,7 +386,7 @@ BOOST_AUTO_TEST_CASE(test_add_tiny_darknet_yolo) {
   TS_ASSERT(conf_tiled_sp.has_concat());
   TS_ASSERT(!conf_tiled_sp.concat().sequenceconcat());
 
-  const auto& confprobs_sp = nn.layers(21);
+  const auto& confprobs_sp = nn.layers(20);
   TS_ASSERT_EQUALS(confprobs_sp.input_size(), 2);
   TS_ASSERT_EQUALS(confprobs_sp.input(0), prefix + "conf_tiled_sp");
   TS_ASSERT_EQUALS(confprobs_sp.input(1), prefix + "probs_sp");
@@ -407,7 +394,7 @@ BOOST_AUTO_TEST_CASE(test_add_tiny_darknet_yolo) {
   TS_ASSERT_EQUALS(confprobs_sp.output(0), prefix + "confprobs_sp");
   TS_ASSERT(confprobs_sp.has_multiply());
 
-  const auto& confprobs_transposed = nn.layers(22);
+  const auto& confprobs_transposed = nn.layers(21);
   TS_ASSERT_EQUALS(confprobs_transposed.input_size(), 1);
   TS_ASSERT_EQUALS(confprobs_transposed.input(0), prefix + "confprobs_sp");
   TS_ASSERT_EQUALS(confprobs_transposed.output_size(), 1);
@@ -420,16 +407,31 @@ BOOST_AUTO_TEST_CASE(test_add_tiny_darknet_yolo) {
                    OUTPUT_GRID_AREA * anchor_boxes.size());
   TS_ASSERT_EQUALS(confprobs_transposed.reshape().targetshape(3), 1);
 
-  const auto& confidence = nn.layers(23);
-  TS_ASSERT_EQUALS(confidence.input_size(), 1);
-  TS_ASSERT_EQUALS(confidence.input(0), prefix + "confprobs_transposed");
-  TS_ASSERT_EQUALS(confidence.output_size(), 1);
-  TS_ASSERT_EQUALS(confidence.output(0), CONFIDENCE_NAME);
-  TS_ASSERT_EQUALS(confidence.permute().axis_size(), 4);
-  TS_ASSERT_EQUALS(confidence.permute().axis(0), 0);
-  TS_ASSERT_EQUALS(confidence.permute().axis(1), 2);
-  TS_ASSERT_EQUALS(confidence.permute().axis(2), 1);
-  TS_ASSERT_EQUALS(confidence.permute().axis(3), 3);
+  const auto& coordinates = nn.layers(22);
+  TS_ASSERT_EQUALS(coordinates.input_size(), 1);
+  TS_ASSERT_EQUALS(coordinates.input(0), prefix + "boxes_out");
+  TS_ASSERT_EQUALS(coordinates.output_size(), 1);
+  TS_ASSERT_EQUALS(coordinates.output(0), COORDINATES_NAME);
+  TS_ASSERT_EQUALS(coordinates.scale().shapescale_size(), 3);
+  TS_ASSERT_EQUALS(coordinates.scale().shapescale(0), OUTPUT_GRID_AREA * anchor_boxes.size());
+  TS_ASSERT_EQUALS(coordinates.scale().shapescale(1), 4);
+  TS_ASSERT_EQUALS(coordinates.scale().shapescale(2), 1);
+  TS_ASSERT_EQUALS(coordinates.scale().scale().floatvalue_size(),
+                   OUTPUT_GRID_AREA * anchor_boxes.size() * 4 * 1);
+  for (int i = 0; i < coordinates.scale().scale().floatvalue_size(); ++i) {
+    TS_ASSERT_EQUALS(coordinates.scale().scale().floatvalue(i), 1.f / OUTPUT_GRID_SIZE);
+
+    const auto& confidence = nn.layers(23);
+    TS_ASSERT_EQUALS(confidence.input_size(), 1);
+    TS_ASSERT_EQUALS(confidence.input(0), prefix + "confprobs_transposed");
+    TS_ASSERT_EQUALS(confidence.output_size(), 1);
+    TS_ASSERT_EQUALS(confidence.output(0), CONFIDENCE_NAME);
+    TS_ASSERT_EQUALS(confidence.permute().axis_size(), 4);
+    TS_ASSERT_EQUALS(confidence.permute().axis(0), 0);
+    TS_ASSERT_EQUALS(confidence.permute().axis(1), 2);
+    TS_ASSERT_EQUALS(confidence.permute().axis(2), 1);
+    TS_ASSERT_EQUALS(confidence.permute().axis(3), 3);
+  }
 }
 
 }  // namespace

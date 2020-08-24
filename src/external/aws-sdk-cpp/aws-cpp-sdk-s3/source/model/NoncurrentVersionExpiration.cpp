@@ -1,5 +1,5 @@
-/*
-* Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+﻿/*
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 * express or implied. See the License for the specific language governing
 * permissions and limitations under the License.
 */
+
 #include <aws/s3/model/NoncurrentVersionExpiration.h>
 #include <aws/core/utils/xml/XmlSerializer.h>
 #include <aws/core/utils/StringUtils.h>
@@ -51,7 +52,7 @@ NoncurrentVersionExpiration& NoncurrentVersionExpiration::operator =(const XmlNo
     XmlNode noncurrentDaysNode = resultNode.FirstChild("NoncurrentDays");
     if(!noncurrentDaysNode.IsNull())
     {
-      m_noncurrentDays = StringUtils::ConvertToInt32(StringUtils::Trim(noncurrentDaysNode.GetText().c_str()).c_str());
+      m_noncurrentDays = StringUtils::ConvertToInt32(StringUtils::Trim(Aws::Utils::Xml::DecodeEscapedXmlText(noncurrentDaysNode.GetText()).c_str()).c_str());
       m_noncurrentDaysHasBeenSet = true;
     }
   }
@@ -65,9 +66,9 @@ void NoncurrentVersionExpiration::AddToNode(XmlNode& parentNode) const
   if(m_noncurrentDaysHasBeenSet)
   {
    XmlNode noncurrentDaysNode = parentNode.CreateChildElement("NoncurrentDays");
-  ss << m_noncurrentDays;
+   ss << m_noncurrentDays;
    noncurrentDaysNode.SetText(ss.str());
-  ss.str("");
+   ss.str("");
   }
 
 }

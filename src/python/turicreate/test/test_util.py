@@ -19,6 +19,10 @@ from ..util import get_turicreate_object_type
 from ..config import get_runtime_config, set_runtime_config
 from . import util
 
+import pytest
+
+pytestmark = [pytest.mark.minimal]
+
 
 class UtilTests(unittest.TestCase):
     def test_archive_utils(self):
@@ -239,3 +243,32 @@ class UtilTests(unittest.TestCase):
         self.assertTrue(location.startswith(tmp_root))
         self.assertTrue(isinstance(location, str))
         self.assertTrue(os.path.basename(location).startswith(prefix))
+
+    def test_alternate_ssl_path(self):
+        default_ssl_cert_path = get_runtime_config()[
+            "TURI_FILEIO_ALTERNATIVE_SSL_CERT_FILE"
+        ]
+
+        tmp = tempfile.mkdtemp(prefix="test_gl_util")
+        tmp_relative_path = os.path.relpath(tmp)
+        incorrect_path = "/this_file_does_not_exist"
+
+        try:
+            self.assertRaises(
+                ValueError,
+                set_runtime_config,
+                "TURI_FILEIO_ALTERNATIVE_SSL_CERT_FILE",
+                incorrect_path,
+            )
+            set_runtime_config(
+                "TURI_FILEIO_ALTERNATIVE_SSL_CERT_FILE", tmp_relative_path
+            )
+            alternate_ssl_path = get_runtime_config()[
+                "TURI_FILEIO_ALTERNATIVE_SSL_CERT_FILE"
+            ]
+            self.assertTrue(alternate_ssl_path == tmp)
+        finally:
+            shutil.rmtree(tmp)
+            set_runtime_config(
+                "TURI_FILEIO_ALTERNATIVE_SSL_CERT_FILE", default_ssl_cert_path
+            )

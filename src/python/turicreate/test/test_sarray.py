@@ -1037,6 +1037,64 @@ class SArrayTest(unittest.TestCase):
         with self.assertRaises(RuntimeError):
             a.mean()
 
+    def test_median(self):
+
+        def check_correctness(l):
+            sa = SArray(l)
+            l = list(filter(lambda x: x is not None, l))
+            if(len(l) % 2 == 1):
+                self.assertAlmostEqual(sa.median(), np.median(l))
+            else:
+                l = sorted(l)
+                self.assertTrue(l[(len(l)//2)-1] <= sa.median() <= l[len(l)//2])
+
+        def check_approximate_correctness(l):
+            sa = SArray(l)
+            approx = sa.median(approximate=True)
+            # The approximate answer should be within 5%
+            if(len(l) % 2 == 1):
+                exact = np.median(l)
+                fuzzy_lower_bound = exact - (abs(exact) * 0.5)
+                fuzzy_upper_bound = exact + (abs(exact) * 0.5)
+            else:
+                l = sorted(l)
+                lower, upper = l[(len(l)//2)-1], l[len(l)//2]
+                fuzzy_lower_bound = lower - (abs(lower) * 0.5)
+                fuzzy_upper_bound = upper + (abs(upper) * 0.5)
+            self.assertTrue(fuzzy_lower_bound <= approx <= fuzzy_upper_bound)
+
+        check_correctness([10, 201, -3])   # int, odd length
+        check_correctness([12, 3, -1, 5])  # int, even length
+        check_approximate_correctness([1, 30, 99, 0, 10])  # int, odd length
+        check_approximate_correctness([-4, 10, -1, -100])  # int, even length
+
+        check_correctness([-2.22, 0.9, 34.])  # float, odd length
+        check_correctness([2.3, -3.14])       # float, even length
+        check_approximate_correctness([99.9, -48.3, -14.3])     # float, odd length
+        check_approximate_correctness([-10.1, 14.8, 12.99, 0.]) # float, even length
+
+        # Bigger test
+        import random
+        a = [random.randint(-20000, 20000) for _ in range(10000)]
+        check_correctness(a)
+        check_approximate_correctness(a)
+        check_correctness(a + [1])
+        check_approximate_correctness(a + [1])
+
+        # Test SArray with Nones
+        a += [None] * 20
+        random.shuffle(a)
+        check_correctness(a)
+
+        # Empty input
+        self.assertIsNone(SArray().median())
+
+        # Bad inputs
+        with self.assertRaises(TypeError):
+            SArray([1]).median(approximate="this is not a bool")
+        with self.assertRaises(RuntimeError):
+            SArray(["this", "is", "not", "numeric"]).median()
+
     def test_max_min_sum_mean_missing(self):
         # negative and positive
         s = SArray([-2, 0, None, None, None], int)
@@ -3461,6 +3519,20 @@ class SArrayTest(unittest.TestCase):
         (train, test) = sa.random_split(0.8, seed=12423)
         self.assertEqual(list(train), [0, 1, 2, 3, 5, 7, 8, 9])
         self.assertEqual(list(test), [4, 6])
+
+    def test_shuffle(self):
+        nums = list(range(10))
+        sa = SArray(nums)
+
+        shuffled_sa = sa.shuffle()
+
+        self.assertEqual(len(shuffled_sa), len(sa))
+        self.assertEqual(sa.dtype, shuffled_sa.dtype)
+        # Make sure entries match
+        for i in shuffled_sa:
+            self.assertTrue(i in nums)
+            nums.remove(i)
+        self.assertTrue(len(nums) == 0)
 
     def test_copy(self):
         from copy import copy

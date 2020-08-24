@@ -124,6 +124,9 @@ extern ArgMaxLayerParamsDefaultTypeInternal _ArgMaxLayerParams_default_instance_
 class ArgMinLayerParams;
 class ArgMinLayerParamsDefaultTypeInternal;
 extern ArgMinLayerParamsDefaultTypeInternal _ArgMinLayerParams_default_instance_;
+class ArgSortLayerParams;
+class ArgSortLayerParamsDefaultTypeInternal;
+extern ArgSortLayerParamsDefaultTypeInternal _ArgSortLayerParams_default_instance_;
 class ArrayFeatureExtractor;
 class ArrayFeatureExtractorDefaultTypeInternal;
 extern ArrayFeatureExtractorDefaultTypeInternal _ArrayFeatureExtractor_default_instance_;
@@ -214,6 +217,9 @@ extern CategoricalMappingDefaultTypeInternal _CategoricalMapping_default_instanc
 class CeilLayerParams;
 class CeilLayerParamsDefaultTypeInternal;
 extern CeilLayerParamsDefaultTypeInternal _CeilLayerParams_default_instance_;
+class ClampedReLULayerParams;
+class ClampedReLULayerParamsDefaultTypeInternal;
+extern ClampedReLULayerParamsDefaultTypeInternal _ClampedReLULayerParams_default_instance_;
 class ClipLayerParams;
 class ClipLayerParamsDefaultTypeInternal;
 extern ClipLayerParamsDefaultTypeInternal _ClipLayerParams_default_instance_;
@@ -229,6 +235,9 @@ extern ConcatNDLayerParamsDefaultTypeInternal _ConcatNDLayerParams_default_insta
 class ConstantPaddingLayerParams;
 class ConstantPaddingLayerParamsDefaultTypeInternal;
 extern ConstantPaddingLayerParamsDefaultTypeInternal _ConstantPaddingLayerParams_default_instance_;
+class Convolution3DLayerParams;
+class Convolution3DLayerParamsDefaultTypeInternal;
+extern Convolution3DLayerParamsDefaultTypeInternal _Convolution3DLayerParams_default_instance_;
 class ConvolutionLayerParams;
 class ConvolutionLayerParamsDefaultTypeInternal;
 extern ConvolutionLayerParamsDefaultTypeInternal _ConvolutionLayerParams_default_instance_;
@@ -247,6 +256,9 @@ extern CropLayerParamsDefaultTypeInternal _CropLayerParams_default_instance_;
 class CropResizeLayerParams;
 class CropResizeLayerParamsDefaultTypeInternal;
 extern CropResizeLayerParamsDefaultTypeInternal _CropResizeLayerParams_default_instance_;
+class CumSumLayerParams;
+class CumSumLayerParamsDefaultTypeInternal;
+extern CumSumLayerParamsDefaultTypeInternal _CumSumLayerParams_default_instance_;
 class CustomLayerParams;
 class CustomLayerParamsDefaultTypeInternal;
 extern CustomLayerParamsDefaultTypeInternal _CustomLayerParams_default_instance_;
@@ -379,6 +391,9 @@ extern GeluLayerParamsDefaultTypeInternal _GeluLayerParams_default_instance_;
 class GetShapeLayerParams;
 class GetShapeLayerParamsDefaultTypeInternal;
 extern GetShapeLayerParamsDefaultTypeInternal _GetShapeLayerParams_default_instance_;
+class GlobalPooling3DLayerParams;
+class GlobalPooling3DLayerParamsDefaultTypeInternal;
+extern GlobalPooling3DLayerParamsDefaultTypeInternal _GlobalPooling3DLayerParams_default_instance_;
 class GreaterEqualLayerParams;
 class GreaterEqualLayerParamsDefaultTypeInternal;
 extern GreaterEqualLayerParamsDefaultTypeInternal _GreaterEqualLayerParams_default_instance_;
@@ -610,6 +625,9 @@ extern NotEqualLayerParamsDefaultTypeInternal _NotEqualLayerParams_default_insta
 class OneHotEncoder;
 class OneHotEncoderDefaultTypeInternal;
 extern OneHotEncoderDefaultTypeInternal _OneHotEncoder_default_instance_;
+class OneHotLayerParams;
+class OneHotLayerParamsDefaultTypeInternal;
+extern OneHotLayerParamsDefaultTypeInternal _OneHotLayerParams_default_instance_;
 class Optimizer;
 class OptimizerDefaultTypeInternal;
 extern OptimizerDefaultTypeInternal _Optimizer_default_instance_;
@@ -640,6 +658,9 @@ extern PipelineRegressorDefaultTypeInternal _PipelineRegressor_default_instance_
 class PolyKernel;
 class PolyKernelDefaultTypeInternal;
 extern PolyKernelDefaultTypeInternal _PolyKernel_default_instance_;
+class Pooling3DLayerParams;
+class Pooling3DLayerParamsDefaultTypeInternal;
+extern Pooling3DLayerParamsDefaultTypeInternal _Pooling3DLayerParams_default_instance_;
 class PoolingLayerParams;
 class PoolingLayerParamsDefaultTypeInternal;
 extern PoolingLayerParamsDefaultTypeInternal _PoolingLayerParams_default_instance_;
@@ -781,6 +802,9 @@ extern SequenceFeatureTypeDefaultTypeInternal _SequenceFeatureType_default_insta
 class SequenceRepeatLayerParams;
 class SequenceRepeatLayerParamsDefaultTypeInternal;
 extern SequenceRepeatLayerParamsDefaultTypeInternal _SequenceRepeatLayerParams_default_instance_;
+class SerializedModel;
+class SerializedModelDefaultTypeInternal;
+extern SerializedModelDefaultTypeInternal _SerializedModel_default_instance_;
 class SigmoidKernel;
 class SigmoidKernelDefaultTypeInternal;
 extern SigmoidKernelDefaultTypeInternal _SigmoidKernel_default_instance_;
@@ -802,6 +826,9 @@ extern SinhLayerParamsDefaultTypeInternal _SinhLayerParams_default_instance_;
 class SizeRange;
 class SizeRangeDefaultTypeInternal;
 extern SizeRangeDefaultTypeInternal _SizeRange_default_instance_;
+class SliceBySizeLayerParams;
+class SliceBySizeLayerParamsDefaultTypeInternal;
+extern SliceBySizeLayerParamsDefaultTypeInternal _SliceBySizeLayerParams_default_instance_;
 class SliceDynamicLayerParams;
 class SliceDynamicLayerParamsDefaultTypeInternal;
 extern SliceDynamicLayerParamsDefaultTypeInternal _SliceDynamicLayerParams_default_instance_;
@@ -950,6 +977,9 @@ extern TextClassifierDefaultTypeInternal _TextClassifier_default_instance_;
 class VisionFeaturePrint;
 class VisionFeaturePrintDefaultTypeInternal;
 extern VisionFeaturePrintDefaultTypeInternal _VisionFeaturePrint_default_instance_;
+class VisionFeaturePrint_Objects;
+class VisionFeaturePrint_ObjectsDefaultTypeInternal;
+extern VisionFeaturePrint_ObjectsDefaultTypeInternal _VisionFeaturePrint_Objects_default_instance_;
 class VisionFeaturePrint_Scene;
 class VisionFeaturePrint_SceneDefaultTypeInternal;
 extern VisionFeaturePrint_SceneDefaultTypeInternal _VisionFeaturePrint_Scene_default_instance_;
@@ -1670,6 +1700,107 @@ class ModelDescription : public ::google::protobuf::MessageLite /* @@protoc_inse
 };
 // -------------------------------------------------------------------
 
+class SerializedModel : public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:CoreML.Specification.SerializedModel) */ {
+ public:
+  SerializedModel();
+  virtual ~SerializedModel();
+
+  SerializedModel(const SerializedModel& from);
+
+  inline SerializedModel& operator=(const SerializedModel& from) {
+    CopyFrom(from);
+    return *this;
+  }
+
+  static const SerializedModel& default_instance();
+
+  static inline const SerializedModel* internal_default_instance() {
+    return reinterpret_cast<const SerializedModel*>(
+               &_SerializedModel_default_instance_);
+  }
+  static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
+    7;
+
+  void Swap(SerializedModel* other);
+
+  // implements Message ----------------------------------------------
+
+  inline SerializedModel* New() const PROTOBUF_FINAL { return New(NULL); }
+
+  SerializedModel* New(::google::protobuf::Arena* arena) const PROTOBUF_FINAL;
+  void CheckTypeAndMergeFrom(const ::google::protobuf::MessageLite& from)
+    PROTOBUF_FINAL;
+  void CopyFrom(const SerializedModel& from);
+  void MergeFrom(const SerializedModel& from);
+  void Clear() PROTOBUF_FINAL;
+  bool IsInitialized() const PROTOBUF_FINAL;
+
+  size_t ByteSizeLong() const PROTOBUF_FINAL;
+  bool MergePartialFromCodedStream(
+      ::google::protobuf::io::CodedInputStream* input) PROTOBUF_FINAL;
+  void SerializeWithCachedSizes(
+      ::google::protobuf::io::CodedOutputStream* output) const PROTOBUF_FINAL;
+  void DiscardUnknownFields();
+  int GetCachedSize() const PROTOBUF_FINAL { return _cached_size_; }
+  private:
+  void SharedCtor();
+  void SharedDtor();
+  void SetCachedSize(int size) const;
+  void InternalSwap(SerializedModel* other);
+  private:
+  inline ::google::protobuf::Arena* GetArenaNoVirtual() const {
+    return NULL;
+  }
+  inline void* MaybeArenaPtr() const {
+    return NULL;
+  }
+  public:
+
+  ::std::string GetTypeName() const PROTOBUF_FINAL;
+
+  // nested types ----------------------------------------------------
+
+  // accessors -------------------------------------------------------
+
+  // string identifier = 1;
+  void clear_identifier();
+  static const int kIdentifierFieldNumber = 1;
+  const ::std::string& identifier() const;
+  void set_identifier(const ::std::string& value);
+  #if LANG_CXX11
+  void set_identifier(::std::string&& value);
+  #endif
+  void set_identifier(const char* value);
+  void set_identifier(const char* value, size_t size);
+  ::std::string* mutable_identifier();
+  ::std::string* release_identifier();
+  void set_allocated_identifier(::std::string* identifier);
+
+  // bytes model = 2;
+  void clear_model();
+  static const int kModelFieldNumber = 2;
+  const ::std::string& model() const;
+  void set_model(const ::std::string& value);
+  #if LANG_CXX11
+  void set_model(::std::string&& value);
+  #endif
+  void set_model(const char* value);
+  void set_model(const void* value, size_t size);
+  ::std::string* mutable_model();
+  ::std::string* release_model();
+  void set_allocated_model(::std::string* model);
+
+  // @@protoc_insertion_point(class_scope:CoreML.Specification.SerializedModel)
+ private:
+
+  ::google::protobuf::internal::InternalMetadataWithArenaLite _internal_metadata_;
+  ::google::protobuf::internal::ArenaStringPtr identifier_;
+  ::google::protobuf::internal::ArenaStringPtr model_;
+  mutable int _cached_size_;
+  friend struct protobuf_Model_2eproto::TableStruct;
+};
+// -------------------------------------------------------------------
+
 class Model : public ::google::protobuf::MessageLite /* @@protoc_insertion_point(class_definition:CoreML.Specification.Model) */ {
  public:
   Model();
@@ -1718,6 +1849,7 @@ class Model : public ::google::protobuf::MessageLite /* @@protoc_insertion_point
     kSoundAnalysisPreprocessing = 2003,
     kGazetteer = 2004,
     kWordEmbedding = 2005,
+    kSerializedModel = 3000,
     TYPE_NOT_SET = 0,
   };
 
@@ -1726,7 +1858,7 @@ class Model : public ::google::protobuf::MessageLite /* @@protoc_insertion_point
                &_Model_default_instance_);
   }
   static PROTOBUF_CONSTEXPR int const kIndexInFileMessages =
-    7;
+    8;
 
   void Swap(Model* other);
 
@@ -2087,6 +2219,15 @@ class Model : public ::google::protobuf::MessageLite /* @@protoc_insertion_point
   ::CoreML::Specification::CoreMLModels::WordEmbedding* release_wordembedding();
   void set_allocated_wordembedding(::CoreML::Specification::CoreMLModels::WordEmbedding* wordembedding);
 
+  // .CoreML.Specification.SerializedModel serializedModel = 3000;
+  bool has_serializedmodel() const;
+  void clear_serializedmodel();
+  static const int kSerializedModelFieldNumber = 3000;
+  const ::CoreML::Specification::SerializedModel& serializedmodel() const;
+  ::CoreML::Specification::SerializedModel* mutable_serializedmodel();
+  ::CoreML::Specification::SerializedModel* release_serializedmodel();
+  void set_allocated_serializedmodel(::CoreML::Specification::SerializedModel* serializedmodel);
+
   TypeCase Type_case() const;
   // @@protoc_insertion_point(class_scope:CoreML.Specification.Model)
  private:
@@ -2123,6 +2264,7 @@ class Model : public ::google::protobuf::MessageLite /* @@protoc_insertion_point
   void set_has_soundanalysispreprocessing();
   void set_has_gazetteer();
   void set_has_wordembedding();
+  void set_has_serializedmodel();
 
   inline bool has_Type() const;
   void clear_Type();
@@ -2167,6 +2309,7 @@ class Model : public ::google::protobuf::MessageLite /* @@protoc_insertion_point
     ::CoreML::Specification::CoreMLModels::SoundAnalysisPreprocessing* soundanalysispreprocessing_;
     ::CoreML::Specification::CoreMLModels::Gazetteer* gazetteer_;
     ::CoreML::Specification::CoreMLModels::WordEmbedding* wordembedding_;
+    ::CoreML::Specification::SerializedModel* serializedmodel_;
   } Type_;
   mutable int _cached_size_;
   ::google::protobuf::uint32 _oneof_case_[1];
@@ -2988,6 +3131,116 @@ inline void ModelDescription::set_allocated_metadata(::CoreML::Specification::Me
     
   }
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.ModelDescription.metadata)
+}
+
+// -------------------------------------------------------------------
+
+// SerializedModel
+
+// string identifier = 1;
+inline void SerializedModel::clear_identifier() {
+  identifier_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline const ::std::string& SerializedModel::identifier() const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.SerializedModel.identifier)
+  return identifier_.GetNoArena();
+}
+inline void SerializedModel::set_identifier(const ::std::string& value) {
+  
+  identifier_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:CoreML.Specification.SerializedModel.identifier)
+}
+#if LANG_CXX11
+inline void SerializedModel::set_identifier(::std::string&& value) {
+  
+  identifier_.SetNoArena(
+    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:CoreML.Specification.SerializedModel.identifier)
+}
+#endif
+inline void SerializedModel::set_identifier(const char* value) {
+  GOOGLE_DCHECK(value != NULL);
+  
+  identifier_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:CoreML.Specification.SerializedModel.identifier)
+}
+inline void SerializedModel::set_identifier(const char* value, size_t size) {
+  
+  identifier_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:CoreML.Specification.SerializedModel.identifier)
+}
+inline ::std::string* SerializedModel::mutable_identifier() {
+  
+  // @@protoc_insertion_point(field_mutable:CoreML.Specification.SerializedModel.identifier)
+  return identifier_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* SerializedModel::release_identifier() {
+  // @@protoc_insertion_point(field_release:CoreML.Specification.SerializedModel.identifier)
+  
+  return identifier_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void SerializedModel::set_allocated_identifier(::std::string* identifier) {
+  if (identifier != NULL) {
+    
+  } else {
+    
+  }
+  identifier_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), identifier);
+  // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.SerializedModel.identifier)
+}
+
+// bytes model = 2;
+inline void SerializedModel::clear_model() {
+  model_.ClearToEmptyNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline const ::std::string& SerializedModel::model() const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.SerializedModel.model)
+  return model_.GetNoArena();
+}
+inline void SerializedModel::set_model(const ::std::string& value) {
+  
+  model_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), value);
+  // @@protoc_insertion_point(field_set:CoreML.Specification.SerializedModel.model)
+}
+#if LANG_CXX11
+inline void SerializedModel::set_model(::std::string&& value) {
+  
+  model_.SetNoArena(
+    &::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::move(value));
+  // @@protoc_insertion_point(field_set_rvalue:CoreML.Specification.SerializedModel.model)
+}
+#endif
+inline void SerializedModel::set_model(const char* value) {
+  GOOGLE_DCHECK(value != NULL);
+  
+  model_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), ::std::string(value));
+  // @@protoc_insertion_point(field_set_char:CoreML.Specification.SerializedModel.model)
+}
+inline void SerializedModel::set_model(const void* value, size_t size) {
+  
+  model_.SetNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(),
+      ::std::string(reinterpret_cast<const char*>(value), size));
+  // @@protoc_insertion_point(field_set_pointer:CoreML.Specification.SerializedModel.model)
+}
+inline ::std::string* SerializedModel::mutable_model() {
+  
+  // @@protoc_insertion_point(field_mutable:CoreML.Specification.SerializedModel.model)
+  return model_.MutableNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline ::std::string* SerializedModel::release_model() {
+  // @@protoc_insertion_point(field_release:CoreML.Specification.SerializedModel.model)
+  
+  return model_.ReleaseNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited());
+}
+inline void SerializedModel::set_allocated_model(::std::string* model) {
+  if (model != NULL) {
+    
+  } else {
+    
+  }
+  model_.SetAllocatedNoArena(&::google::protobuf::internal::GetEmptyStringAlreadyInited(), model);
+  // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.SerializedModel.model)
 }
 
 // -------------------------------------------------------------------
@@ -4645,6 +4898,54 @@ inline void Model::set_allocated_wordembedding(::CoreML::Specification::CoreMLMo
   // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.Model.wordEmbedding)
 }
 
+// .CoreML.Specification.SerializedModel serializedModel = 3000;
+inline bool Model::has_serializedmodel() const {
+  return Type_case() == kSerializedModel;
+}
+inline void Model::set_has_serializedmodel() {
+  _oneof_case_[0] = kSerializedModel;
+}
+inline void Model::clear_serializedmodel() {
+  if (has_serializedmodel()) {
+    delete Type_.serializedmodel_;
+    clear_has_Type();
+  }
+}
+inline  const ::CoreML::Specification::SerializedModel& Model::serializedmodel() const {
+  // @@protoc_insertion_point(field_get:CoreML.Specification.Model.serializedModel)
+  return has_serializedmodel()
+      ? *Type_.serializedmodel_
+      : ::CoreML::Specification::SerializedModel::default_instance();
+}
+inline ::CoreML::Specification::SerializedModel* Model::mutable_serializedmodel() {
+  if (!has_serializedmodel()) {
+    clear_Type();
+    set_has_serializedmodel();
+    Type_.serializedmodel_ = new ::CoreML::Specification::SerializedModel;
+  }
+  // @@protoc_insertion_point(field_mutable:CoreML.Specification.Model.serializedModel)
+  return Type_.serializedmodel_;
+}
+inline ::CoreML::Specification::SerializedModel* Model::release_serializedmodel() {
+  // @@protoc_insertion_point(field_release:CoreML.Specification.Model.serializedModel)
+  if (has_serializedmodel()) {
+    clear_has_Type();
+    ::CoreML::Specification::SerializedModel* temp = Type_.serializedmodel_;
+    Type_.serializedmodel_ = NULL;
+    return temp;
+  } else {
+    return NULL;
+  }
+}
+inline void Model::set_allocated_serializedmodel(::CoreML::Specification::SerializedModel* serializedmodel) {
+  clear_Type();
+  if (serializedmodel) {
+    set_has_serializedmodel();
+    Type_.serializedmodel_ = serializedmodel;
+  }
+  // @@protoc_insertion_point(field_set_allocated:CoreML.Specification.Model.serializedModel)
+}
+
 inline bool Model::has_Type() const {
   return Type_case() != TYPE_NOT_SET;
 }
@@ -4655,6 +4956,8 @@ inline Model::TypeCase Model::Type_case() const {
   return Model::TypeCase(_oneof_case_[0]);
 }
 #endif  // !PROTOBUF_INLINE_NOT_IN_HEADERS
+// -------------------------------------------------------------------
+
 // -------------------------------------------------------------------
 
 // -------------------------------------------------------------------

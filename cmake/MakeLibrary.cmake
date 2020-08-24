@@ -1,8 +1,7 @@
-
-# This is an internal function and should not be used
-# Usage:
+# This is an internal function and should not be used Usage:
 # make_target_impl(target compile_flags sources requirements is_library SHARED)
 #
+# cmake-format: off
 # Example:
 # make_target_impl(fileio "-fPIC"
 #                   "asyncurl.cpp;sysutils.cpp"
@@ -11,17 +10,26 @@
 #
 # This generates a target library/binary with the given name. The optional
 # compile_flags are appended to the target compile flags. "-fPIC" is ALWAYS
-# added for libraries. "sources" is a list listing all the library/binary
-# source files.  "requirements" is a list listing all the libraries, and
-# builtins this target depends on. IS_LIBRARY must be "TRUE" or "FALSE"
+# added for libraries. "sources" is a list listing all the library/binary source
+# files.  "requirements" is a list listing all the libraries, and builtins this
+# target depends on. IS_LIBRARY must be "TRUE" or "FALSE"
 #
 # if DYNAMIC is true, a dynamic library is built.
 #
-# Boost, pthread is always added as a default dependency. 
-# when possible.
-macro(make_target_impl NAME FLAGS REQUIREMENTS IS_LIBRARY SHARED SHARED_ALL_DEFINED OBJECT)
+# Boost, pthread is always added as a default dependency. when possible.
+# cmake-format: on
+
+macro(
+  make_target_impl
+  NAME
+  FLAGS
+  REQUIREMENTS
+  IS_LIBRARY
+  SHARED
+  SHARED_ALL_DEFINED
+  OBJECT)
   # create the target
-  if (${IS_LIBRARY})
+  if(${IS_LIBRARY})
     message(STATUS "Adding Library: ${NAME}")
   else()
     message(STATUS "Adding Executable: ${NAME}")
@@ -33,46 +41,56 @@ macro(make_target_impl NAME FLAGS REQUIREMENTS IS_LIBRARY SHARED SHARED_ALL_DEFI
 
   # add a custom property to the target listing its dependencies
   if(NOT ${FLAGS} STREQUAL "")
-    set_property(TARGET ${NAME} APPEND_STRING PROPERTY COMPILE_FLAGS " ${FLAGS}")
+    set_property(TARGET ${NAME} APPEND_STRING PROPERTY COMPILE_FLAGS
+                                                       " ${FLAGS}")
   endif()
-  if (${IS_LIBRARY})
-    if (NOT WIN32)
-      #windows is always fPIC
+  if(${IS_LIBRARY})
+    if(NOT WIN32)
+      # windows is always fPIC
       set_property(TARGET ${NAME} APPEND_STRING PROPERTY COMPILE_FLAGS " -fPIC")
     endif()
-    if (APPLE)
-      if (${SHARED})
-        if (NOT ${SHARED_ALL_DEFINED})
-          set_property(TARGET ${NAME} APPEND_STRING PROPERTY LINK_FLAGS " -undefined dynamic_lookup")
+    if(APPLE)
+      if(${SHARED})
+        if(NOT ${SHARED_ALL_DEFINED})
+          set_property(TARGET ${NAME} APPEND_STRING
+                       PROPERTY LINK_FLAGS " -undefined dynamic_lookup")
         endif()
       endif()
     endif()
   endif()
 
-  if (${IS_LIBRARY})
+  if(${IS_LIBRARY})
     if(${SHARED})
       target_link_libraries(${NAME} PRIVATE ${REQUIREMENTS})
     elseif(${OBJECT})
       # TODO we can link the requirements from here when target_link_libraries
-      # works with OBJECT library targets (requires CMake 3.12)
-      # See https://gitlab.kitware.com/cmake/cmake/issues/14778
-      # For now, do nothing.
+      # works with OBJECT library targets (requires CMake 3.12) See
+      # https://gitlab.kitware.com/cmake/cmake/issues/14778 For now, do nothing.
     else()
       target_link_libraries(${NAME} PUBLIC ${REQUIREMENTS})
     endif()
   else()
     target_link_libraries(${NAME} PUBLIC ${REQUIREMENTS})
   endif()
-    
-  # Ensure dependencies are tracked in order to make sure compilation order matters.
-  add_dependencies(${NAME} "${REQUIREMENTS}")
-    
+
+  # Ensure dependencies are tracked in order to make sure compilation order
+  # matters.
+  if(REQUIREMENTS)
+    add_dependencies(${NAME} ${REQUIREMENTS})
+  endif()
+
   # make sure dependencies are always built first
-  add_dependencies(${NAME} "${_TC_EXTERNAL_DEPENDENCIES}")
-  add_dependencies(${NAME} external_dependencies)
+  if(TC_EXTERNAL_DEPENDENCIES)
+    add_dependencies(${NAME} ${TC_EXTERNAL_DEPENDENCIES})
+  endif()
+
+  if(external_dependencies)
+    add_dependencies(${NAME} external_dependencies)
+  endif()
+
 endmacro()
 
-
+# cmake-format: off
 # This is an external function
 # Usage:
 #    make_library(NAME target
@@ -116,15 +134,24 @@ endmacro()
 #
 # Boost, pthread is always added as a default dependency.
 # when possible.
+# cmake-format: on
+
 macro(make_library NAME)
   set(options SHARED EXTERNAL_VISIBILITY SHARED_ALL_DEFINED DEAD_STRIP OBJECT)
-  set(one_value_args COMPILE_FLAGS OUTPUT_NAME EXPORT_LINUX_MAP_FILE EXPORT_OSX_MAP_FILE)
+  set(one_value_args COMPILE_FLAGS OUTPUT_NAME EXPORT_LINUX_MAP_FILE
+                     EXPORT_OSX_MAP_FILE)
   set(multi_value_args
-    SOURCES REQUIRES MAC_REQUIRES LINUX_REQUIRES
-    COMPILE_FLAGS_EXTRA COMPILE_FLAGS_EXTRA_CLANG COMPILE_FLAGS_EXTRA_GCC)
- CMAKE_PARSE_ARGUMENTS(make_library "${options}" "${one_value_args}" "${multi_value_args}" ${ARGN})
+      SOURCES
+      REQUIRES
+      MAC_REQUIRES
+      LINUX_REQUIRES
+      COMPILE_FLAGS_EXTRA
+      COMPILE_FLAGS_EXTRA_CLANG
+      COMPILE_FLAGS_EXTRA_GCC)
+  cmake_parse_arguments(make_library "${options}" "${one_value_args}"
+                        "${multi_value_args}" ${ARGN})
   if(NOT make_library_SOURCES)
-    MESSAGE(FATAL_ERROR "make_library call with no sources")
+    message(FATAL_ERROR "make_library call with no sources")
   endif()
 
   if(TC_DISABLE_OBJECT_BUILDS)
@@ -143,17 +170,19 @@ macro(make_library NAME)
     endforeach()
   endif()
 
-  if (APPLE)
-    if (make_library_MAC_REQUIRES)
-      set(make_library_REQUIRES ${make_library_REQUIRES} ${make_library_MAC_REQUIRES})
+  if(APPLE)
+    if(make_library_MAC_REQUIRES)
+      set(make_library_REQUIRES ${make_library_REQUIRES}
+                                ${make_library_MAC_REQUIRES})
     endif()
   else()
-    if (make_library_LINUX_REQUIRES)
-      set(make_library_REQUIRES ${make_library_REQUIRES} ${make_library_LINUX_REQUIRES})
+    if(make_library_LINUX_REQUIRES)
+      set(make_library_REQUIRES ${make_library_REQUIRES}
+                                ${make_library_LINUX_REQUIRES})
     endif()
   endif()
 
-  if (${make_library_SHARED})
+  if(${make_library_SHARED})
     add_library(${NAME} SHARED ${make_library_SOURCES})
   elseif(${make_library_OBJECT})
     add_library(${NAME} OBJECT ${make_library_SOURCES})
@@ -161,73 +190,93 @@ macro(make_library NAME)
     add_library(${NAME} STATIC ${make_library_SOURCES})
   endif()
 
-  make_target_impl("${NAME}" "${make_library_COMPILE_FLAGS}"
-    "${make_library_REQUIRES}" TRUE "${make_library_SHARED}" "${make_library_SHARED_ALL_DEFINED}" "${make_library_OBJECT}")
+  make_target_impl(
+    "${NAME}"
+    "${make_library_COMPILE_FLAGS}"
+    "${make_library_REQUIRES}"
+    TRUE
+    "${make_library_SHARED}"
+    "${make_library_SHARED_ALL_DEFINED}"
+    "${make_library_OBJECT}")
 
-  if (make_library_OUTPUT_NAME)
-          message(STATUS "make_library ${NAME} ===> ${make_library_OUTPUT_NAME}")
-          set_target_properties(${NAME} PROPERTIES OUTPUT_NAME ${make_library_OUTPUT_NAME})
+  if(make_library_OUTPUT_NAME)
+    message(STATUS "make_library ${NAME} ===> ${make_library_OUTPUT_NAME}")
+    set_target_properties(${NAME} PROPERTIES OUTPUT_NAME
+                                             ${make_library_OUTPUT_NAME})
   endif()
 
-  if (make_library_COMPILE_FLAGS_EXTRA)
+  if(make_library_COMPILE_FLAGS_EXTRA)
     target_compile_options(${NAME} PRIVATE ${make_library_COMPILE_FLAGS_EXTRA})
   endif()
 
-  if (CLANG)
-    if (make_library_COMPILE_FLAGS_EXTRA_CLANG)
-      target_compile_options(${NAME} PRIVATE ${make_library_COMPILE_FLAGS_EXTRA_CLANG})
+  if(CLANG)
+    if(make_library_COMPILE_FLAGS_EXTRA_CLANG)
+      target_compile_options(${NAME}
+                             PRIVATE ${make_library_COMPILE_FLAGS_EXTRA_CLANG})
     endif()
   endif()
 
-  if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
-    if (make_library_COMPILE_FLAGS_EXTRA_GCC)
-      target_compile_options(${NAME} PRIVATE ${make_library_COMPILE_FLAGS_EXTRA_GCC})
+  if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    if(make_library_COMPILE_FLAGS_EXTRA_GCC)
+      target_compile_options(${NAME}
+                             PRIVATE ${make_library_COMPILE_FLAGS_EXTRA_GCC})
     endif()
   endif()
 
-  if (${make_library_EXTERNAL_VISIBILITY} OR ${make_library_OBJECT})
+  if(${make_library_EXTERNAL_VISIBILITY} OR ${make_library_OBJECT})
     # do nothing
     message(STATUS "External Visibility: " ${NAME})
     target_compile_options(${NAME} PRIVATE "-fvisibility=default")
-    target_compile_options(${NAME} PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-fvisibility-inlines-hidden>)
+    target_compile_options(
+      ${NAME} PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-fvisibility-inlines-hidden>)
   else()
     target_compile_options(${NAME} PRIVATE "-fvisibility=hidden")
-    target_compile_options(${NAME} PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-fvisibility-inlines-hidden>)
+    target_compile_options(
+      ${NAME} PRIVATE $<$<COMPILE_LANGUAGE:CXX>:-fvisibility-inlines-hidden>)
   endif()
 
   if(NOT CLANG)
-    if (NOT WIN32)
-      # set_property(TARGET ${NAME} APPEND_STRING PROPERTY LINK_FLAGS " -static-libstdc++ ")
+    if(NOT WIN32)
+      # set_property(TARGET ${NAME} APPEND_STRING PROPERTY LINK_FLAGS " -static-
+      # libstdc++ ")
     endif()
   endif()
 
   if(APPLE)
-  if(make_library_EXPORT_OSX_MAP_FILE)
-    set_property(TARGET ${NAME} APPEND PROPERTY LINK_DEPENDS "${make_library_EXPORT_OSX_MAP_FILE}")
-    set_property(TARGET ${NAME} APPEND_STRING PROPERTY LINK_FLAGS " -Wl,-exported_symbols_list,${make_library_EXPORT_OSX_MAP_FILE} ")
-  endif()
+    if(make_library_EXPORT_OSX_MAP_FILE)
+      set_property(TARGET ${NAME} APPEND
+                   PROPERTY LINK_DEPENDS "${make_library_EXPORT_OSX_MAP_FILE}")
+      set_property(
+        TARGET ${NAME} APPEND_STRING
+        PROPERTY
+          LINK_FLAGS
+          " -Wl,-exported_symbols_list,${make_library_EXPORT_OSX_MAP_FILE} ")
+    endif()
 
-  if(make_library_DEAD_STRIP)
-    set_property(TARGET ${NAME} APPEND_STRING PROPERTY LINK_FLAGS " -Wl,-dead_strip")
-  endif()
+    if(make_library_DEAD_STRIP)
+      set_property(TARGET ${NAME} APPEND_STRING PROPERTY LINK_FLAGS
+                                                         " -Wl,-dead_strip")
+    endif()
 
-else()
-  if(make_library_EXPORT_LINUX_MAP_FILE)
-    set_property(TARGET ${NAME} APPEND PROPERTY LINK_DEPENDS "${make_library_EXPORT_LINUX_MAP_FILE}")
-    set_property(TARGET ${NAME} APPEND_STRING PROPERTY LINK_FLAGS " -Wl,--version-script=${make_library_EXPORT_LINUX_MAP_FILE} ")
+  else()
+    if(make_library_EXPORT_LINUX_MAP_FILE)
+      set_property(
+        TARGET ${NAME} APPEND PROPERTY LINK_DEPENDS
+                                       "${make_library_EXPORT_LINUX_MAP_FILE}")
+      set_property(
+        TARGET ${NAME} APPEND_STRING
+        PROPERTY LINK_FLAGS
+                 " -Wl,--version-script=${make_library_EXPORT_LINUX_MAP_FILE} ")
+    endif()
   endif()
-endif()
 
 endmacro()
 
-# Creates an empty library to use as a dependency placeholder.  
-# 
-# Usage:
-#    make_empty_library(NAME)
-# 
+# Creates an empty library to use as a dependency placeholder.
+#
+# Usage: make_empty_library(NAME)
 #
 # will automatically include all recursive dependencies.
 macro(make_empty_library NAME)
   add_library(${NAME} INTERFACE)
 endmacro()
-

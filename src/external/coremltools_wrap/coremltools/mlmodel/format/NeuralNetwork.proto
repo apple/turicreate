@@ -688,6 +688,17 @@ message NeuralNetworkLayer {
 
         NonMaximumSuppressionLayerParams NonMaximumSuppression = 1400;
 
+        // Following layers are available only after Core ML Specification
+        // version >= 5 (iOS >= 14, macOS >= 10.16)
+        OneHotLayerParams oneHot = 1450;
+        CumSumLayerParams cumSum = 1455;
+        ClampedReLULayerParams clampedReLU = 1460;
+        ArgSortLayerParams argSort = 1461;
+        Pooling3DLayerParams pooling3d = 1465;
+        GlobalPooling3DLayerParams globalPooling3d = 1466;
+        SliceBySizeLayerParams sliceBySize = 1470;
+        Convolution3DLayerParams convolution3d = 1471;
+
     }
 
 }
@@ -1330,9 +1341,25 @@ message WeightParams {
     bytes float16Value = 2;
 
     /**
-     * Raw value specification for custom layers and quantized lower precisions.
+     * Raw value specification for quantized lower precisions.
+     *
+     * This field is interpreted as uintN, where N is the number of bits in quantization.
+     * E.g. if n=8, the field is interpreted as an array of UINT8.
+     * Use this field for quantized parameters unless specifically noted to use
+     * int8RawValue.
      */
     bytes rawValue = 30;
+
+    /**
+     * Field to be used if int8DynamicQuantize is set in the parent layer.
+     * Cannot be set if rawValue is also set.
+     * The values in this field are interpreted as INT8.
+     *
+     * If this field is set, following conditions must hold true:
+     * * QuantizationType == LinearQuantizationParams, such that
+     *   * size of the "scale" field is 1 and "bias" field is empty in "LinearQuantizationParams"
+     */
+    bytes int8RawValue = 31;
 
     /**
      * Quantization related parameters.
@@ -1363,6 +1390,11 @@ message LinearQuantizationParams {
      * Must be an array of 1 element, or an array of C elements, where C
      * is number of output channels. For recurrent layers it is equal to
      * the output vector size.
+     *
+     * Relationship between quantized weights, unquantized weights, scale and bias:
+     *
+     * W_unquantized = W_quantized * scale + bias
+     *
      */
     repeated float scale = 1;
     repeated float bias = 2;
@@ -1504,6 +1536,187 @@ message ConvolutionLayerParams {
 }
 
 /**
+ * A layer that performs a 3-dimensional convolution.
+ *
+ * .. code::
+ *
+ *      y = Convolution3DLayer(x)
+ *
+ * Input
+ *    A blob of rank 5.
+ *    The input blob's shape should be ``[batch, channels, depth, height, width]``.
+ *
+ * Fields
+ *   The bias field, if set, should have shape of ``[channelsOut]``.
+ *
+ * Output
+ *   A blob of rank 5.
+ *   The output blob's shape is ``[batch, channelsOut, depthOut, heightOut, widthOut]``.
+ *
+ * Type of padding can be ``custom``, ``valid``, or ``same``. Padded values are all zeros.
+ * Output spatial dimensions depend on the the type of padding. For details, refer to the
+ * descriptions of the ``PaddingType`` field of this ``Convolution3DLayerParams`` message.
+ *
+ * Example
+ *   For example, given an input of size ``[1, 3, 3, 8, 8]``, a stride of 2 in each dimension,
+ *   a kernel of 3 in each dimension, 2 output channels, and ``same`` padding, this layer will
+ *   compute the total padding applied in the depth, height, and width dimensions to be 2, 1, and 1,
+ *   respectively. The depth padding is even and will be applied equally to both sides of the depth
+ *   dimension. Since the height and width padding values are odd, they'll be applied to the
+ *   bottom/right of the height/width dimensions. Thus, the padding applied to the input will be
+ *   ``[1, 1, 0, 1, 0, 1]`` (front, back, top, bottom, left, right). Finally, the output produced
+ *   will have size ``[1, 2, 2, 4, 4]``.
+ *
+ */
+message Convolution3DLayerParams {
+
+    /**
+     * The number of channels in the output (channelsOut). Must be a positive integer.
+     */
+    int32 outputChannels = 1;
+
+    /**
+     * The number of channels in the input (channels). Must be a positive integer.
+     */
+    int32 inputChannels = 2;
+
+    /**
+    * Group convolution, i.e., weight reuse along the channel axis.
+    * It must evenly divide both the number of input and output channels and be at most the number
+    * of input channels (a depthwise convolution).
+    * Input and kernels are divided into g groups and convolution is applied within the groups
+    * independently.
+    */
+    int32 nGroups = 10;
+
+    /* Depth of the convolution kernel. Must be a positive integer.
+     */
+    int32 kernelDepth = 20;
+
+    /* Height of the convolution kernel. Must be a positive integer.
+     */
+    int32 kernelHeight = 21;
+
+    /* Width of the convolution kernel. Must be a positive integer.
+     */
+    int32 kernelWidth = 22;
+
+    /* Stride along the depth direction. Must be a positive integer.
+     */
+    int32 strideDepth = 31;
+
+    /* Stride along the height direction. Must be a positive integer.
+     */
+    int32 strideHeight = 32;
+
+    /* Stride along the width direction. Must be a positive integer.
+     */
+    int32 strideWidth = 33;
+
+    /* Dilation along the depth direction. Must be a positive integer.
+     */
+    int32 dilationDepth = 40;
+
+    /* Dilation along the height direction. Must be a positive integer.
+     */
+    int32 dilationHeight = 41;
+
+    /* Dilation along the width direction. Must be a positive integer.
+     */
+    int32 dilationWidth = 42;
+
+    /**
+     * Flag to specify whether a bias is to be added or not.
+     * If false, then no bias is added.
+     */
+    bool hasBias = 50;
+
+    /**
+     * Weights associated with this layer.
+     * Weights have the shape
+     * if deconvolution == False
+     * ``[outputChannels, kernelChannels, kernelDepth, kernelHeight, kernelWidth]``, where
+     * kernelChannels == inputChannels / nGroups
+     * else if deconvolution == True
+     * ``[outputChannels / nGroups, kernelChannels, kernelDepth, kernelHeight, kernelWidth]``, where
+     */
+    WeightParams weights = 60;
+
+    /**
+     * Must be of size ``[outputChannels]``.
+     */
+    WeightParams bias = 61;
+
+
+    /**
+     * The type of padding.
+     * All padding types pad the input shape with zeros.
+     * CUSTOM padding will add the custom padding values specified below to their respective
+     * dimensions, e.g., `customPaddingFront` number of zeros will be added to one side of the
+     * input's depth dimension and `customPaddingBack` number of zeros will be added to the other
+     * side of the input's depth dimension.
+     * VALID padding adds no padding to any dimension. In this case, the last convolution along
+     * each dimension will be dropped if the input dimension and the kernel size, stride, and
+     * dilation do not match.
+     * SAME padding adds enough padding to each dimension such that the output of the convolution
+     * has size ``Ceiling(inputShape / stride)``. Padding is added evenly to both sides of each
+     * dimension unless the total padding to add is odd, in which case it is added to the
+     * back/bottom/right side of the respective dimension. For example, if the total padding needed
+     * in the depth dimension is 3, 1 zero will be added to the front side of the depth dimension
+     * and 2 zeros will be added to the back side.
+     */
+    enum PaddingType {
+        CUSTOM = 0;
+        VALID = 1;
+        SAME = 2;
+    }
+    PaddingType paddingType = 70;
+
+    /* Padding before the input in the depth direction. Must be zero or a positive integer.
+     * Used when the `PaddingType` is `CustomPadding`, otherwise ignored by other padding types.
+     */
+    int32 customPaddingFront = 80;
+
+    /* Padding after the input in the depth direction. Must be zero or a positive integer.
+     * Used when the `PaddingType` is `CustomPadding`, otherwise ignored by other padding types.
+     */
+    int32 customPaddingBack = 81;
+
+    /* Padding before the input in the height direction. Must be zero or a positive integer.
+     * Used when the `PaddingType` is `CustomPadding`, otherwise ignored by other padding types.
+     */
+    int32 customPaddingTop = 82;
+
+    /* Padding after the input in the height direction. Must be zero or a positive integer.
+     * Used when the `PaddingType` is `CustomPadding`, otherwise ignored by other padding types.
+     */
+    int32 customPaddingBottom = 83;
+
+    /* Padding before the input in the width direction. Must be zero or a positive integer.
+     * Used when the `PaddingType` is `CustomPadding`, otherwise ignored by other padding types.
+     */
+    int32 customPaddingLeft = 84;
+
+    /* Padding after the input in the width direction. Must be zero or a positive integer.
+     * Used when the `PaddingType` is `CustomPadding`, otherwise ignored by other padding types.
+     */
+    int32 customPaddingRight = 85;
+    
+    /* Flag to specify if this is Convolution Transpose or not.
+     */
+    bool isDeconvolution = 86;
+    
+    /*
+     * The output shape, which has length 3 ``[D_out, H_out, W_out]``.
+     * This is used only for deconvolution (``isDeconvolution == true``).
+     * If not set, the deconvolution output shape is calculated
+     * based on ``PaddingType``.
+     */
+    repeated uint64 outputShape = 87;
+
+}
+
+/**
  * A layer that performs a matrix-vector or matrix-matrix product.
  * This is equivalent to a fully-connected, or dense layer.
  * The weight parameters correspond to a matrix of dimensions (inputChannels, outputChannels) i.e. (C_in, C_out)
@@ -1540,6 +1753,19 @@ message InnerProductLayerParams {
 
     WeightParams weights = 20; /// Weight matrix [C_out, C_in].
     WeightParams bias = 21; /// Bias vector [C_out].
+
+    /**
+     * If set, this layer, at runtime, quantizes the floating point input blob to int8 before applying an
+     * inner product using INT8 weight matrix parameters, as provided in weights->int8RawValue. The
+     * result is then dequantized.
+     * Requires:
+     * * hasBias == false
+     * * QuantizationType == LinearQuantizationParams, such that
+     *   * size of the "scale" field is 1 and "bias" field is empty in "LinearQuantizationParams"
+     * * numberOfBits == 8
+     * * weights->rawValue_size to be empty
+     */
+    bool int8DynamicQuantize = 22;
 
 }
 
@@ -1752,6 +1978,162 @@ message PoolingLayerParams {
 
 }
 
+/*
+ * A layer to pool three spatial dimensions
+ *
+ * Input
+ *      A blob with rank equal to 5, representing [Batch, channels, depth, height, width].
+ *
+ * Output
+ *      Rank is same as the input: A blob with rank equal to 5, representing [Batch, channels, depth, height, width].
+ *
+ * Requires 1 input and produces 1 output.
+ *
+ * For example, given an input of shape (1,1,2,3,3):
+ *        +----+----+----+
+ *      / | 10 | 11 | 12 |
+ *     /  +----+----+----+
+ *    /   | 13 | 14 | 15 |
+ *   /    +----+----+----+
+ *  /     | 16 | 17 | 18 |
+ * /      +----+----+----+
+ * +----+----+----+      /
+ * |  1 |  2 |  3 |     /
+ * +----+----+----+    /
+ * |  4 |  5 |  6 |   /
+ * +----+----+----+  /
+ * |  7 |  8 |  9 | /
+ * +----+----+----+
+ *
+ * And applying MAX pooling using:
+ *      Kernel: 2x2x2
+ *      Stride: 1x1x1
+ *      Valid Padding
+ * We expect to get an output with shape: (1,1,1,2,2) and value:
+ * +----+----+
+ * | 14 | 15 |
+ * +----+----+
+ * | 17 | 18 |
+ * +----+----+
+ */
+message Pooling3DLayerParams {
+    
+    enum PoolingType3D {
+        MAX = 0;
+        AVERAGE = 1;
+    }
+    
+    // Whether to use Max or Average
+    PoolingType3D type = 1;
+    
+    // Depth of the pooling region.
+    int32 kernelDepth = 2;
+    
+    // Height of the pooling region.
+    int32 kernelHeight = 3;
+    
+    // Width of the pooling region.
+    int32 kernelWidth = 4;
+    
+    // Stride along the depth direction
+    int32 strideDepth = 5;
+    
+    // Stride along the height direction
+    int32 strideHeight = 6;
+    
+    // Stride along the width direction
+    int32 strideWidth = 7;
+    
+    /**
+     * The type of padding.
+     * All padding types pad the input shape with zeros.
+     * CUSTOM padding will add the custom padding values specified below to their respective
+     * dimensions, e.g., `customPaddingFront` number of zeros will be added to one side of the
+     * input's depth dimension and `customPaddingBack` number of zeros will be added to the other
+     * side of the input's depth dimension.
+     * VALID padding adds no padding to any dimension. In this case, the last pool along
+     * each dimension will be dropped if the input dimension and the kernel size, and stride do not match.
+     * SAME padding adds enough padding to each dimension such that the output
+     * has the same spatial dimensions as the input. Padding is added evenly to both
+     * sides of each dimension unless the total padding to add is odd, in which case the extra padding
+     * is added to the back/bottom/right side of the respective dimension.  For example, if the the
+     * total horizontal padding is 3, then there will be 1 padding on the left, and 2 padding on the right.
+     */
+    enum Pooling3DPaddingType {
+        CUSTOM = 0;
+        VALID = 1;
+        SAME = 2;
+    }
+    Pooling3DPaddingType paddingType = 15;
+    
+    // Padding before the input in the depth direction.
+    int32 customPaddingFront = 8;
+    
+    // Padding after the input in the depth direction.
+    int32 customPaddingBack = 9;
+    
+    // Padding before the input in the height direction.
+    int32 customPaddingTop = 10;
+    
+    // Padding after the input in the height direction.
+    int32 customPaddingBottom = 11;
+    
+    // Padding before the input in the width direction.
+    int32 customPaddingLeft = 12;
+    
+    // Padding after the input in the width direction.
+    int32 customPaddingRight = 13;
+    
+    // If true, exclude zeros from padding in Average pooling.  Meaningless in Max Pooling.
+    bool countExcludePadding = 14;
+}
+
+/*
+ * A layer to pool three spatial dimensions down to one value.
+ * This behaves like a special case of Pooling3DLayerParams in which
+ * the Kernel is the size of the input and there is no padding.
+ *
+ * Input
+ *      A blob with rank equal to 5, representing [Batch, channels, depth, height, width].
+ *
+ * Output
+ *      Rank is same as the input: A blob with rank equal to 5, representing [Batch, channels, depth, height, width].
+ *      Depth, height, and width of the output will always be 1.
+ *
+ * Requires 1 input and produces 1 output.
+ *
+ * For example, given an input of shape (1,1,2,3,3):
+ *        +----+----+----+
+ *      / | 10 | 11 | 12 |
+ *     /  +----+----+----+
+ *    /   | 13 | 14 | 15 |
+ *   /    +----+----+----+
+ *  /     | 16 | 17 | 18 |
+ * /      +----+----+----+
+ * +----+----+----+      /
+ * |  1 |  2 |  3 |     /
+ * +----+----+----+    /
+ * |  4 |  5 |  6 |   /
+ * +----+----+----+  /
+ * |  7 |  8 |  9 | /
+ * +----+----+----+
+ *
+ * And applying MAX global 3d pooling, we expect to get an output with shape: (1,1,1,1,1) and value:
+ * +----+
+ * | 18 |
+ * +----+
+ */
+message GlobalPooling3DLayerParams {
+    
+    enum GlobalPoolingType3D {
+        MAX = 0;
+        AVERAGE = 1;
+    }
+    
+    // Whether to use Max or Average
+    GlobalPoolingType3D type = 1;
+}
+
 /**
  * A layer that performs padding along spatial dimensions.
  *
@@ -1762,13 +2144,14 @@ message PoolingLayerParams {
  * Requires 1 input and produces 1 output.
  *
  * Input
- *     A blob with rank at least 3.
- *     e.g.: blob with shape ``[C, H_in, W_in]``.
- *     For ranks greater than 3, the leading dimensions, starting from 0 to -4 (inclusive), are all treated as batch.
+ *     A blob with rank at least 2.
+ *     e.g.: blob with shape ``[H_in, W_in]``.
+ *     For ranks greater than 2, the leading dimensions, starting from 0 to -4 (inclusive), are all treated as batch
+ *     i.e. Padding is applied on last two dimensions.
  *
  * Output
  *     Same rank as the input.
- *     e.g.: blob with shape ``[C, H_out, W_out]``.
+ *     e.g.: blob with shape ``[H_out, W_out]``.
  *
  * Output dimensions are calculated as follows:
  *
@@ -2147,12 +2530,24 @@ message UnaryFunctionLayerParams {
 message UpsampleLayerParams {
 
     /**
-     * Scaling Factor.
+     * Scaling Factor. Mutually exclusive with fractionalScalingFactor.
      * Must be length 2 in order ``[H, W]``.
      * If not set, default value ``[1, 1]`` is used.
      */
     repeated uint64 scalingFactor = 1;
 
+    /**
+     * Fractional scaling factor. Mutually exclusive with scalingFactor.
+     * Must be length 2 in order ``[H, W]``.
+     * If not set, default value ``[1.0, 1.0]`` is used.
+     */
+    repeated float fractionalScalingFactor = 7;
+
+    /*
+     * Overall mode for interpolating new elements when upsampling.
+     * NN - Nearest Neighbors - simply pick the nearest true value for interpolated values.
+     * BILINEAR - Use bilinear interpolation. See LinearUpsamplingMode for behavior.
+     */
     enum InterpolationMode {
 
         NN = 0; /// Nearest Neighbour
@@ -2161,6 +2556,30 @@ message UpsampleLayerParams {
     }
 
     InterpolationMode mode = 5;
+
+    /**
+     * LinearUpsampleMode specifies the behavior for linear upsampling. Only valid when Interpolation Mode is BILINEAR.
+     * If input grid is [0, Xin-1] (corresponding to an input size of Xin), and if the output size is Xout,
+     * then the grid points are sampled in the following manner:
+     * DEFAULT:
+     *   spacing = (Xin-Xin/Xout) / (Xout-1)
+     *   grid_point[i] = min(Xin-1, max(0, i * spacing)), for i = 0,1,2,….,Xout-1
+     * ALIGN_CORNERS_TRUE:
+     *   spacing = (Xin-1) / (Xout-1)
+     *   grid_point[i] = min(Xin-1, max(0, i * spacing)), for i = 0,1,2,….,Xout-1
+     * ALIGN_CORNERS_FALSE:
+     *   spacing = Xin / Xout
+     *   grid_point[i] = min(Xin-1, max(0, i * spacing + 0.5 * spacing - 0.5)), for i = 0,1,2,….,Xout-1
+     */
+    enum LinearUpsampleMode {
+
+        DEFAULT = 0;
+        ALIGN_CORNERS_TRUE = 1;
+        ALIGN_CORNERS_FALSE = 2;
+
+    }
+
+    LinearUpsampleMode linearUpsampleMode = 6;
 
 }
 
@@ -2577,6 +2996,50 @@ message PermuteLayerParams {
  *  Square of blockSize must divide C.
  *  Reverse of SPACE_TO_DEPTH. Data is moved from the channel dimension to the spatial dimensions.
  *
+ * mode == PIXEL_SHUFFLE
+ *  ``[C_out, H_out, W_out]`` : ``[C/(blockSize * blockSize), H * blockSize, W *  blockSize]``.
+ *  Square of blockSize must divide C.
+ *  Similar to DEPTH_TO_SPACE, but using the pixel-shuffle semantics for channel order in the output space.
+ *  In both modes, elements along the channel dimension are collapsed into
+ *  blocks in the spatial dimensions. The difference is in the arrangement of
+ *  the input-channels' data in the output space. See below example for more
+ *  detail.
+ *  (Only available in Core ML Specification >= 5 (iOS >= 14, macOS >= 11.0)
+ *
+ *
+ * Examples:
+ *
+ * Assume input is the following [C = 8, H = 1, W = 2] tensor:
+ *
+ * .. code::
+ *
+ *    [[[1 2]] [[3 4]] [[5 6]] [[7 8]] [[9 10]] [[11 12]] [[13 14]] [[15 16]]]
+ *
+ * If block_size == 2 and mode == DEPTH_TO_SPACE, output will be the following
+ * [C = 2, H = 2, W = 4] tensor:
+ *
+ * .. code::
+ *
+ *    [[[ 1  5  2  6]
+ *      [ 9 13 10 14]]
+ *
+ *     [[ 3  7  4  8]
+ *      [11 15 12 16]]]
+ *
+ * For mode == SPACE_TO_DEPTH, the behavior is the same as mode ==
+ * DEPTH_TO_SPACE, but with the input and output swapped.
+ *
+ * If block_size == 2 and mode == PIXEL_SHUFFLE, output will be the following
+ * [C = 2, H = 2, W = 4] tensor:
+ *
+ * .. code::
+ *
+ *    [[[ 1  3  2  4]
+ *      [ 5  7  6  8]]
+ *
+ *     [[ 9 11 10 12]
+ *      [13 15 14 16]]]
+ *
  */
 message ReorganizeDataLayerParams {
 
@@ -2584,6 +3047,7 @@ message ReorganizeDataLayerParams {
 
         SPACE_TO_DEPTH = 0;
         DEPTH_TO_SPACE = 1;
+        PIXEL_SHUFFLE = 2;
 
     }
     ReorganizationType mode = 1;
@@ -3507,6 +3971,20 @@ message BatchedMatMulLayerParams {
      */
     WeightParams weights = 8;
     WeightParams bias = 9; /// Bias vector [X2]. Supported only when there is one input.
+
+    /**
+     * If set, this layer, at runtime, quantizes the floating point input blob to int8 before applying the
+     * matrix multiplication using the INT8 weight parameters provided in weights->int8RawValue. The
+     * result is then dequantized.
+     * Requires:
+     * * number of inputs to be 1
+     * * hasBias == false
+     * * QuantizationType == LinearQuantizationParams, such that
+     *   * size of the "scale" field is 1 and "bias" field is empty in "LinearQuantizationParams"
+     * * numberOfBits == 8
+     * * weights->rawValue_size to be empty
+     */
+    bool int8DynamicQuantize = 10;
 
 }
 
@@ -5360,13 +5838,30 @@ message ClipLayerParams {
  * "endMasks" is True
  *
  * e.g.:
+ * if i-th element of "squeezeMasks" is set to True, only beginIds[i] would be sliced
+ * out, and all other masks and inputs are ignored.
+ *
+ * e.g. (without squeezeMasks):
  * input shape:  (5, 5, 5)
  * beginIds:  [1, 2, 3]
  * beginMasks:  [True, False, True]
  * endIds:  [3, -3, 2]
  * endMasks:  [False, True, True]
  * strides:  [2, 2, 2]
+ * SqueezeMasks:  [False, False, False]
  * output shape:  (2, 2, 3)
+ * This is equivalent to input[:3:2, 2::2, ::2]
+ *
+ * e.g. (with squeezeMasks):
+ * input shape:  (5, 5, 5)
+ * beginIds:  [1, 2, 3]
+ * beginMasks:  [True, False, True]
+ * endIds:  [3, -3, 2]
+ * endMasks:  [False, True, True]
+ * strides:  [2, 2, 2]
+ * SqueezeMasks:  [False, True, False]
+ * output shape:  (2, 3)
+ * This is equivalent to input[:3:2, 2, ::2]
  *
  */
 message SliceStaticLayerParams {
@@ -5376,6 +5871,8 @@ message SliceStaticLayerParams {
     repeated int64 endIds = 3;
     repeated bool endMasks = 4;
     repeated int64 strides = 5;
+    repeated bool squeezeMasks = 6;
+
 
 }
 
@@ -5385,8 +5882,8 @@ message SliceStaticLayerParams {
  * Support negative indexing and negative strides.
  * See "SliceStaticLayerParams" for the description and an example of the functionality of the layer.
  *
- * Requires 2 to 6 inputs and produces 1 output.
- * Rank of the output is same as the rank of the first input.
+ * Requires 2 to 7 inputs and produces 1 output.
+ * Rank of the output is same as the rank of the first input unless squeezeMask is set.
  *
  * Value of beginIds, beginMasks, endIds, endMasks, strides can be passed in either
  * as dynamic inputs or as static parameters.
@@ -5397,6 +5894,7 @@ message SliceStaticLayerParams {
  * The 4th input, if present, corresponds to "strides". In this case the value of the "strides" parameter is ignored.
  * The 5th input, if present, corresponds to "beginMasks". In this case the value of the "beginMasks" parameter is ignored.
  * The 6th input, if present, corresponds to "endMasks". In this case the value of the "endMasks" parameter is ignored.
+ * The 7th input, if present, corresponds to "squeezeMasks". In this case the value of the "squeezeMasks" parameter is ignored.
  *
  */
 message SliceDynamicLayerParams {
@@ -5405,6 +5903,7 @@ message SliceDynamicLayerParams {
     repeated int64 endIds = 3;
     repeated bool endMasks = 4;
     repeated int64 strides = 5;
+    repeated bool squeezeMasks = 6;
 
 }
 
@@ -5412,10 +5911,14 @@ message SliceDynamicLayerParams {
  * A layer that constructs a tensor by repeating the input tensor multiple
  * number of times.
  *
- * Requires 1 input and produces 1 output.
+ * Requires 1 or 2 inputs and produces 1 output.
  * Output rank is same as the input rank.
  *
- * Length of the "reps" parameter must be at least 1 and
+ * If two inputs are provided, second input is used as "reps"
+ * and "reps" parameter is ignored.
+ *
+ * If only one input is provided,
+ * length of the "reps" parameter must be at least 1 and
  * not greater than the rank of the input.
  * If it is less than the input rank, it is made equal to the input rank by prepending 1's to it.
  *
@@ -5429,6 +5932,11 @@ message SliceDynamicLayerParams {
  * reps = (6)
  * reps after prepending ones = (1, 1, 6)
  * output shape = (2, 4, 12)
+ *
+ * input shape = (2, 4, 2)
+ * second input = [1, 2, 6] -> shape: (3,)
+ * reps = N/A [Ignored]
+ * output shape = (2, 8, 12)
  *
  */
 message TileLayerParams {
@@ -5671,6 +6179,90 @@ message NonMaximumSuppressionLayerParams {
     bool perClassSuppression = 4;
 }
 
+/**
+ * A layer that performs element-wise clamped ReLU operation.
+ *
+ * Requires 1 input and produces 1 output.
+ *
+ * This function has the following formula:
+ *
+ * .. math::
+ *     f(x) = \begin{cases}
+ *               \text{min}(\text{beta},x) \;\; \text{if} \;\; x \geq 0\\
+ *               \text{min}(\text{beta} ,\text{alpha}\cdot x) \;\; \text{if} \;\; x<0
+ *            \end{cases}
+ *
+ * Output shape is same as the input.
+ *
+ * Available (iOS >= 14, macOS >= 11.0, watchOS >= 7)
+ */
+message ClampedReLULayerParams {
+
+    float alpha = 1;
+    float beta = 2;
+
+}
+
+/**
+* A layer that returns the indices that would sort the input tensor, along a specified axis.
+*
+* Requires 1 input and produces 1 output.
+*
+* Output has the same rank and shape as the input.
+*
+* Value of "axis" must be positive and less than the rank of the input.
+*
+* e.g.:
+*
+* input shape = (5,)
+* axis = 0
+* input values = [3.1, 5.4, 32.9, 3.2, 77.0]
+* output shape = (5,)
+* output values = [0, 3, 1, 2, 4], descending = False
+* output values = [4, 2, 1, 3, 0], descending = True
+*
+* input shape = (2,3)
+* axis = 1
+* input values = [[3, 5, 32], [3, 77, 6]]
+* output shape = (2,3)
+* output values = [[0, 1, 2], [0, 2, 1]], descending = False
+* output values = [[2, 1, 0], [1, 2, 0]], descending = True
+*
+*/
+message ArgSortLayerParams {
+
+    int64 axis = 1; /// must be between [0, input_rank - 1]
+    bool descending = 2;
+
+}
+
+/**
+ * A layer that does slice operation by providing size to be extracted 
+ * from the given input tensor.
+ *
+ * Requires 2 inputs and produces 1 output.
+ * Rank of the output is same as the rank of the first input.
+ *
+ * The 1st input represents the tensor to be sliced.
+ * The 2nd input represents the beginning index to be sliced from.
+ *
+ * Example:
+ * Input 1: x (x.shape = (2, 3, 4))
+ * Input 2: begin
+ * size: 2
+ * axis: 1
+ *
+ * Output: x[:, begin:begin+2, :]
+ *
+ */
+message SliceBySizeLayerParams {
+
+    int64 size = 2;
+    int64 axis = 3;
+
+}
+
+
 /// Neural Network Specializations
 /// ------------------------------
 
@@ -5690,21 +6282,100 @@ message NeuralNetworkClassifier {
 
     NetworkUpdateParameters updateParams = 10;
 
-    /**
-     * Mapping from indexed vector of probabilities to class label
-     */
+    // The set of labels for every possible class.
     oneof ClassLabels {
         StringVector stringClassLabels = 100;
         Int64Vector int64ClassLabels = 101;
     }
 
-    /**
-     * The name of the output blob which will be used as the predicted
-     * probabilities of each class label.
-     */
+    // The name of the output blob containing the probability of each class.
+    // In other words, the score vector. Must be a 1-D tensor with the same
+    // number and order of elements as ClassLabels.
     string labelProbabilityLayerName = 200;
-
 }
+
+
+/**
+ * A layer that computes the one hot representation of the input.
+ *
+ * Requires 1 or 2 inputs and produces 1 output.
+ * Rank of the output is one more than the first input.
+ * If the second input is present, it is used to determine the value of "oneHotVectorSize" and the parameter "oneHotVectorSize" is ignored.
+ *
+ * Input values correspond to indices and should typically be in the range [0,"oneHotVectorSize" -1]. If it is outside this range, a vector of all "offValue" will be chosen.
+ *
+ * Typically one hot vectors contain 0s everywhere, except 1 at the index that the input corresponds to.
+ * However, instead of 0, any float value could be generated by using the "offValue" parameter.
+ * Similarly, instead of 1, any other value can be used by employing the "onValue" parameter.
+ *
+ * e.g.:
+ * input shape: (10,), "oneHotVectorSize" : 32, axis=-1, then output shape will be (10,32)
+ * input shape: (10,23), "oneHotVectorSize" : 32, axis=1, then output shape will be (10,32,23)
+ * input shape: (10,), "oneHotVectorSize" : 32, axis=0, then output shape will be (32,10)
+ *
+ * input shape: (2,), "oneHotVectorSize" : 4, axis=-1, then output shape will be (2,4)
+ * say input values = [2, 0], and "onValue" = 5, and "offValue" = -1, then output will be:
+ * [-1, -1, 5, -1
+ *  5, -1, -1, -1]
+ *
+ *  say input values = [2, -1], and "onValue" = 5, and "offValue" = -1, then output will be:
+ * [-1, -1, 5, -1
+ *  -1, -1, -1, -1]
+ *
+ * Available (iOS >= 14, macOS >= 11.0, watchOS >= 7)
+ */
+
+message OneHotLayerParams {
+
+    uint64 oneHotVectorSize = 1; /// size of the one hot vector
+    int64 axis = 2; ///  negative indexing is supported. It refers to the axis in the output tensor.
+    float onValue = 3;
+    float offValue = 4;
+}
+
+
+/**
+ * A layer that computes the cumsum values of the input along a given axis.
+ *
+ * Requires 1 or 2 inputs and produces 1 output.
+ *
+ * Output shape and rank is same as the first input.
+ * If the second input is present, it is used to determine the value of "axis" and the parameter "axis" is ignored.
+ *
+ * e.g.:
+ * Input shape = (3,), values it has:  [4, 6, 7]
+ *
+ * Then output values will be:
+ *
+ * if "excludeFinalSum" = False and "reverse" = False:
+ * output values : [4, 10, 17]
+ *
+ * if "excludeFinalSum" = True and "reverse" = False:
+ * output values : [0, 4, 10]
+ *
+ * if "excludeFinalSum" = False and "reverse" = True:
+ * output values : [17, 13, 7]
+ *
+ * if "excludeFinalSum" = True and "reverse" = True:
+ * output values : [13, 7, 0]
+ *
+ *
+ * Available (iOS >= 14, macOS >= 11.0, watchOS >= 7)
+ */
+
+
+message CumSumLayerParams {
+
+    int64 axis = 1; ///  negative indexing is supported
+
+    /// if true, the first element of the output is 0, and the last element contains the sum of the input up to the penultimate value
+    /// if false, the first element of the output is same as the input and the last element is the sum of all the input values
+    /// (this behavior is reversed when "reverse" flag is True)
+    bool excludeFinalSum = 2;
+
+    bool reverse = 3; /// if true, cumsum is performed in the opposite direction
+}
+
 
 /**
  * A neural network specialized as a regressor.

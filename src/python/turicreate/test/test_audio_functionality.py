@@ -17,10 +17,7 @@ from os import mkdir
 import unittest
 import pytest
 
-import coremltools
-from coremltools.proto import FeatureTypes_pb2
 import numpy as np
-from scipy.io import wavfile
 import sys as _sys
 
 import turicreate as tc
@@ -47,6 +44,8 @@ class ReadAudioTest(unittest.TestCase):
             self._assert_audio_sframe_correct(sf, file1, file2)
 
     def test_recursive_dir(self):
+        from scipy.io import wavfile
+
         with TempDirectory() as temp_dir:
             file1 = temp_dir + "/1.wav"
             mkdir(temp_dir + "/foo")
@@ -111,6 +110,8 @@ class ReadAudioTest(unittest.TestCase):
         self.assertTrue(all(audio2["data"] == self.noise2))
 
     def _write_audio_files_in_dir(self, dir_path):
+        from scipy.io import wavfile
+
         file1 = dir_path + "/1.wav"
         file2 = dir_path + "/2.wav"
         wavfile.write(file1, self.sample_rate1, self.noise1)
@@ -295,6 +296,7 @@ class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
     )
     def test_export_coreml_with_prediction(self):
         import resampy
+        import coremltools
 
         with TempDirectory() as temp_dir:
             file_name = temp_dir + "/model.mlmodel"
@@ -332,6 +334,7 @@ class ClassifierTestTwoClassesStringLabels(unittest.TestCase):
 
     def test_export_core_ml_no_prediction(self):
         import platform
+        import coremltools
 
         with TempDirectory() as temp_dir:
             file_name = temp_dir + "/model.mlmodel"
@@ -455,22 +458,9 @@ class ClassifierTestTwoClassesIntLabels(ClassifierTestTwoClassesStringLabels):
             feature="audio",
             custom_layer_sizes=layer_sizes,
             validation_set=None,
+            max_iterations=100,
         )
         assert self.model.custom_layer_sizes == layer_sizes
-
-    # Remove the following two tests after #2949 is fixed!
-
-    @pytest.mark.xfail(
-        reason="Non-deterministic test failure tracked in https://github.com/apple/turicreate/issues/2949"
-    )
-    def test_classify(self):
-        pass
-
-    @pytest.mark.xfail(
-        reason="Non-deterministic test failure tracked in https://github.com/apple/turicreate/issues/2949"
-    )
-    def test_predict(self):
-        pass
 
 
 class ClassifierTestThreeClassesStringLabels(ClassifierTestTwoClassesStringLabels):
@@ -569,6 +559,8 @@ class CoreMlCustomModelPreprocessingTest(unittest.TestCase):
 
     def test_case(self):
         from turicreate.toolkits.sound_classifier import vggish_input
+        import coremltools
+        from coremltools.proto import FeatureTypes_pb2
 
         model = coremltools.proto.Model_pb2.Model()
         model.customModel.className = "TCSoundClassifierPreprocessing"

@@ -17,6 +17,7 @@
 
 from . import mel_features
 from . import vggish_params
+from turicreate._deps.minimal_package import _minimal_package_import_check
 
 import numpy as np
 
@@ -38,7 +39,7 @@ def waveform_to_examples(data, sample_rate):
     bands, where the frame length is vggish_params.STFT_HOP_LENGTH_SECONDS.
   """
 
-    import resampy
+    resampy = _minimal_package_import_check("resampy")
 
     # Convert to mono.
     if len(data.shape) > 1:

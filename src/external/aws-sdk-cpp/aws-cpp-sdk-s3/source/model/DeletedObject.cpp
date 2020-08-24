@@ -1,5 +1,5 @@
-/*
-* Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+﻿/*
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 * express or implied. See the License for the specific language governing
 * permissions and limitations under the License.
 */
+
 #include <aws/s3/model/DeletedObject.h>
 #include <aws/core/utils/xml/XmlSerializer.h>
 #include <aws/core/utils/StringUtils.h>
@@ -57,25 +58,25 @@ DeletedObject& DeletedObject::operator =(const XmlNode& xmlNode)
     XmlNode keyNode = resultNode.FirstChild("Key");
     if(!keyNode.IsNull())
     {
-      m_key = StringUtils::Trim(keyNode.GetText().c_str());
+      m_key = Aws::Utils::Xml::DecodeEscapedXmlText(keyNode.GetText());
       m_keyHasBeenSet = true;
     }
     XmlNode versionIdNode = resultNode.FirstChild("VersionId");
     if(!versionIdNode.IsNull())
     {
-      m_versionId = StringUtils::Trim(versionIdNode.GetText().c_str());
+      m_versionId = Aws::Utils::Xml::DecodeEscapedXmlText(versionIdNode.GetText());
       m_versionIdHasBeenSet = true;
     }
     XmlNode deleteMarkerNode = resultNode.FirstChild("DeleteMarker");
     if(!deleteMarkerNode.IsNull())
     {
-      m_deleteMarker = StringUtils::ConvertToBool(StringUtils::Trim(deleteMarkerNode.GetText().c_str()).c_str());
+      m_deleteMarker = StringUtils::ConvertToBool(StringUtils::Trim(Aws::Utils::Xml::DecodeEscapedXmlText(deleteMarkerNode.GetText()).c_str()).c_str());
       m_deleteMarkerHasBeenSet = true;
     }
     XmlNode deleteMarkerVersionIdNode = resultNode.FirstChild("DeleteMarkerVersionId");
     if(!deleteMarkerVersionIdNode.IsNull())
     {
-      m_deleteMarkerVersionId = StringUtils::Trim(deleteMarkerVersionIdNode.GetText().c_str());
+      m_deleteMarkerVersionId = Aws::Utils::Xml::DecodeEscapedXmlText(deleteMarkerVersionIdNode.GetText());
       m_deleteMarkerVersionIdHasBeenSet = true;
     }
   }
@@ -101,9 +102,9 @@ void DeletedObject::AddToNode(XmlNode& parentNode) const
   if(m_deleteMarkerHasBeenSet)
   {
    XmlNode deleteMarkerNode = parentNode.CreateChildElement("DeleteMarker");
-  ss << m_deleteMarker;
+   ss << std::boolalpha << m_deleteMarker;
    deleteMarkerNode.SetText(ss.str());
-  ss.str("");
+   ss.str("");
   }
 
   if(m_deleteMarkerVersionIdHasBeenSet)

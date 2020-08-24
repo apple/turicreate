@@ -5,9 +5,6 @@
 //  Copyright © 2018 Turi. All rights reserved.
 //
 
-#ifndef MPS_WEIGHT_H_
-#define MPS_WEIGHT_H_
-
 #define ADVANCE_PTR(_a, _size)                                                 \
   (__typeof__(_a))((uintptr_t)(_a) + (size_t)(_size))
 
@@ -31,6 +28,8 @@
 #import <MetalPerformanceShaders/MetalPerformanceShaders.h>
 #import <vector>
 #import "mps_utils.h"
+
+NS_ASSUME_NONNULL_BEGIN
 
 API_AVAILABLE(macos(10.14))
 @interface TCMPSConvolutionWeights : NSObject <MPSCNNConvolutionDataSource> {
@@ -196,4 +195,4 @@ API_AVAILABLE(macos(10.14))
 
 
 #endif /* MPS_WEIGHT_H_ */
-#include <turi_common.h>
+NS_ASSUME_NONNULL_END

@@ -14,6 +14,10 @@ import datetime as dt
 from .._cython.cy_flexible_type import GMT
 from ..util import _assert_sframe_equal
 
+import pytest
+
+pytestmark = [pytest.mark.minimal]
+
 
 class SFrameBuilderTest(unittest.TestCase):
     def setUp(self):

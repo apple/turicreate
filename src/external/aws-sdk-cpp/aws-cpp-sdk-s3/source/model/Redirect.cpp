@@ -1,5 +1,5 @@
-/*
-* Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+﻿/*
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 * express or implied. See the License for the specific language governing
 * permissions and limitations under the License.
 */
+
 #include <aws/s3/model/Redirect.h>
 #include <aws/core/utils/xml/XmlSerializer.h>
 #include <aws/core/utils/StringUtils.h>
@@ -32,6 +33,7 @@ namespace Model
 Redirect::Redirect() : 
     m_hostNameHasBeenSet(false),
     m_httpRedirectCodeHasBeenSet(false),
+    m_protocol(Protocol::NOT_SET),
     m_protocolHasBeenSet(false),
     m_replaceKeyPrefixWithHasBeenSet(false),
     m_replaceKeyWithHasBeenSet(false)
@@ -41,6 +43,7 @@ Redirect::Redirect() :
 Redirect::Redirect(const XmlNode& xmlNode) : 
     m_hostNameHasBeenSet(false),
     m_httpRedirectCodeHasBeenSet(false),
+    m_protocol(Protocol::NOT_SET),
     m_protocolHasBeenSet(false),
     m_replaceKeyPrefixWithHasBeenSet(false),
     m_replaceKeyWithHasBeenSet(false)
@@ -57,31 +60,31 @@ Redirect& Redirect::operator =(const XmlNode& xmlNode)
     XmlNode hostNameNode = resultNode.FirstChild("HostName");
     if(!hostNameNode.IsNull())
     {
-      m_hostName = StringUtils::Trim(hostNameNode.GetText().c_str());
+      m_hostName = Aws::Utils::Xml::DecodeEscapedXmlText(hostNameNode.GetText());
       m_hostNameHasBeenSet = true;
     }
     XmlNode httpRedirectCodeNode = resultNode.FirstChild("HttpRedirectCode");
     if(!httpRedirectCodeNode.IsNull())
     {
-      m_httpRedirectCode = StringUtils::Trim(httpRedirectCodeNode.GetText().c_str());
+      m_httpRedirectCode = Aws::Utils::Xml::DecodeEscapedXmlText(httpRedirectCodeNode.GetText());
       m_httpRedirectCodeHasBeenSet = true;
     }
     XmlNode protocolNode = resultNode.FirstChild("Protocol");
     if(!protocolNode.IsNull())
     {
-      m_protocol = ProtocolMapper::GetProtocolForName(StringUtils::Trim(protocolNode.GetText().c_str()).c_str());
+      m_protocol = ProtocolMapper::GetProtocolForName(StringUtils::Trim(Aws::Utils::Xml::DecodeEscapedXmlText(protocolNode.GetText()).c_str()).c_str());
       m_protocolHasBeenSet = true;
     }
     XmlNode replaceKeyPrefixWithNode = resultNode.FirstChild("ReplaceKeyPrefixWith");
     if(!replaceKeyPrefixWithNode.IsNull())
     {
-      m_replaceKeyPrefixWith = StringUtils::Trim(replaceKeyPrefixWithNode.GetText().c_str());
+      m_replaceKeyPrefixWith = Aws::Utils::Xml::DecodeEscapedXmlText(replaceKeyPrefixWithNode.GetText());
       m_replaceKeyPrefixWithHasBeenSet = true;
     }
     XmlNode replaceKeyWithNode = resultNode.FirstChild("ReplaceKeyWith");
     if(!replaceKeyWithNode.IsNull())
     {
-      m_replaceKeyWith = StringUtils::Trim(replaceKeyWithNode.GetText().c_str());
+      m_replaceKeyWith = Aws::Utils::Xml::DecodeEscapedXmlText(replaceKeyWithNode.GetText());
       m_replaceKeyWithHasBeenSet = true;
     }
   }

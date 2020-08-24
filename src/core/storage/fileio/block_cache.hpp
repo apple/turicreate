@@ -9,6 +9,7 @@
 #include <turi_common.h>
 #include <core/util/lru.hpp>
 #include <core/parallel/mutex.hpp>
+#include <core/storage/fileio/fixed_size_cache_manager.hpp>
 
 namespace turi {
 class general_ifstream;
@@ -55,6 +56,8 @@ class block_cache {
   /**
    * Constructs the block cache. init must be called before the block_cache
    * can be used.
+   *
+   * make sure the cache manager is detroyed after all cache files are deleted.
    */
   block_cache() = default;
 
@@ -166,6 +169,14 @@ class block_cache {
    */
   void set_max_capacity(size_t);
 
+  /** dependency injection, meaning,
+   * underlying cache provider instance should be released
+   * after block_cache singleton is released.
+   */
+  void hold_cache_provider(std::shared_ptr<const fileio::fixed_size_cache_manager> instance) {
+    m_cache_provider = instance;
+  }
+
   /**
    * Gets a singleton instance. The singleton instance has this default behavior:
    *
@@ -186,6 +197,11 @@ class block_cache {
 
   /// whether the block_cache is initialized
   bool m_initialized = false;
+
+  // hold the reference of the underlying cache storage provider
+  // put it at the top of the member variables so it will be destructed at last
+  std::shared_ptr<const fileio::fixed_size_cache_manager> m_cache_provider;
+
 
   /// The storage prefix
   std::string m_storage_prefix;
@@ -210,6 +226,7 @@ class block_cache {
 
   /// An LRU cache of the set of files we maintain. The value_type (bool) is unused.
   lru_cache<std::string, bool> m_lru_files;
+
 
 }; // class block_cache
 } // turicreate

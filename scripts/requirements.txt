@@ -1,31 +1,19 @@
+-r requirements-minimal.txt
+
+### extra for full pkg ###
+
 coremltools==3.3
 scipy==1.2.1
-numpy==1.16.4
-cython==0.29.10
-decorator==4.4.0
-pandas==0.24.2
-pillow==6.2.0
-prettytable==0.7.2
-pytz==2019.1
 resampy==0.2.1
 scikit-learn==0.20.3
 statsmodels==0.9.0
-tensorflow==2.0.0
+tensorflow==2.0.1; python_version > '2.7'
+tensorflow==2.0.0; python_version < '3.5'   # Last version to support Python 2.7
 UISoup==2.5.7
 pyobjc==5.2; sys_platform == 'darwin'
-future==0.17.1
-pyOpenSSL==19.0.0
-ndg-httpsclient==0.5.1
-pyasn1==0.4.5
-mock==3.0.5
+llvmlite==0.33.0; python_version >= '3.6'
+llvmlite==0.31.0; python_version < '3.6'
 
 ########## >=  #########
 
-argparse>=1.2.1
-pytest>=4.6.3
-hypothesis>=4.50,<5.0
-wheel>=0.29.0
-six>=1.12.0
-requests>=2.9.1
-pytest-cov>=2.7.1
 pre-commit>=1.21.0

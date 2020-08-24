@@ -1,5 +1,5 @@
 /*
-* Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -24,7 +24,6 @@ namespace Aws
     namespace Utils
     {
         static const size_t UUID_BINARY_SIZE = 0x10;
-        static const size_t UUID_STR_SIZE = 0x24;
 
         /**
          * Class encapsulating a UUID. This is platform dependent. The method you are most likely interested in is RandomUUID().
@@ -44,11 +43,11 @@ namespace Aws
             /**
              * Returns the current UUID as a GUID string
              */
-            operator Aws::String();
+            operator Aws::String() const;
             /**
              * Returns a copy of the raw uuid
              */
-            inline operator ByteBuffer() { return ByteBuffer(m_uuid, sizeof(m_uuid)); }
+            inline operator ByteBuffer() const { return ByteBuffer(m_uuid, sizeof(m_uuid)); }
 
             /**
              * Generates a UUID. It will always try to prefer a random implementation from the entropy source on the machine. If none, is available, it will

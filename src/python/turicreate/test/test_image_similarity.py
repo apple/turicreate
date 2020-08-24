@@ -12,9 +12,11 @@ import turicreate as tc
 from turicreate.toolkits._internal_utils import _mac_ver
 import tempfile
 from . import util as test_util
-import coremltools
-import numpy as np
+
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
+from turicreate.toolkits.image_analysis.image_analysis import MODEL_TO_FEATURE_SIZE_MAPPING, get_deep_features
+
+import numpy as np
 
 
 def get_test_data():
@@ -63,7 +65,10 @@ def get_test_data():
         )
         images.append(tc_image)
 
-    return tc.SFrame({"awesome_image": images})
+    data_dict = {"awesome_image": images}
+    data = tc.SFrame(data_dict)
+
+    return data
 
 
 data = get_test_data()
@@ -71,11 +76,11 @@ data = get_test_data()
 
 class ImageSimilarityTest(unittest.TestCase):
     @classmethod
-    def setUpClass(self, input_image_shape=(3, 224, 224), model="resnet-50"):
+    def setUpClass(self, input_image_shape=(3, 224, 224), model="resnet-50", feature="awesome_image"):
         """
         The setup class method for the basic test case with all default values.
         """
-        self.feature = "awesome_image"
+        self.feature = feature
         self.label = None
         self.input_image_shape = input_image_shape
         self.pre_trained_model = model
@@ -85,6 +90,10 @@ class ImageSimilarityTest(unittest.TestCase):
             "model": "resnet-50",
             "verbose": True,
         }
+
+        # Get deep features if needed
+        if self.feature.endswith("WithDeepFeature"):
+            data[self.feature] = get_deep_features(data["awesome_image"], self.feature.split('_WithDeepFeature')[0])
 
         # Model
         self.model = tc.image_similarity.create(
@@ -218,6 +227,7 @@ class ImageSimilarityTest(unittest.TestCase):
         """
         Check the export_coreml() function.
         """
+        import coremltools
 
         def get_psnr(x, y):
             # See: https://en.wikipedia.org/wiki/Peak_signal-to-noise_ratio
@@ -244,27 +254,32 @@ class ImageSimilarityTest(unittest.TestCase):
             },
             dict(coreml_model.user_defined_metadata),
         )
+
         expected_result = (
             "Image similarity (%s) created by Turi Create (version %s)"
             % (self.model.model, tc.__version__)
         )
 
         # Get model distances for comparison
-        img = data[0:1][self.feature][0]
-        img_fixed = tc.image_analysis.resize(img, *reversed(self.input_image_shape))
-        tc_ret = self.model.query(img_fixed, k=data.num_rows())
+        if self.feature == "awesome_image":
+            img = data[0:1][self.feature][0]
+            img_fixed = tc.image_analysis.resize(img, *reversed(self.input_image_shape))
+            tc_ret = self.model.query(img_fixed, k=data.num_rows())
 
-        if _mac_ver() >= (10, 13):
-            from PIL import Image as _PIL_Image
+            if _mac_ver() >= (10, 13):
+                from PIL import Image as _PIL_Image
 
-            pil_img = _PIL_Image.fromarray(img_fixed.pixel_data)
-            coreml_ret = coreml_model.predict({"awesome_image": pil_img})
+                pil_img = _PIL_Image.fromarray(img_fixed.pixel_data)
+                coreml_ret = coreml_model.predict({"awesome_image": pil_img})
 
-            # Compare distances
-            coreml_distances = np.array(coreml_ret["distance"])
-            tc_distances = tc_ret.sort("reference_label")["distance"].to_numpy()
-            psnr_value = get_psnr(coreml_distances, tc_distances)
-            self.assertTrue(psnr_value > 50)
+                # Compare distances
+                coreml_distances = np.array(coreml_ret["distance"])
+                tc_distances = tc_ret.sort("reference_label")["distance"].to_numpy()
+                psnr_value = get_psnr(coreml_distances, tc_distances)
+                self.assertTrue(psnr_value > 50)
+        else:
+            # If the code came here that means the type of the feature used is deep_deatures and the predict fwature in coremltools doesn't work with deep_features yet so we will ignore this specific test case unitl the same is written.
+            pass
 
     def test_save_and_load(self):
         with test_util.TempDirectory() as filename:
@@ -286,11 +301,27 @@ class ImageSimilarityTest(unittest.TestCase):
             print("Export coreml passed")
 
 
+class ImageSimilarityResnetTestWithDeepFeatures(ImageSimilarityTest):
+    @classmethod
+    def setUpClass(self):
+        super(ImageSimilarityResnetTestWithDeepFeatures, self).setUpClass(
+            model="resnet-50", input_image_shape=(3, 224, 224), feature="resnet-50_WithDeepFeature"
+        )
+
+
 class ImageSimilaritySqueezeNetTest(ImageSimilarityTest):
     @classmethod
     def setUpClass(self):
         super(ImageSimilaritySqueezeNetTest, self).setUpClass(
-            model="squeezenet_v1.1", input_image_shape=(3, 227, 227)
+            model="squeezenet_v1.1", input_image_shape=(3, 227, 227), feature="awesome_image"
+        )
+
+
+class ImageSimilaritySqueezeNetTestWithDeepFeatures(ImageSimilarityTest):
+    @classmethod
+    def setUpClass(self):
+        super(ImageSimilaritySqueezeNetTestWithDeepFeatures, self).setUpClass(
+            model="squeezenet_v1.1", input_image_shape=(3, 227, 227), feature="squeezenet_v1.1_WithDeepFeature"
         )
 
 
@@ -301,7 +332,18 @@ class ImageSimilarityVisionFeaturePrintSceneTest(ImageSimilarityTest):
     @classmethod
     def setUpClass(self):
         super(ImageSimilarityVisionFeaturePrintSceneTest, self).setUpClass(
-            model="VisionFeaturePrint_Scene", input_image_shape=(3, 299, 299)
+            model="VisionFeaturePrint_Scene", input_image_shape=(3, 299, 299), feature="awesome_image"
+        )
+
+
+@unittest.skipIf(
+    _mac_ver() < (10, 14), "VisionFeaturePrint_Scene only supported on macOS 10.14+"
+)
+class ImageSimilarityVisionFeaturePrintSceneTestWithDeepFeatures(ImageSimilarityTest):
+    @classmethod
+    def setUpClass(self):
+        super(ImageSimilarityVisionFeaturePrintSceneTestWithDeepFeatures, self).setUpClass(
+            model="VisionFeaturePrint_Scene", input_image_shape=(3, 299, 299), feature="VisionFeaturePrint_Scene_WithDeepFeature"
         )
 
 # A test to gaurantee that old code using the incorrect name still works.
@@ -312,5 +354,16 @@ class ImageSimilarityVisionFeaturePrintSceneTest_bad_name(ImageSimilarityTest):
     @classmethod
     def setUpClass(self):
         super(ImageSimilarityVisionFeaturePrintSceneTest_bad_name, self).setUpClass(
-            model="VisionFeaturePrint_Screen", input_image_shape=(3, 299, 299)
+            model="VisionFeaturePrint_Screen", input_image_shape=(3, 299, 299), feature="awesome_image"
+        )
+
+
+@unittest.skipIf(
+    _mac_ver() < (10, 14), "VisionFeaturePrint_Scene only supported on macOS 10.14+"
+)
+class ImageSimilarityVisionFeaturePrintSceneTestWithDeepFeatures_bad_name(ImageSimilarityTest):
+    @classmethod
+    def setUpClass(self):
+        super(ImageSimilarityVisionFeaturePrintSceneTestWithDeepFeatures_bad_name, self).setUpClass(
+            model="VisionFeaturePrint_Screen", input_image_shape=(3, 299, 299), feature="VisionFeaturePrint_Scene_WithDeepFeature"
         )

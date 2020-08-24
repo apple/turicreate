@@ -23,7 +23,6 @@ if [[ "${PYTHON_VERSION}" == "python2.7" ]]; then
   PYTHON_FULL_NAME=python2.7
 fi
 
-
 function linux_patch_sigfpe_handler {
   if [[ $OSTYPE == linux* ]]; then
     targfile=deps/local/include/pyfpe.h
@@ -35,7 +34,11 @@ function linux_patch_sigfpe_handler {
 }
 
 $PIP install --upgrade "pip"
-$PIP install -r scripts/requirements.txt
+if [[ "$USE_MINIMAL" -eq 1  ]]; then
+  $PIP install -r scripts/requirements-minimal.txt
+else
+  $PIP install -r scripts/requirements.txt
+fi
 
 # install pre-commit hooks for git
 with_pre_commit=${with_pre_commit:-0}
@@ -49,16 +52,29 @@ mkdir -p deps/local/lib
 mkdir -p deps/local/include
 
 pushd deps/local/include
-for f in ../../env/include/"$PYTHON_FULL_NAME"/*; do
+
+if [[ -d "../../env/include/$PYTHON_FULL_NAME" ]]; then
+    SRC_INCLUDE_DIR="../../env/include/$PYTHON_FULL_NAME"
+else
+    # Newer versions of virtualenv don't include header files
+    SRC_INCLUDE_DIR=$(${PYTHON} -c 'from sysconfig import get_paths as gp; print(gp()["include"])')
+fi
+
+echo "run 'ln -Ffs' files from ${SRC_INCLUDE_DIR}"
+for f in $SRC_INCLUDE_DIR/*; do
   ln -Ffs "$f" "$(basename "$f")"
 done
+
 popd
 
 mkdir -p deps/local/bin
 pushd deps/local/bin
+
+echo "run 'ln -Ffs' on files from ../../env/bin/"
 for f in ../../env/bin/*; do
   ln -Ffs "$f" "$(basename "$f")"
 done
+
 popd
 
 linux_patch_sigfpe_handler

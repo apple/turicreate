@@ -88,14 +88,14 @@ BOOST_AUTO_TEST_CASE(test_simple_data_iterator) {
       const labeled_image& example = batch[i];
       size_t row = (row_offset + i) % NUM_ROWS;
 
-      TS_ASSERT_EQUALS(example.image.m_height, IMAGE_HEIGHT);
-      TS_ASSERT_EQUALS(example.image.m_width, IMAGE_WIDTH);
-      TS_ASSERT_EQUALS(example.image.m_channels, 3);
+      TS_ASSERT_EQUALS(example.image->Height(), IMAGE_HEIGHT);
+      TS_ASSERT_EQUALS(example.image->Width(), IMAGE_WIDTH);
+      TS_ASSERT_EQUALS(example.image->Size(), IMAGE_HEIGHT * IMAGE_WIDTH * 3);
 
       // The first byte of the first pixel should contain the row index.
-      flex_image image = image_util::decode_image(example.image);
-      TS_ASSERT_EQUALS(static_cast<size_t>(image.get_image_data()[0]),
-                       row % 256);
+      std::vector<float> image_data(example.image->Size());
+      example.image->WriteHWC(MakeSpan(image_data));
+      TS_ASSERT_DELTA(image_data[0] * 255.f, row % 256, 0.5f);
 
       TS_ASSERT_EQUALS(example.annotations.size(), 1);
       TS_ASSERT_EQUALS(example.annotations[0].identifier, 0);

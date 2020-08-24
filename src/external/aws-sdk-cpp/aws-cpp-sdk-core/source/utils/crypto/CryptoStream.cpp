@@ -1,5 +1,5 @@
 /*
-  * Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  * Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
   *
   * Licensed under the Apache License, Version 2.0 (the "License").
   * You may not use this file except in compliance with the License.
@@ -27,8 +27,8 @@ namespace Aws
             {
             }
 
-            SymmetricCryptoStream::SymmetricCryptoStream(Aws::OStream& sink, CipherMode mode, SymmetricCipher& cipher, size_t bufSize) :
-                    Aws::IOStream(m_cryptoBuf = Aws::New<SymmetricCryptoBufSink>(CLASS_TAG, sink, cipher, mode, bufSize)), m_hasOwnership(true)
+            SymmetricCryptoStream::SymmetricCryptoStream(Aws::OStream& sink, CipherMode mode, SymmetricCipher& cipher, size_t bufSize, int16_t blockOffset) :
+                    Aws::IOStream(m_cryptoBuf = Aws::New<SymmetricCryptoBufSink>(CLASS_TAG, sink, cipher, mode, bufSize, blockOffset)), m_hasOwnership(true)
             {
             }
 
@@ -54,6 +54,7 @@ namespace Aws
 
             void SymmetricCryptoStream::Finalize()
             {
+                assert(m_cryptoBuf);
                 m_cryptoBuf->Finalize();
             }
         }

@@ -8,8 +8,9 @@
 
 #include <random>
 
-#include <core/logging/assertions.hpp>
-#include <core/parallel/lambda_omp.hpp>
+#include <core/util/Verify.hpp>
+#include <ml/neural_net/CoreImageImage.hpp>
+#include <ml/neural_net/TaskQueue.hpp>
 
 #import <Accelerate/Accelerate.h>
 
@@ -35,30 +36,48 @@ CGAffineTransform transform_from_core_image(CGSize size) {
   return CGAffineTransformInvert(transform_to_core_image(size));
 }
 
-CIImage *convert_to_core_image(const image_type& source) {
-
-  ASSERT_TRUE(!source.is_decoded());
-
-  // Wrap the image with shared_ptr for memory management by NSData below.
-  __block auto shared_image = std::make_shared<image_type>(source);
-
-  // Wrap the (shared) image data with NSData.
-  auto deallocator = ^(void *bytes, NSUInteger length) {
-    shared_image.reset();
-  };
-  void* data = const_cast<unsigned char*>(shared_image->get_image_data());
-  NSData *imageData =
-      [[NSData alloc] initWithBytesNoCopy: data
-                                   length: shared_image->m_image_data_size
-                              deallocator: deallocator];
-
-  // Let CIImage inspect the file format and decode it.
-  CIImage* result = [CIImage imageWithData:imageData];
-
-  if (!result) {
-    log_and_throw("Image decoding error");
+CIImage *convert_to_core_image(const Image &source)
+{
+  // On platforms where we use the image_augmenter implementation defined in this file, we expect
+  // the Image to actually be a CoreImageImage anyway. Try downcasting and getting the underlying
+  // CIImage.
+  auto *core_image_source = dynamic_cast<const CoreImageImage *>(&source);
+  if (core_image_source) {
+    return core_image_source->AsCIImage();
   }
-  return result;
+
+  // Otherwise, fall back to rendering the image into a bitmap and loading that into CoreImage.
+
+  // Render to a bitmap.
+  NSMutableData *rgbBitmap = [NSMutableData dataWithLength:source.Size() * sizeof(float)];
+  Span<float> image_span(reinterpret_cast<float *>(rgbBitmap.mutableBytes), source.Size());
+  source.WriteHWC(image_span);
+
+  // Convert from RGB to RGBA.
+  auto wrapBitmap = [&source](NSMutableData *bitmap) {
+    vImage_Buffer buffer;
+    buffer.data = bitmap.mutableBytes;
+    buffer.width = source.Width();
+    buffer.height = source.Height();
+    buffer.rowBytes = bitmap.length / source.Height();
+    return buffer;
+  };
+  NSMutableData *rgbaBitmap =
+      [NSMutableData dataWithLength:source.Height() * source.Width() * 4 * sizeof(float)];
+  vImage_Buffer rgbaBuffer = wrapBitmap(rgbaBitmap);
+  vImage_Buffer rgbBuffer = wrapBitmap(rgbBitmap);
+  vImage_Error error =
+      vImageConvert_RGBFFFtoRGBAFFFF(&rgbBuffer, /* alpha buffer */ NULL, /* alpha value */ 1.0f,
+                                     &rgbaBuffer, /* premultiply */ true, kvImageDoNotTile);
+  VerifyIsTrueWithMessage(error == kvImageNoError, TuriErrorCode::ImageConversionFailure,
+                          "converting RGB bitmap to RGBA");
+
+  // Pass the bitmap to CoreImage.
+  return [CIImage imageWithBitmapData:rgbaBitmap
+                          bytesPerRow:rgbaBitmap.length / source.Height()
+                                 size:CGSizeMake(source.Width(), source.Height())
+                               format:kCIFormatRGBAf
+                           colorSpace:nil];
 }
 
 API_AVAILABLE(macos(10.13))
@@ -92,7 +111,7 @@ TCMPSLabeledImage *convert_to_core_image(const labeled_image& source) {
 
   TCMPSLabeledImage *result = [TCMPSLabeledImage new];
 
-  CIImage *sourceImage = convert_to_core_image(source.image);
+  CIImage *sourceImage = convert_to_core_image(*source.image);
 
   // For intermediate values, use an image with infinite extent, for smoother
   // sampling behavior at the intended image boundaries.
@@ -107,11 +126,11 @@ TCMPSLabeledImage *convert_to_core_image(const labeled_image& source) {
   return result;
 }
 
-void convert_from_core_image(CIImage *source, CIContext *context,
-                             size_t output_width, size_t output_height,
-                             float* out, size_t out_size) {
-
-  ASSERT_EQ(output_width * output_height * 3, out_size);
+void convert_from_core_image(CIImage *source, CIContext *context, size_t output_width,
+                             size_t output_height, Span<float> output)
+{
+  VerifyIsTrue(output_width * output_height * 3 == output.Size(),
+               TuriErrorCode::InvalidBufferLength);
 
   // Render the image into a bitmap. CoreImage supports RGBA but not RGB...
   size_t rgba_data_size = output_height * output_width * 4;
@@ -124,21 +143,20 @@ void convert_from_core_image(CIImage *source, CIContext *context,
        colorSpace: nil];
 
   // Copy the RGB portion to the output buffer using Accelerate.
-  auto wrap_float_data = [=](float* data, size_t num_channels) {
+  auto wrap_float_data = [=](Span<float> span) {
     vImage_Buffer buffer;
-    buffer.data = data;
+    buffer.data = span.Data();
     buffer.width = output_width;
     buffer.height = output_height;
-    buffer.rowBytes = output_width * num_channels * sizeof(float);
+    buffer.rowBytes = span.Size() * sizeof(float) / output_height;
     return buffer;
   };
-  vImage_Buffer rgba_buffer = wrap_float_data(rgba_data.get(), 4);
-  vImage_Buffer out_buffer = wrap_float_data(out, 3);
+  vImage_Buffer rgba_buffer = wrap_float_data(Span<float>(rgba_data.get(), rgba_data_size));
+  vImage_Buffer out_buffer = wrap_float_data(output);
   vImage_Error err = vImageConvert_RGBAFFFFtoRGBFFF(
       &rgba_buffer, &out_buffer, kvImageDoNotTile);
-  if (err != kvImageNoError) {
-    log_and_throw("Unexpected error converting RGBA bitmap to RGB.");
-  }
+  VerifyIsTrueWithMessage(err == kvImageNoError, TuriErrorCode::ImageConversionFailure,
+                          "converting RGBA bitmap to RGB");
 }
 
 API_AVAILABLE(macos(10.13))
@@ -168,14 +186,12 @@ std::vector<image_annotation> convert_from_core_image(
 }
 
 API_AVAILABLE(macos(10.13))
-void convert_from_core_image(TCMPSLabeledImage *source, CIContext *context,
-                             size_t output_width, size_t output_height,
-                             float* out, size_t out_size,
-                             std::vector<image_annotation>* annotations_out) {
-
+void convert_from_core_image(TCMPSLabeledImage *source, CIContext *context, size_t output_width,
+                             size_t output_height, Span<float> output,
+                             std::vector<image_annotation> *annotations_out)
+{
   // Render the CIImage into the provided float buffer.
-  convert_from_core_image(source.image, context, output_width, output_height,
-                          out, out_size);
+  convert_from_core_image(source.image, context, output_width, output_height, output);
 
   // Convert the annotations.
   *annotations_out = convert_from_core_image(
@@ -350,6 +366,7 @@ mps_image_augmenter::result mps_image_augmenter::prepare_images(
   // Allocate a float vector large enough to contain the entire image batch.
   const size_t result_array_stride = h * w * c;
   std::vector<float> result_array(n * result_array_stride);
+  Span<float> result_span = MakeSpan(result_array);
 
   // Define the work to perform for each image.
   auto apply_augmentations_for_image = [&](size_t i) {
@@ -369,16 +386,15 @@ mps_image_augmenter::result mps_image_augmenter::prepare_images(
     }
 
     // Convert from CIImage to float array.
-    float* float_out = result_array.data() + i * result_array_stride;
-    convert_from_core_image(labeledImage, context_, w, h, float_out,
-                            result_array_stride, &res.annotations_batch[i]);
-
+    convert_from_core_image(labeledImage, context_, w, h, result_span.SliceByDimension(n, i),
+                            &res.annotations_batch[i]);
     }
   };
 
   // Distribute work across threads, each writing into different regions of
   // result_array and res.annotations_batch.
-  parallel_for(0, source_batch.size(), apply_augmentations_for_image);
+  TaskQueue::GetGlobalConcurrentQueue()->DispatchApply(source_batch.size(),
+                                                       apply_augmentations_for_image);
 
   // Wrap and return the results.
   res.image_batch = shared_float_array::wrap(std::move(result_array),

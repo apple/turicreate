@@ -109,6 +109,7 @@ add_custom_command(
 
 add_library(libprotoc ${protobuf_SHARED_OR_STATIC}
   ${libprotoc_files})
+target_compile_options(libprotoc PUBLIC "-Wno-enum-compare-switch")
 target_link_libraries(libprotoc libprotobuf)
 if(MSVC AND protobuf_BUILD_SHARED_LIBS)
   target_compile_definitions(libprotoc

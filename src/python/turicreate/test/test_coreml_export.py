@@ -18,7 +18,6 @@ from turicreate.toolkits._main import ToolkitError
 from turicreate.toolkits._internal_utils import _mac_ver
 import shutil
 import numpy as np
-import coremltools
 import sys
 import platform
 import array
@@ -79,6 +78,8 @@ class CoreMLExportTest(unittest.TestCase):
         with tempfile.NamedTemporaryFile(mode="w", suffix=".mlmodel") as mlmodel_file:
             mlmodel_filename = mlmodel_file.name
             model.export_coreml(mlmodel_filename)
+            import coremltools
+
             coreml_model = coremltools.models.MLModel(mlmodel_filename)
             self.assertDictEqual(
                 {

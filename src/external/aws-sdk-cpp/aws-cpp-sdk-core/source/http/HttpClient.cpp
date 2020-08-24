@@ -1,5 +1,5 @@
 /*
-  * Copyright 2010-2015 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  * Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
   * 
   * Licensed under the Apache License, Version 2.0 (the "License").
   * You may not use this file except in compliance with the License.
@@ -14,6 +14,7 @@
   */
 
 #include <aws/core/http/HttpClient.h>
+#include <aws/core/http/HttpRequest.h>
 
 using namespace Aws;
 using namespace Aws::Http;
@@ -45,4 +46,14 @@ void HttpClient::RetryRequestSleep(std::chrono::milliseconds sleepTime)
 {
     std::unique_lock< std::mutex > signalLocker(m_requestProcessingSignalLock);
     m_requestProcessingSignal.wait_for(signalLocker, sleepTime, [this](){ return m_disableRequestProcessing.load() == true; });
+}
+
+bool HttpClient::ContinueRequest(const Aws::Http::HttpRequest& request) const
+{
+    if (request.GetContinueRequestHandler())
+    {
+        return request.GetContinueRequestHandler()(&request);
+    }
+
+    return true;
 }

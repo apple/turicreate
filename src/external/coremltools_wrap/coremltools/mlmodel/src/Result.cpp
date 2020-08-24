@@ -1,5 +1,9 @@
 #include "Result.hpp"
+
+#include "DataType.hpp"
 #include "Format.hpp"
+#include "ResultReason.hpp"
+#include "ResultType.hpp"
 
 #include <sstream>
 
@@ -7,19 +11,27 @@ namespace CoreML {
     
   static const char* m_prefix = "validator error: ";
     
-  Result::Result() : m_type(ResultType::NO_ERROR), m_message("not an error") { }
+  Result::Result()
+    : Result(ResultType::NO_ERROR, ResultReason::UNKNOWN, "not an error")
+  { }
 
-  Result::Result(ResultType type, const std::string& message) :
-    m_type(type), m_message(m_prefix + message) {
+  Result::Result(ResultType type, const std::string& message)
+    : Result(type, ResultReason::UNKNOWN, message)
+  { }
 
+  Result::Result(ResultType type, ResultReason reason, const std::string& message)
+    : m_type(type)
+    , m_reason(reason)
+    , m_message(m_prefix + message) { }
 
-    }
-
-  bool Result::good() const {
+bool Result::good() const {
       return (m_type == ResultType::NO_ERROR || m_type == ResultType::POTENTIALLY_INVALID_NEURAL_NETWORK_SHAPES);
   }
 
-  const ResultType& Result::type() const {
+  ResultReason Result::reason() const {
+    return m_reason;
+  }
+ResultType Result::type() const {
     return m_type;
   }
 
@@ -28,8 +40,8 @@ namespace CoreML {
   }
 
   Result Result::typeMismatchError(
-      FeatureType expected,
-      FeatureType actual,
+      const FeatureType& expected,
+      const FeatureType& actual,
       const std::string& parameterName) {
 
     Result out;
@@ -46,7 +58,7 @@ namespace CoreML {
 
   Result Result::featureTypeInvariantError(
       const std::vector<FeatureType>& allowed,
-      FeatureType actual) {
+      const FeatureType& actual) {
 
     Result out;
     std::stringstream ss;

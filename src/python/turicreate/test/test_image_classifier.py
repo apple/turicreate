@@ -19,12 +19,11 @@ from turicreate.toolkits._internal_utils import (
     _raise_error_if_not_sframe,
     _raise_error_if_not_sarray,
 )
+from turicreate.toolkits.image_analysis.image_analysis import MODEL_TO_FEATURE_SIZE_MAPPING, get_deep_features
 
 from . import util as test_util
 
-import coremltools
 import numpy as np
-import pytest
 import turicreate as tc
 
 
@@ -75,7 +74,10 @@ def get_test_data():
         images.append(tc_image)
 
     labels = ["white"] * 5 + ["black"] * 5
-    return tc.SFrame({"awesome_image": images, "awesome_label": labels})
+    data_dict = {"awesome_image": images, "awesome_label": labels}
+    data = tc.SFrame(data_dict)
+
+    return data
 
 
 data = get_test_data()
@@ -86,19 +88,24 @@ class ImageClassifierTest(unittest.TestCase):
     def setUpClass(
         self,
         model="resnet-50",
+        feature="awesome_image", 
         input_image_shape=(3, 224, 224),
         tol=0.02,
         num_examples=100,
         label_type=int,
     ):
-        self.feature = "awesome_image"
+        self.feature = feature
         self.target = "awesome_label"
         self.input_image_shape = input_image_shape
         self.pre_trained_model = model
         self.tolerance = tol
 
+        # Get deep features if needed
+        if self.feature.endswith("WithDeepFeature"):
+            data[self.feature] = get_deep_features(data["awesome_image"], self.feature.split('_WithDeepFeature')[0])
+
         self.model = tc.image_classifier.create(
-            data, target=self.target, model=self.pre_trained_model, seed=42
+            data, target=self.target, feature=self.feature, model=self.pre_trained_model, seed=42
         )
         self.nn_model = self.model.feature_extractor
         self.lm_model = self.model.classifier
@@ -134,14 +141,13 @@ class ImageClassifierTest(unittest.TestCase):
             self.assertAlmostEqual(a, b, delta=tol)
 
     def test_create_with_missing_value(self):
+        data_dict = {}
+        for col_name, col_type in zip(data.column_names(), data.column_types()):
+            data_dict[col_name] = tc.SArray([None], dtype=col_type)
         data_with_none = data.append(
-            tc.SFrame(
-                {
-                    self.feature: tc.SArray([None], dtype=tc.Image),
-                    self.target: [data[self.target][0]],
-                }
-            )
+            tc.SFrame(data_dict)
         )
+
         with self.assertRaises(_ToolkitError):
             tc.image_classifier.create(
                 data_with_none, feature=self.feature, target=self.target
@@ -162,6 +168,16 @@ class ImageClassifierTest(unittest.TestCase):
     def test_create_with_empty_dataset(self):
         with self.assertRaises(_ToolkitError):
             tc.image_classifier.create(data[:0], target=self.target)
+
+    def test_select_correct_feature_column_to_train(self):
+        # sending both, the correct extracted features colum and image column
+        if self.feature == "awesome_image":
+            test_data = data.select_columns([self.feature, self.target])
+            deep_features_col_name = self.pre_trained_model+"_WithDeepFeature"
+            test_data[deep_features_col_name] = get_deep_features(data["awesome_image"], 
+                self.pre_trained_model)
+            test_model = tc.image_classifier.create(test_data, target=self.target, model=self.pre_trained_model)
+            self.assertTrue(test_model.feature == deep_features_col_name)
 
     def test_predict(self):
         model = self.model
@@ -207,11 +223,8 @@ class ImageClassifierTest(unittest.TestCase):
             predictions = model.classify("more junk")
 
     def test_export_coreml(self):
-        if self.model.model == "VisionFeaturePrint_Scene":
-            pytest.xfail(
-                "Expected failure until "
-                + "https://github.com/apple/turicreate/issues/2744 is fixed"
-            )
+        import coremltools
+
         filename = tempfile.NamedTemporaryFile(suffix=".mlmodel").name
         self.model.export_coreml(filename)
 
@@ -228,32 +241,38 @@ class ImageClassifierTest(unittest.TestCase):
         )
         expected_result = (
             "Image classifier (%s) created by Turi Create (version %s)"
-            % (self.model.model, tc.__version__)
+            % (self.model.model.lower(), tc.__version__)
         )
         self.assertEquals(expected_result, coreml_model.short_description)
 
     @unittest.skipIf(sys.platform != "darwin", "Core ML only supported on Mac")
     def test_export_coreml_predict(self):
+        import coremltools
+
         filename = tempfile.NamedTemporaryFile(suffix=".mlmodel").name
         self.model.export_coreml(filename)
 
         coreml_model = coremltools.models.MLModel(filename)
-        img = data[0:1][self.feature][0]
-        img_fixed = tc.image_analysis.resize(img, *reversed(self.input_image_shape))
-        from PIL import Image
+        if self.feature == "awesome_image":
+            img = data[0:1][self.feature][0]
+            img_fixed = tc.image_analysis.resize(img, *reversed(self.input_image_shape))
+            from PIL import Image
 
-        pil_img = Image.fromarray(img_fixed.pixel_data)
+            pil_img = Image.fromarray(img_fixed.pixel_data)
 
-        if _mac_ver() >= (10, 13):
-            classes = self.model.classifier.classes
-            ret = coreml_model.predict({self.feature: pil_img})
-            coreml_values = [ret[self.target + "Probability"][l] for l in classes]
+            if _mac_ver() >= (10, 13):
+                classes = self.model.classifier.classes
+                ret = coreml_model.predict({self.feature: pil_img})
+                coreml_values = [ret[self.target + "Probability"][l] for l in classes]
 
-            self.assertListAlmostEquals(
-                coreml_values,
-                list(self.model.predict(img_fixed, output_type="probability_vector")),
-                self.tolerance,
-            )
+                self.assertListAlmostEquals(
+                    coreml_values,
+                    list(self.model.predict(img_fixed, output_type="probability_vector")),
+                    self.tolerance,
+                )
+        else:
+            # If the code came here that means the type of the feature used is deep_deatures and the predict fwature in coremltools doesn't work with deep_features yet so we will ignore this specific test case unitl the same is written.
+            pass
 
     def test_classify(self):
         model = self.model
@@ -336,6 +355,18 @@ class ImageClassifierTest(unittest.TestCase):
         evaluation.explore()
 
 
+class ImageClassifierResnetTestWithDeepFeatures(ImageClassifierTest):
+    @classmethod
+    def setUpClass(self):
+        super(ImageClassifierResnetTestWithDeepFeatures, self).setUpClass(
+            model="resnet-50",
+            input_image_shape=(3, 224, 224),
+            tol=0.02,
+            num_examples=100,
+            feature="resnet-50_WithDeepFeature",
+        )
+
+
 class ImageClassifierSqueezeNetTest(ImageClassifierTest):
     @classmethod
     def setUpClass(self):
@@ -344,6 +375,18 @@ class ImageClassifierSqueezeNetTest(ImageClassifierTest):
             input_image_shape=(3, 227, 227),
             tol=0.005,
             num_examples=200,
+            feature="awesome_image",
+        )
+
+class ImageClassifierSqueezeNetTestWithDeepFeatures(ImageClassifierTest):
+    @classmethod
+    def setUpClass(self):
+        super(ImageClassifierSqueezeNetTestWithDeepFeatures, self).setUpClass(
+            model="squeezenet_v1.1",
+            input_image_shape=(3, 227, 227),
+            tol=0.005,
+            num_examples=200,
+            feature="squeezenet_v1.1_WithDeepFeature",
         )
 
 
@@ -360,4 +403,22 @@ class VisionFeaturePrintSceneTest(ImageClassifierTest):
             tol=0.005,
             num_examples=100,
             label_type=str,
+            feature="awesome_image",
+        )
+
+
+# TODO: if on skip OS, test negative case
+@unittest.skipIf(
+    _mac_ver() < (10, 14), "VisionFeaturePrint_Scene only supported on macOS 10.14+"
+)
+class VisionFeaturePrintSceneTestWithDeepFeatures(ImageClassifierTest):
+    @classmethod
+    def setUpClass(self):
+        super(VisionFeaturePrintSceneTestWithDeepFeatures, self).setUpClass(
+            model="VisionFeaturePrint_Scene",
+            input_image_shape=(3, 299, 299),
+            tol=0.005,
+            num_examples=100,
+            label_type=str,
+            feature="VisionFeaturePrint_Scene_WithDeepFeature",
         )

@@ -110,6 +110,12 @@ if(APPLE)
     add_definitions(-DHAS_CORE_ML)
     set(HAS_CORE_ML TRUE)
   endif()
+  
+  # MLCompute is only present on macOS 10.16 or higher.
+  if(TC_BASE_SDK_VERSION VERSION_GREATER_EQUAL 10.16)
+    add_definitions(-DHAS_ML_COMPUTE)
+    set(HAS_ML_COMPUTE TRUE)
+  endif()
 
   # Core ML only supports batch inference on macOS 10.14 or higher
   # Logic reversed to get around what seems to be a CMake bug.
@@ -128,6 +134,7 @@ if(APPLE)
   if(NOT TC_BASE_SDK_VERSION VERSION_LESS 10.15)
     add_definitions(-DHAS_MACOS_10_15)
   endif()
+
 endif() 
 
 endmacro()

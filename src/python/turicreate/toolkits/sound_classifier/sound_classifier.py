@@ -21,6 +21,7 @@ from turicreate.toolkits._main import ToolkitError as _ToolkitError
 from turicreate.toolkits._model import CustomModel as _CustomModel
 from turicreate.toolkits._model import PythonProxy as _PythonProxy
 from turicreate.toolkits import _coreml_utils
+from turicreate._deps.minimal_package import _minimal_package_import_check
 
 
 class _DataIterator(object):
@@ -94,7 +95,6 @@ class _NumPyDataIterator(_DataIterator):
 
 
 def _create_data_iterator(data, label=None, batch_size=1, shuffle=False):
-
     return _NumPyDataIterator(data, label=label, batch_size=batch_size, shuffle=shuffle)
 
 
@@ -134,7 +134,9 @@ class _Accuracy(object):
 
 class _TFAccuracy(_Accuracy):
     def __init__(self):
-        import tensorflow as tf
+        from turicreate._deps.minimal_package import _minimal_package_import_check
+
+        tf = _minimal_package_import_check("tensorflow")
 
         self.impl = tf.keras.metrics.Accuracy()
 
@@ -188,7 +190,7 @@ def _is_deep_feature_sarray(sa):
 
 
 def _is_audio_data_sarray(sa):
-    if not isinstance(sa, _tc.SArray):
+    if not isinstance(sa, _tc.SArray) or len(sa) == 0:
         return False
     if sa.dtype != dict:
         return False
@@ -373,6 +375,7 @@ def create(
     )
     train_data = train_data.stack("deep features", new_column_name="deep features")
     train_data, missing_ids = train_data.dropna_split(columns=["deep features"])
+    train_data = train_data.shuffle()
 
     training_batch_size = min(len(train_data), batch_size)
 
@@ -829,7 +832,7 @@ class SoundClassifier(_CustomModel):
         --------
         >>> model.export_coreml('./myModel.mlmodel')
         """
-        import coremltools
+        coremltools = _minimal_package_import_check("coremltools")
         from coremltools.proto.FeatureTypes_pb2 import ArrayFeatureType
 
         prob_name = self.target + "Probability"

@@ -62,6 +62,7 @@ pip-log.txt
 .coverage
 .tox
 pytest.xml
+pytest-minimal.xml
 
 # Mr Developer
 .mr.developer.cfg
@@ -106,6 +107,3 @@ deps/build
 # CCache within Docker
 /.docker_ccache/
 /.docker_images/
-
-# git hooks
-/.pre-commit-config.yaml

@@ -88,27 +88,6 @@ constexpr size_t MEMORY_REQUIRED_FOR_DEFAULT_BATCH_SIZE = 4294967296;
 // TODO: When we support alternative base models, we will have to generalize.
 constexpr int SPATIAL_REDUCTION = 32;
 
-constexpr float DEFAULT_NON_MAXIMUM_SUPPRESSION_THRESHOLD = 0.45f;
-
-constexpr float DEFAULT_CONFIDENCE_THRESHOLD_PREDICT = 0.25f;
-
-constexpr float DEFAULT_CONFIDENCE_THRESHOLD_EVALUATE = 0.001f;
-
-// before generation precision-recall curves.
-
-// Each bounding box is evaluated relative to a list of pre-defined sizes.
-const std::vector<std::pair<float, float>>& anchor_boxes() {
-  static const std::vector<std::pair<float, float>>* const default_boxes =
-      new std::vector<std::pair<float, float>>({
-          {1.f, 2.f}, {1.f, 1.f}, {2.f, 1.f},
-          {2.f, 4.f}, {2.f, 2.f}, {4.f, 2.f},
-          {4.f, 8.f}, {4.f, 4.f}, {8.f, 4.f},
-          {8.f, 16.f}, {8.f, 8.f}, {16.f, 8.f},
-          {16.f, 32.f}, {16.f, 16.f}, {32.f, 16.f},
-      });
-  return *default_boxes;
-};
-
 flex_int estimate_max_iterations(flex_int num_instances, flex_int batch_size) {
 
   // Scale with square root of number of labeled instances.
@@ -210,9 +189,7 @@ void object_detector::init_options(
 
 void object_detector::infer_derived_options(compute_context* context,
                                             data_iterator* iterator) {
-  // Report to the user what GPU(s) is being used.
-  std::vector<std::string> gpu_names = context->gpu_names();
-  print_training_device(gpu_names);
+  context->print_training_device_info();
 
   // Configure the batch size automatically if not set.
   if (read_state<flexible_type>("batch_size") == FLEX_UNDEFINED) {
@@ -432,18 +409,20 @@ variant_type object_detector::evaluate(gl_sframe data, std::string metric,
     log_and_throw("Annotations column " + annotations_column_name +
                   " does not exist");
   }
-
+  // If called during training, synchronize the model first.
+  const Checkpoint& checkpoint = read_checkpoint();
+  CheckpointMetadata checkpoint_info = checkpoint.GetCheckpointMetadata();
   //parse input opts
   float confidence_threshold, iou_threshold;
   auto it_confidence = opts.find("confidence_threshold");
   if (it_confidence == opts.end()){
-    confidence_threshold = DEFAULT_CONFIDENCE_THRESHOLD_EVALUATE;
+    confidence_threshold = checkpoint_info.evaluate_confidence;
   } else {
     confidence_threshold = opts["confidence_threshold"];
   }
   auto it_iou = opts.find("iou_threshold");
   if (it_iou == opts.end()){
-    iou_threshold = DEFAULT_NON_MAXIMUM_SUPPRESSION_THRESHOLD;
+    iou_threshold = checkpoint_info.nms_threshold;
   } else {
     iou_threshold = opts["iou_threshold"];
   }
@@ -542,6 +521,10 @@ variant_type object_detector::convert_map_to_types(
 
 variant_type object_detector::predict(
     variant_type data, std::map<std::string, flexible_type> opts) {
+  // If called during training, synchronize the model first.
+  const Checkpoint& checkpoint = read_checkpoint();
+  CheckpointMetadata checkpoint_info = checkpoint.GetCheckpointMetadata();
+
   gl_sarray_writer result(flex_type_enum::LIST, 1);
 
   auto consumer = [&](const std::vector<image_annotation>& predicted_row,
@@ -576,13 +559,13 @@ variant_type object_detector::predict(
   float confidence_threshold, iou_threshold;
   auto it_confidence = opts.find("confidence_threshold");
   if (it_confidence == opts.end()){
-    confidence_threshold = DEFAULT_CONFIDENCE_THRESHOLD_PREDICT;
+    confidence_threshold = checkpoint_info.predict_confidence;
   } else {
     confidence_threshold = opts["confidence_threshold"];
   }
   auto it_iou = opts.find("iou_threshold");
   if (it_iou == opts.end()){
-    iou_threshold = DEFAULT_NON_MAXIMUM_SUPPRESSION_THRESHOLD;
+    iou_threshold = checkpoint_info.nms_threshold;
   } else {
     iou_threshold = opts["iou_threshold"];
   }
@@ -725,6 +708,8 @@ object_detector::convert_yolo_to_annotations(
       yolo_map, anchor_boxes, min_confidence);
 }
 
+bool object_detector::should_export_all_metadata() const { return true; }
+
 std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
     std::string filename, std::string short_desc,
     std::map<std::string, flexible_type> additional_user_defined,
@@ -732,30 +717,42 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
 {
   // If called during training, synchronize the model first.
   const Checkpoint& checkpoint = read_checkpoint();
-
-  size_t grid_height = read_state<size_t>("grid_height");
-  size_t grid_width = read_state<size_t>("grid_width");
+  CheckpointMetadata checkpoint_info = checkpoint.GetCheckpointMetadata();
 
   std::string input_str = read_state<std::string>("feature");
-  std::string coordinates_str = "coordinates";
-  std::string confidence_str = "confidence";
 
   // No options provided defaults to include Non Maximum Suppression.
-  if (opts.find("include_non_maximum_suppression") == opts.end()) {
-    opts["include_non_maximum_suppression"] = 1;
+  bool include_non_maximum_suppression = true;
+  bool use_nms_layer = false;
+  float iou_threshold = checkpoint_info.nms_threshold;
+  float confidence_threshold = checkpoint_info.predict_confidence;
+  auto opts_it = opts.find("include_non_maximum_suppression");
+  if (opts_it != opts.end()) {
+    include_non_maximum_suppression = opts_it->second.to<bool>();
+  }
+  if (include_non_maximum_suppression) {
+    // Read user-provided options.
+    opts_it = opts.find("iou_threshold");
+    if (opts_it != opts.end()) {
+      iou_threshold = opts_it->second.to<float>();
+    }
+    opts_it = opts.find("confidence_threshold");
+    if (opts_it != opts.end()) {
+      confidence_threshold = opts_it->second.to<float>();
+    }
+    opts_it = opts.find("use_nms_layer");
+    if (opts_it != opts.end()) {
+      use_nms_layer = opts_it->second.to<bool>();
+    }
   }
 
-  if (opts["include_non_maximum_suppression"].to<bool>()){
-    coordinates_str = "raw_coordinates";
-    confidence_str = "raw_confidence";
-    //Set default values if thresholds not provided.
-    if (opts.find("iou_threshold") == opts.end()) {
-      opts["iou_threshold"] = DEFAULT_NON_MAXIMUM_SUPPRESSION_THRESHOLD;
-    }
-    if (opts.find("confidence_threshold") == opts.end()) {
-      opts["confidence_threshold"] = DEFAULT_CONFIDENCE_THRESHOLD_PREDICT;
-    }
-  }
+  bool use_nms_model = include_non_maximum_suppression && !(use_nms_layer);
+  const std::string coordinates_name = use_nms_model ? "raw_coordinates" : "coordinates";
+  const std::string confidence_name = use_nms_model ? "raw_confidence" : "confidence";
+
+  neural_net::pipeline_spec spec =
+      checkpoint.ExportToCoreML(input_str, coordinates_name, confidence_name, use_nms_layer,
+                                confidence_threshold, iou_threshold);
 
   // Compute the string representation of the list of class labels.
   flex_string class_labels_str;
@@ -767,42 +764,43 @@ std::shared_ptr<MLModelWrapper> object_detector::export_to_coreml(
     class_labels_str += "," + class_labels[i].get<flex_string>();
   }
 
-  // Generate "user-defined" metadata.
-  flex_dict user_defined_metadata = {
-      {"model", read_state<flex_string>("model")},
-      {"max_iterations", read_state<flex_int>("max_iterations")},
-      {"training_iterations", read_state<flex_int>("training_iterations")},
-      {"include_non_maximum_suppression", "False"},
-      {"feature", read_state<flex_string>("feature")},
-      {"annotations", read_state<flex_string>("annotations")},
-      {"classes", class_labels_str},
-      {"type", "object_detector"},
+  bool show_metadata = should_export_all_metadata();
+  flex_dict user_defined_metadata;
+  if (show_metadata) {
+    // Generate "user-defined" metadata.
+    user_defined_metadata = {
+        {"model", checkpoint_info.model_type},
+        {"max_iterations", read_state<flex_int>("max_iterations")},
+        {"training_iterations", read_state<flex_int>("training_iterations")},
+        {"include_non_maximum_suppression", "False"},
+        {"feature", read_state<flex_string>("feature")},
+        {"annotations", read_state<flex_string>("annotations")},
+        {"classes", class_labels_str},
+        {"type", "object_detector"},
     };
 
-  for(const auto& kvp : additional_user_defined) {
-       user_defined_metadata.emplace_back(kvp.first, kvp.second);
+    for (const auto& kvp : additional_user_defined) {
+      user_defined_metadata.emplace_back(kvp.first, kvp.second);
+    }
+
+    if (include_non_maximum_suppression) {
+      user_defined_metadata.emplace_back("include_non_maximum_suppression", "True");
+      user_defined_metadata.emplace_back("confidence_threshold", opts["confidence_threshold"]);
+      user_defined_metadata.emplace_back("iou_threshold", opts["iou_threshold"]);
+    }
+
+    user_defined_metadata.emplace_back("version", opts["version"]);
+  } else {
+    user_defined_metadata = {{"iterations", read_state<flex_int>("training_iterations")}};
   }
-
-  if (opts["include_non_maximum_suppression"].to<bool>()){
-    user_defined_metadata.emplace_back("include_non_maximum_suppression", "True");
-    user_defined_metadata.emplace_back("confidence_threshold", opts["confidence_threshold"]);
-    user_defined_metadata.emplace_back("iou_threshold", opts["iou_threshold"]);
-  }
-
-  user_defined_metadata.emplace_back("version", opts["version"]);
-
-  neural_net::pipeline_spec spec =
-      checkpoint.ExportToCoreML(input_str, coordinates_str, confidence_str);
 
   std::shared_ptr<MLModelWrapper> model_wrapper = export_object_detector_model(
-      std::move(spec), class_labels.size(),
-      grid_height * grid_width * anchor_boxes().size(), std::move(class_labels),
-      std::move(opts));
+      std::move(spec), class_labels.size(), checkpoint_info.num_predictions,
+      std::move(class_labels), confidence_threshold, iou_threshold, include_non_maximum_suppression,
+      use_nms_layer, checkpoint_info.use_most_confident_class);
 
-  model_wrapper->add_metadata({
-      {"user_defined", std::move(user_defined_metadata)},
-      {"short_description", short_desc}
-  });
+  model_wrapper->add_metadata(
+      {{"user_defined", std::move(user_defined_metadata)}, {"short_description", short_desc}});
 
   if (!filename.empty()) {
     model_wrapper->save(filename);
@@ -871,7 +869,7 @@ std::unique_ptr<data_iterator> object_detector::create_iterator(
 
 std::unique_ptr<compute_context> object_detector::create_compute_context() const
 {
-  return compute_context::create();
+  return compute_context::create_mlc();
 }
 
 void object_detector::init_training(gl_sframe data,
@@ -958,21 +956,20 @@ void object_detector::init_training(gl_sframe data,
   // Load the pre-trained model from the provided path. The final layers are
   // initialized randomly using the random seed above, using the number of
   // classes observed by the training_data_iterator_ above.
-  std::unique_ptr<ModelTrainer> trainer = create_trainer(
-      config, mlmodel_path, read_state<int>("random_seed"), std::move(context));
+  std::unique_ptr<ModelTrainer> trainer =
+      create_trainer(config, mlmodel_path, read_state<int>("random_seed"), std::move(context));
 
   // Establish training pipeline.
   connect_trainer(std::move(trainer), std::move(iterator), batch_size);
 }
 
 std::unique_ptr<ModelTrainer> object_detector::create_trainer(
-    const Config& config, const std::string& pretrained_model_path,
-    int random_seed,
-    std::unique_ptr<neural_net::compute_context> context) const {
+    const Config& config, const std::string& pretrained_model_path, int random_seed,
+    std::unique_ptr<neural_net::compute_context> context) const
+{
   // For now, we only support darknet-yolo. Load the pre-trained model and
   // randomly initialize the final layers.
-  checkpoint_.reset(
-      new DarknetYOLOCheckpoint(config, pretrained_model_path, random_seed));
+  checkpoint_.reset(new DarknetYOLOCheckpoint(config, pretrained_model_path, random_seed));
   return checkpoint_->CreateModelTrainer(context.get());
 }
 
@@ -1134,11 +1131,12 @@ void object_detector::wait_for_training_batches(size_t max_pending) {
 void object_detector::update_model_metrics(gl_sframe data,
                                            gl_sframe validation_data) {
   std::map<std::string, variant_type> metrics;
-
+  // If called during training, synchronize the model first.
+  const Checkpoint& checkpoint = read_checkpoint();
+  CheckpointMetadata checkpoint_info = checkpoint.GetCheckpointMetadata();
   // Compute training metrics.
-  variant_type training_metrics_raw =
-      perform_evaluation(data, "all", "dict", DEFAULT_CONFIDENCE_THRESHOLD_EVALUATE,
-        DEFAULT_NON_MAXIMUM_SUPPRESSION_THRESHOLD);
+  variant_type training_metrics_raw = perform_evaluation(
+      data, "all", "dict", checkpoint_info.evaluate_confidence, checkpoint_info.nms_threshold);
   variant_map_type training_metrics =
       variant_get_value<variant_map_type>(training_metrics_raw);
   for (const auto& kv : training_metrics) {
@@ -1148,8 +1146,8 @@ void object_detector::update_model_metrics(gl_sframe data,
   // Compute validation metrics if necessary.
   if (!validation_data.empty()) {
     variant_type validation_metrics_raw =
-        perform_evaluation(validation_data, "all", "dict", DEFAULT_CONFIDENCE_THRESHOLD_EVALUATE,
-         DEFAULT_NON_MAXIMUM_SUPPRESSION_THRESHOLD);
+        perform_evaluation(validation_data, "all", "dict", checkpoint_info.evaluate_confidence,
+                           checkpoint_info.nms_threshold);
     variant_map_type validation_metrics =
         variant_get_value<variant_map_type>(validation_metrics_raw);
     for (const auto& kv : validation_metrics) {
@@ -1161,5 +1159,5 @@ void object_detector::update_model_metrics(gl_sframe data,
   add_or_update_state(metrics);
 }
 
-}  // object_detection
-}  // turi
+}  // namespace object_detection
+}  // namespace turi

@@ -117,7 +117,7 @@ for more information.
 
 ```python
 m = turicreate.ranking_factorization_recommender.create(data,
-			                              user_id='user',
+									user_id='user',
                                     item_id='movie',
                                     target='rating')
 ```
@@ -140,8 +140,8 @@ liked:
 
 ```python
 m = turicreate.item_similarity_recommender.create(data,
-                                                user_id='user',
-                                                item_id='movie')
+                                    user_id='user',
+                                    item_id='movie')
 ```
 
 The `ranking_factorization_recommender` is also great for implicit data,
@@ -150,7 +150,7 @@ and can be called the same way:
 
 ```python
 m = turicreate.ranking_factorization_recommender.create(data,
-			                              user_id='user',
+                                    user_id='user',
                                     item_id='movie')
 ```
 

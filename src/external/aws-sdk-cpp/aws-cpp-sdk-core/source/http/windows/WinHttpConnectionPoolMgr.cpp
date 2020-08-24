@@ -1,5 +1,5 @@
 /*
-  * Copyright 2010-2015 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  * Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
   * 
   * Licensed under the Apache License, Version 2.0 (the "License").
   * You may not use this file except in compliance with the License.
@@ -29,6 +29,13 @@ WinConnectionPoolMgr(iOpenHandle, maxConnectionsPerHost, requestTimeout, connect
 
 }
 
+WinHttpConnectionPoolMgr::WinHttpConnectionPoolMgr(void* iOpenHandle, unsigned maxConnectionsPerHost, long requestTimeout, long connectTimeout,
+                                                   bool enableTcpKeepAlive, unsigned long tcpKeepAliveIntervalMs) :
+WinConnectionPoolMgr(iOpenHandle, maxConnectionsPerHost, requestTimeout, connectTimeout, enableTcpKeepAlive, tcpKeepAliveIntervalMs)
+{
+
+}
+
 WinHttpConnectionPoolMgr::~WinHttpConnectionPoolMgr()
 {
     DoCleanup();
@@ -42,6 +49,12 @@ void WinHttpConnectionPoolMgr::DoCloseHandle(void* handle) const
 void* WinHttpConnectionPoolMgr::CreateNewConnection(const Aws::String& host, HostConnectionContainer& connectionContainer) const
 {
     HINTERNET newConnection = WinHttpConnect(GetOpenHandle(), StringUtils::ToWString(host.c_str()).c_str(), connectionContainer.port, 0);
+
+    DWORD timeoutMs = GetConnectTimeout();
+    DWORD requestMs = GetRequestTimeout();
+
+    WinHttpSetOption(newConnection, WINHTTP_OPTION_CONNECT_TIMEOUT, &timeoutMs, sizeof(timeoutMs));
+    WinHttpSetOption(newConnection, WINHTTP_OPTION_RECEIVE_TIMEOUT, &requestMs, sizeof(requestMs));
 
     return newConnection;
 }

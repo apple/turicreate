@@ -2,6 +2,7 @@
 
 #include <tuple>
 
+#include <core/logging/logger.hpp>
 #include <ml/neural_net/float_array.hpp>
 
 #import "mps_device_manager.h"

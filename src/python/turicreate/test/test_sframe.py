@@ -27,13 +27,17 @@ import time
 import numpy as np
 import array
 import math
+import sqlite3
 import random
 import shutil
 import functools
 import sys
 import mock
-import sqlite3
 from .dbapi2_mock import dbapi2_mock
+
+import pytest
+
+pytestmark = [pytest.mark.minimal]
 
 
 class SFrameTest(unittest.TestCase):
@@ -1158,6 +1162,23 @@ class SFrameTest(unittest.TestCase):
 
         self.assertEqual(len(sf.random_split(0.5, 1, exact=True)[0]), 50)
         self.assertEqual(len(sf.random_split(0.5, 2, exact=True)[0]), 50)
+
+    def test_shuffle(self):
+        nums = [1, 2, 3, 4]
+        letters = ["a", "b", "c", "d"]
+        sf = SFrame({"nums": nums, "letters": letters})
+        shuffled_sf = sf.shuffle()
+
+        self.assertEqual(len(shuffled_sf), len(sf))
+        # TODO: check dtypes
+        # make sure entries in each row match
+        for row in shuffled_sf:
+            cur_num, cur_letter = row["nums"], row["letters"]
+            self.assertEqual(nums.index(cur_num), letters.index(cur_letter))
+            nums.remove(cur_num)
+            letters.remove(cur_letter)
+        self.assertTrue(len(nums) == 0)
+        self.assertTrue(len(letters) == 0)
 
     # tests add_column, rename
     def test_edit_column_ops(self):

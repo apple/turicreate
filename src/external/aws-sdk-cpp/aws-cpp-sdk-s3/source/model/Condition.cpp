@@ -1,5 +1,5 @@
-/*
-* Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+﻿/*
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 * express or implied. See the License for the specific language governing
 * permissions and limitations under the License.
 */
+
 #include <aws/s3/model/Condition.h>
 #include <aws/core/utils/xml/XmlSerializer.h>
 #include <aws/core/utils/StringUtils.h>
@@ -51,13 +52,13 @@ Condition& Condition::operator =(const XmlNode& xmlNode)
     XmlNode httpErrorCodeReturnedEqualsNode = resultNode.FirstChild("HttpErrorCodeReturnedEquals");
     if(!httpErrorCodeReturnedEqualsNode.IsNull())
     {
-      m_httpErrorCodeReturnedEquals = StringUtils::Trim(httpErrorCodeReturnedEqualsNode.GetText().c_str());
+      m_httpErrorCodeReturnedEquals = Aws::Utils::Xml::DecodeEscapedXmlText(httpErrorCodeReturnedEqualsNode.GetText());
       m_httpErrorCodeReturnedEqualsHasBeenSet = true;
     }
     XmlNode keyPrefixEqualsNode = resultNode.FirstChild("KeyPrefixEquals");
     if(!keyPrefixEqualsNode.IsNull())
     {
-      m_keyPrefixEquals = StringUtils::Trim(keyPrefixEqualsNode.GetText().c_str());
+      m_keyPrefixEquals = Aws::Utils::Xml::DecodeEscapedXmlText(keyPrefixEqualsNode.GetText());
       m_keyPrefixEqualsHasBeenSet = true;
     }
   }

@@ -52,6 +52,32 @@ class Iterator : public std::enable_shared_from_this<Iterator<T>> {
 };
 
 /**
+ * Templated implementation of Iterator that wraps an arbitrary callable type.
+ */
+template <typename Callable>
+class CallableIterator
+    : public Iterator<typename std::result_of<Callable()>::type> {
+ public:
+  using Output = typename std::result_of<Callable()>::type;
+
+  CallableIterator(Callable impl) : impl_(std::move(impl)) {}
+
+  bool HasNext() const override { return true; }
+
+  Output Next() override { return impl_(); }
+
+ private:
+  Callable impl_;
+};
+
+template <typename Callable>
+std::shared_ptr<IteratorPublisher<typename std::result_of<Callable()>::type>>
+CreatePublisherFromCallable(Callable impl) {
+  return std::make_shared<CallableIterator<Callable>>(std::move(impl))
+      ->AsPublisher();
+}
+
+/**
  * Concrete Publisher that wraps an Iterator.
  *
  * The resulting Publisher is unicast: each iterated value will go only to

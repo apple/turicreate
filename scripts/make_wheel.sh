@@ -220,6 +220,7 @@ unit_test() {
 
 
 ### Package the release folder into a wheel, and strip the binaries ###
+<<<<<<< HEAD
 package_wheel() {
   cd ${WORKSPACE}/src/python
 
@@ -231,8 +232,58 @@ package_wheel() {
   old_platform_tag=`${PYTHON_EXECUTABLE} -c "import distutils; print(distutils.util.get_platform())"`
   LD_LIBRARY_PATH='${WORKSPACE}/targets/lib' CPATH='${WORKSPACE}/targets/include' ${PYTHON_EXECUTABLE} setup.py bdist_wheel
 
+=======
+function package_wheel() {
+  if [[ $OSTYPE == darwin* ]]; then
+    mac_patch_rpath
+  fi
+  echo -e "\n\n\n================= Packaging Wheel  ================\n\n\n"
+  cd ${WORKSPACE}/${build_type}/src/python
 
-  cd ${WORKSPACE}
+  # strip binaries
+  if [[ ! $OSTYPE == darwin* ]]; then
+    cd ${WORKSPACE}/${build_type}/src/python/turicreate
+    BINARY_LIST=`find . -type f -exec file {} \; | grep x86 | cut -d: -f 1`
+    echo "Stripping binaries: $BINARY_LIST"
+
+    # make newline the separator for items in for loop - default is whitespace
+    OLD_IFS=${IFS}
+    IFS=$'\n'
+
+    for f in $BINARY_LIST; do
+      if [ $OSTYPE == "msys" ] && [ $f == "./pylambda_worker.exe" ]; then
+        echo "Skipping pylambda_worker"
+      else
+        echo "Stripping $f"
+        strip -Sx $f;
+      fi
+    done
+
+    # set IFS back to default
+    IFS=${OLD_IFS}
+    cd ..
+  fi
+
+  # helper function defined within function package_wheel
+  function package_wheel_helper {
+    local is_minimal=$1
+    local version_modifier=$2
+    local dist_type="bdist_wheel"
+
+    cd ${WORKSPACE}/${build_type}/src/python
+>>>>>>> master
+
+    if [[ "$is_minimal" -eq 1 ]] ; then
+      local pkg_patch_ver=$(grep VERSION_STRING setup.py | cut -d " " -f3)
+      pkg_patch_ver="${pkg_patch_ver//\"}${version_modifier}"
+      if [[ "$(uname -s)" == "Darwin" ]] ; then
+        sed -i "" 's/^USE_MINIMAL = False$/USE_MINIMAL = True/g' turicreate/_deps/minimal_package.py
+        sed -i '' "s/\".*\"  # {{VERSION_STRING}}/\"${pkg_patch_ver}\"  # {{VERSION_STRING}}/g" turicreate/version_info.py setup.py
+      else
+        sed -i 's/^USE_MINIMAL = False$/USE_MINIMAL = True/g' turicreate/_deps/minimal_package.py
+        sed -i "s/\".*\"  # {{VERSION_STRING}}/\"${pkg_patch_ver}\"  # {{VERSION_STRING}}/g" turicreate/version_info.py setup.py
+      fi
+    fi
 
   WHEEL_PATH=`ls ${WORKSPACE}/src/python/dist/${wheel_name}.whl`
 
@@ -258,19 +309,35 @@ package_wheel() {
     # Install the wheel and do a smoke test
     unset PYTHONPATH
 
-    $PIP_EXECUTABLE uninstall turicreate # make sure any existing build is uninstalled first
-    $PIP_EXECUTABLE install ${WHEEL_PATH}
-    $PYTHON_EXECUTABLE -c "import turicreate; turicreate.SArray(range(100)).apply(lambda x: x)"
-  fi
+    NEW_WHEEL_PATH=${NEW_WHEEL_PATH/linux/manylinux1}
+    if [[ ! "${WHEEL_PATH}" == "${NEW_WHEEL_PATH}" ]]; then
+        mv "${WHEEL_PATH}" "${NEW_WHEEL_PATH}"
+        WHEEL_PATH=${NEW_WHEEL_PATH}
+    fi
 
-  # Done copy to the target directory
-  cp $WHEEL_PATH ${TARGET_DIR}/
+    if [[ -z $SKIP_SMOKE_TEST ]]; then
+      # Install the wheel and do a smoke test
+      unset PYTHONPATH
+
+      "$PIP_EXECUTABLE" uninstall -y turicreate
+      "$PIP_EXECUTABLE" install "${WHEEL_PATH}"
+      $PYTHON_EXECUTABLE -c "import turicreate; turicreate.SArray(range(100)).apply(lambda x: x)"
+    fi
+
+    # Done copy to the target directory
+    mv "$WHEEL_PATH" "${TARGET_DIR}"
+  }
+
+  # Run the setup
+  package_wheel_helper 0 ""
+  package_wheel_helper 1 +minimal
+
   echo -e "\n\n================= Done Packaging Wheel  ================\n\n"
 }
 
 set_build_number() {
   # set the build number
-  cd ${WORKSPACE}/${build_type}/src/python/
+  cd "${WORKSPACE}/${build_type}/src/python/"
   sed -i -e "s/'.*'#{{BUILD_NUMBER}}/'${BUILD_NUMBER}'#{{BUILD_NUMBER}}/g" turicreate/version_info.py
 }
 
@@ -282,7 +349,7 @@ set_git_SHA() {
     GIT_SHA = "NA"
   fi
 
-  cd ${WORKSPACE}/${build_type}/src/python/
+  cd "${WORKSPACE}/${build_type}/src/python/"
   sed -i -e "s/'.*'#{{GIT_SHA}}/'${GIT_SHA}'#{{GIT_SHA}}/g" turicreate/version_info.py
 }
 
@@ -304,4 +371,3 @@ set_git_SHA
 source ${WORKSPACE}/scripts/python_env.sh $build_type
 
 package_wheel
-

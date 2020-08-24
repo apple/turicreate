@@ -1,5 +1,5 @@
-/*
-* Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+﻿/*
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 * express or implied. See the License for the specific language governing
 * permissions and limitations under the License.
 */
+
 #include <aws/s3/model/GetObjectResult.h>
 #include <aws/core/AmazonWebServiceResult.h>
 #include <aws/core/utils/StringUtils.h>
@@ -28,7 +29,15 @@ using namespace Aws;
 GetObjectResult::GetObjectResult() : 
     m_deleteMarker(false),
     m_contentLength(0),
-    m_missingMeta(0)
+    m_missingMeta(0),
+    m_serverSideEncryption(ServerSideEncryption::NOT_SET),
+    m_storageClass(StorageClass::NOT_SET),
+    m_requestCharged(RequestCharged::NOT_SET),
+    m_replicationStatus(ReplicationStatus::NOT_SET),
+    m_partsCount(0),
+    m_tagCount(0),
+    m_objectLockMode(ObjectLockMode::NOT_SET),
+    m_objectLockLegalHoldStatus(ObjectLockLegalHoldStatus::NOT_SET)
 {
 }
 
@@ -58,7 +67,14 @@ GetObjectResult::GetObjectResult(GetObjectResult&& toMove) :
     m_sSEKMSKeyId(std::move(toMove.m_sSEKMSKeyId)),
     m_storageClass(toMove.m_storageClass),
     m_requestCharged(toMove.m_requestCharged),
-    m_replicationStatus(toMove.m_replicationStatus)
+    m_replicationStatus(toMove.m_replicationStatus),
+    m_partsCount(toMove.m_partsCount),
+    m_tagCount(toMove.m_tagCount),
+    m_objectLockMode(toMove.m_objectLockMode),
+    m_objectLockRetainUntilDate(std::move(toMove.m_objectLockRetainUntilDate)),
+    m_objectLockLegalHoldStatus(toMove.m_objectLockLegalHoldStatus),
+    m_id2(std::move(toMove.m_id2)),
+    m_requestId(std::move(toMove.m_requestId))
 {
 }
 
@@ -95,19 +111,34 @@ GetObjectResult& GetObjectResult::operator=(GetObjectResult&& toMove)
    m_storageClass = toMove.m_storageClass;
    m_requestCharged = toMove.m_requestCharged;
    m_replicationStatus = toMove.m_replicationStatus;
+   m_partsCount = toMove.m_partsCount;
+   m_tagCount = toMove.m_tagCount;
+   m_objectLockMode = toMove.m_objectLockMode;
+   m_objectLockRetainUntilDate = std::move(toMove.m_objectLockRetainUntilDate);
+   m_objectLockLegalHoldStatus = toMove.m_objectLockLegalHoldStatus;
+   m_id2 = std::move(toMove.m_id2);
+   m_requestId = std::move(toMove.m_requestId);
 
    return *this;
 }
 
-GetObjectResult::GetObjectResult(AmazonWebServiceResult<ResponseStream>&& result) : 
+GetObjectResult::GetObjectResult(Aws::AmazonWebServiceResult<ResponseStream>&& result) : 
     m_deleteMarker(false),
     m_contentLength(0),
-    m_missingMeta(0)
+    m_missingMeta(0),
+    m_serverSideEncryption(ServerSideEncryption::NOT_SET),
+    m_storageClass(StorageClass::NOT_SET),
+    m_requestCharged(RequestCharged::NOT_SET),
+    m_replicationStatus(ReplicationStatus::NOT_SET),
+    m_partsCount(0),
+    m_tagCount(0),
+    m_objectLockMode(ObjectLockMode::NOT_SET),
+    m_objectLockLegalHoldStatus(ObjectLockLegalHoldStatus::NOT_SET)
 {
   *this = std::move(result);
 }
 
-GetObjectResult& GetObjectResult::operator =(AmazonWebServiceResult<ResponseStream>&& result)
+GetObjectResult& GetObjectResult::operator =(Aws::AmazonWebServiceResult<ResponseStream>&& result)
 {
   m_body = result.TakeOwnershipOfPayload();
 
@@ -265,6 +296,48 @@ GetObjectResult& GetObjectResult::operator =(AmazonWebServiceResult<ResponseStre
   if(replicationStatusIter != headers.end())
   {
     m_replicationStatus = ReplicationStatusMapper::GetReplicationStatusForName(replicationStatusIter->second);
+  }
+
+  const auto& partsCountIter = headers.find("x-amz-mp-parts-count");
+  if(partsCountIter != headers.end())
+  {
+     m_partsCount = StringUtils::ConvertToInt32(partsCountIter->second.c_str());
+  }
+
+  const auto& tagCountIter = headers.find("x-amz-tagging-count");
+  if(tagCountIter != headers.end())
+  {
+     m_tagCount = StringUtils::ConvertToInt32(tagCountIter->second.c_str());
+  }
+
+  const auto& objectLockModeIter = headers.find("x-amz-object-lock-mode");
+  if(objectLockModeIter != headers.end())
+  {
+    m_objectLockMode = ObjectLockModeMapper::GetObjectLockModeForName(objectLockModeIter->second);
+  }
+
+  const auto& objectLockRetainUntilDateIter = headers.find("x-amz-object-lock-retain-until-date");
+  if(objectLockRetainUntilDateIter != headers.end())
+  {
+    m_objectLockRetainUntilDate = DateTime(objectLockRetainUntilDateIter->second, DateFormat::RFC822);
+  }
+
+  const auto& objectLockLegalHoldStatusIter = headers.find("x-amz-object-lock-legal-hold");
+  if(objectLockLegalHoldStatusIter != headers.end())
+  {
+    m_objectLockLegalHoldStatus = ObjectLockLegalHoldStatusMapper::GetObjectLockLegalHoldStatusForName(objectLockLegalHoldStatusIter->second);
+  }
+
+  const auto& id2Iter = headers.find("x-amz-id-2");
+  if(id2Iter != headers.end())
+  {
+    m_id2 = id2Iter->second;
+  }
+
+  const auto& requestIdIter = headers.find("x-amz-request-id");
+  if(requestIdIter != headers.end())
+  {
+    m_requestId = requestIdIter->second;
   }
 
    return *this;

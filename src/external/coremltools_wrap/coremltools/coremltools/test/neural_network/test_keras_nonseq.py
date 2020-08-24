@@ -5,20 +5,21 @@
 
 import unittest
 import pytest
-from coremltools._deps import HAS_KERAS_TF
+from coremltools._deps import _HAS_KERAS_TF
 
-if HAS_KERAS_TF:
+if _HAS_KERAS_TF:
     from keras.models import Model
     from keras.layers import Dense, Input, merge
     from coremltools.converters import keras
 
 
-@unittest.skipIf(not HAS_KERAS_TF, 'Missing keras. Skipping tests.')
+@unittest.skipIf(not _HAS_KERAS_TF, "Missing keras. Skipping tests.")
 @pytest.mark.keras1
 class KerasNonSequentialModelTest(unittest.TestCase):
     """
-    Unit test class for testing non-sequential Keras models. 
+    Unit test class for testing non-sequential Keras models.
     """
+
     @classmethod
     def setUpClass(self):
         """
@@ -36,27 +37,29 @@ class KerasNonSequentialModelTest(unittest.TestCase):
         x1 = Dense(4)(input_tensor)
         x2 = Dense(5)(x1)
         x3 = Dense(6)(x1)
-        x4 = merge([x2,x3], mode='concat')
+        x4 = merge([x2, x3], mode="concat")
         x5 = Dense(7)(x4)
 
         model = Model(input=[input_tensor], output=[x5])
-        input_names = ['data']
-        output_names = ['output']
+        input_names = ["data"]
+        output_names = ["output"]
 
         spec = keras.convert(model, input_names, output_names).get_spec()
         self.assertIsNotNone(spec)
 
         # Test the model class
         self.assertIsNotNone(spec.description)
-        self.assertTrue(spec.HasField('neuralNetwork'))
+        self.assertTrue(spec.HasField("neuralNetwork"))
 
         # Test the inputs and outputs
         self.assertEqual(len(spec.description.input), len(input_names))
-        self.assertEqual(sorted(input_names),
-               sorted(map(lambda x: x.name, spec.description.input)))
+        self.assertEqual(
+            sorted(input_names), sorted(map(lambda x: x.name, spec.description.input))
+        )
         self.assertEqual(len(spec.description.output), len(output_names))
-        self.assertEqual(sorted(output_names),
-               sorted(map(lambda x: x.name, spec.description.output)))
+        self.assertEqual(
+            sorted(output_names), sorted(map(lambda x: x.name, spec.description.output))
+        )
 
     def test_merge_add(self):
         """
@@ -69,27 +72,29 @@ class KerasNonSequentialModelTest(unittest.TestCase):
         x1 = Dense(4)(input_tensor)
         x2 = Dense(5)(x1)
         x3 = Dense(5)(x1)
-        x4 = merge([x2,x3], mode='sum')
+        x4 = merge([x2, x3], mode="sum")
         x5 = Dense(7)(x4)
 
         model = Model(input=[input_tensor], output=[x5])
-        input_names = ['data']
-        output_names = ['output']
+        input_names = ["data"]
+        output_names = ["output"]
 
         spec = keras.convert(model, input_names, output_names).get_spec()
         self.assertIsNotNone(spec)
 
         # Test the model class
         self.assertIsNotNone(spec.description)
-        self.assertTrue(spec.HasField('neuralNetwork'))
+        self.assertTrue(spec.HasField("neuralNetwork"))
 
         # Test the inputs and outputs
         self.assertEqual(len(spec.description.input), len(input_names))
-        self.assertEqual(sorted(input_names),
-               sorted(map(lambda x: x.name, spec.description.input)))
+        self.assertEqual(
+            sorted(input_names), sorted(map(lambda x: x.name, spec.description.input))
+        )
         self.assertEqual(len(spec.description.output), len(output_names))
-        self.assertEqual(sorted(output_names),
-               sorted(map(lambda x: x.name, spec.description.output)))
+        self.assertEqual(
+            sorted(output_names), sorted(map(lambda x: x.name, spec.description.output))
+        )
 
     def test_merge_multiply(self):
         """
@@ -102,24 +107,26 @@ class KerasNonSequentialModelTest(unittest.TestCase):
         x1 = Dense(4)(input_tensor)
         x2 = Dense(5)(x1)
         x3 = Dense(5)(x1)
-        x4 = merge([x2,x3], mode='mul')
+        x4 = merge([x2, x3], mode="mul")
         x5 = Dense(7)(x4)
 
         model = Model(input=[input_tensor], output=[x5])
-        input_names = ['data']
-        output_names = ['output']
+        input_names = ["data"]
+        output_names = ["output"]
 
         spec = keras.convert(model, input_names, output_names).get_spec()
         self.assertIsNotNone(spec)
 
         # Test the model class
         self.assertIsNotNone(spec.description)
-        self.assertTrue(spec.HasField('neuralNetwork'))
+        self.assertTrue(spec.HasField("neuralNetwork"))
 
         # Test the inputs and outputs
         self.assertEqual(len(spec.description.input), len(input_names))
-        self.assertEqual(sorted(input_names),
-               sorted(map(lambda x: x.name, spec.description.input)))
+        self.assertEqual(
+            sorted(input_names), sorted(map(lambda x: x.name, spec.description.input))
+        )
         self.assertEqual(len(spec.description.output), len(output_names))
-        self.assertEqual(sorted(output_names),
-               sorted(map(lambda x: x.name, spec.description.output)))
+        self.assertEqual(
+            sorted(output_names), sorted(map(lambda x: x.name, spec.description.output))
+        )

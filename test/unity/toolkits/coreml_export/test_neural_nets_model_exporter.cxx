@@ -28,13 +28,8 @@ BOOST_AUTO_TEST_CASE(test_object_detector_export_coreml_with_nms) {
     const std::string test_image_name = "test_image";
     const std::vector<std::string> test_class_labels = { "label1", "label2" };
     static constexpr size_t test_max_iterations = 4;
-    double test_iou_threshold = 0.55;
-    double test_confidence_threshold = 0.15;
-
-    std::map<std::string, flexible_type> options;
-    options["include_non_maximum_suppression"] = 1;
-    options["iou_threshold"] = test_iou_threshold;
-    options["confidence_threshold"] = test_confidence_threshold;
+    float test_iou_threshold = 0.55f;
+    float test_confidence_threshold = 0.15f;
 
     flex_dict user_defined_metadata;
     user_defined_metadata.emplace_back("model", "model");
@@ -45,8 +40,9 @@ BOOST_AUTO_TEST_CASE(test_object_detector_export_coreml_with_nms) {
     user_defined_metadata.emplace_back("annotations", test_annotations_name);
     user_defined_metadata.emplace_back("classes", "label1, label2");
     user_defined_metadata.emplace_back("type", "object_detector");
-    user_defined_metadata.emplace_back("confidence_threshold", options["confidence_threshold"]);
-    user_defined_metadata.emplace_back("iou_threshold", options["iou_threshold"]);
+    user_defined_metadata.emplace_back("confidence_threshold",
+                                       test_confidence_threshold);
+    user_defined_metadata.emplace_back("iou_threshold", test_iou_threshold);
 
     // Create an arbitrary pipeline with one model with one input description.
     std::unique_ptr<CoreML::Specification::Pipeline> model_to_export;
@@ -56,11 +52,12 @@ BOOST_AUTO_TEST_CASE(test_object_detector_export_coreml_with_nms) {
 
     flex_list t_class_labels =
         flex_list(test_class_labels.begin(), test_class_labels.end());
-    std::shared_ptr<coreml::MLModelWrapper> model_wrapper =
-        export_object_detector_model(
-            neural_net::pipeline_spec(std::move(model_to_export)),
-            test_class_labels.size(), 13 * 13 * 15, std::move(t_class_labels),
-            std::move(options));
+    std::shared_ptr<coreml::MLModelWrapper> model_wrapper = export_object_detector_model(
+        neural_net::pipeline_spec(std::move(model_to_export)), test_class_labels.size(),
+        13 * 13 * 15, std::move(t_class_labels), test_confidence_threshold, test_iou_threshold,
+        /* include_non_maximum_suppression */ true,
+        /* use_nms_layer */ false,
+        /* use_most_confident_class*/ false);
     std::shared_ptr<CoreML::Model> c_model = model_wrapper->coreml_model();
     auto p_model = c_model->getProto();
 

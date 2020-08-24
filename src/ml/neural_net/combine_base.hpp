@@ -18,6 +18,8 @@
 #include <exception>
 #include <memory>
 
+#include <ml/neural_net/TaskQueue.hpp>
+
 namespace turi {
 namespace neural_net {
 
@@ -35,6 +37,12 @@ class FuturesSubscriber;
 
 template <typename T, typename U>
 class MapPublisher;
+
+template <typename T>
+class ReceiveOnQueuePublisher;
+
+template <typename T>
+class SubscribeOnQueuePublisher;
 
 template <typename T, typename U>
 class Transform;
@@ -248,6 +256,18 @@ class Publisher : public std::enable_shared_from_this<Publisher<T>> {
     using TransformType = CallableTransform<Output, Callable>;
     auto transform = std::make_shared<TransformType>(std::move(fn));
     return Map(std::move(transform));
+  }
+
+  std::shared_ptr<Publisher<Output>> SubscribeOn(
+      std::shared_ptr<TaskQueue> queue) {
+    return std::make_shared<SubscribeOnQueuePublisher<Output>>(
+        this->shared_from_this(), std::move(queue));
+  }
+
+  std::shared_ptr<Publisher<Output>> ReceiveOn(
+      std::shared_ptr<TaskQueue> queue) {
+    return std::make_shared<ReceiveOnQueuePublisher<Output>>(
+        this->shared_from_this(), std::move(queue));
   }
 };
 

@@ -13,6 +13,7 @@ from turicreate.toolkits import _coreml_utils
 from turicreate.toolkits._model import Model as _Model
 import turicreate.toolkits._internal_utils as _tkutl
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
+from turicreate._deps.minimal_package import _minimal_package_import_check
 from ..image_classifier._evaluation import Evaluation as _Evaluation
 from .. import _pre_trained_models
 
@@ -194,7 +195,7 @@ def create(
     if max_iterations is not None and max_iterations < 1:
         raise ValueError("'max_iterations' must be >= 1")
 
-    import turicreate.toolkits.libtctensorflow
+    _minimal_package_import_check("turicreate.toolkits.libtctensorflow")
 
     model = _tc.extensions.drawing_classifier()
     options = dict()

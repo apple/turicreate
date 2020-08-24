@@ -225,11 +225,6 @@ def create(
 
     - Missing keys in sparse vectors are assumed to have value 0.
 
-    - The `composite_params` parameter was removed as of Turi Create
-      version 1.5. The `distance` parameter now accepts either standard or
-      composite distances. Please see the :mod:`~turicreate.toolkits.distances`
-      module documentation for more information on composite distances.
-
     - If the features should be weighted equally in the distance calculations
       but are measured on different scales, it is important to standardize the
       features. One way to do this is to subtract the mean of each column and

@@ -127,15 +127,20 @@ more details on how to use Turi Create.
 GPU Support
 -----------
 
-Turi Create **does not require a GPU**, but certain models can be accelerated 9-13x when utilizing a GPU. 
+Turi Create **does not require a GPU**, but certain models can be accelerated 9-13x by utilizing a GPU.
 
-Turi Create automatically utilizes Mac GPUs for the following tasks:
-* Image Classification (macOS 10.13+)
-* Image Similarity (macOS 10.13+)
-* Object Detection (macOS 10.14+, discrete GPU only)
-* Activity Classification (macOS 10.14+, discrete GPU only)
+| Linux                     | macOS 10.13+         | macOS 10.14+ discrete GPUs, macOS 10.15+ integrated GPUs |
+| :-------------------------|:---------------------|:---------------------------------------------------------|
+| Activity Classification   | Image Classification | Activity Classification                                  |
+| Drawing Classification    | Image Similarity     | Object Detection                                         |
+| Image Classification      | Sound Classification | One Shot Object Detection                                |
+| Image Similarity          |                      | Style Transfer                                           |
+| Object Detection          |                      |                                                          |
+| One Shot Object Detection |                      |                                                          |
+| Sound Classification      |                      |                                                          |
+| Style Transfer            |                      |                                                          |
 
-For linux GPU support, see [LinuxGPU.md](LinuxGPU.md).
+macOS GPU support is automatic. For Linux GPU support, see [LinuxGPU.md](LinuxGPU.md).
 
 Building From Source
 ---------------------

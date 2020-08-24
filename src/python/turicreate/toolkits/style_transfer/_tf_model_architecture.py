@@ -12,9 +12,13 @@ from turicreate.toolkits._tf_model import TensorFlowModel
 
 import numpy as _np
 import turicreate.toolkits._tf_utils as _utils
-import tensorflow.compat.v1 as _tf
+from turicreate._deps.minimal_package import _minimal_package_import_check
 
-_tf.disable_v2_behavior()
+# in conjunction with minimal package
+def _lazy_import_tensorflow():
+    _tf = _minimal_package_import_check("tensorflow.compat.v1")
+
+    return _tf
 
 
 def define_tensorflow_variables(net_params, trainable=True):
@@ -34,6 +38,7 @@ def define_tensorflow_variables(net_params, trainable=True):
     out: dict
         The TF Variable dictionary.
     """
+    _tf = _lazy_import_tensorflow()
     tensorflow_variables = dict()
     for key in net_params.keys():
         if "weight" in key:
@@ -84,8 +89,8 @@ def define_instance_norm(tf_input, tf_index, weights, prefix):
     """
     epsilon = 1e-5
 
-    gamma = weights[prefix + 'gamma_weight']
-    beta = weights[prefix + 'beta_weight']
+    gamma = weights[prefix + "gamma_weight"]
+    beta = weights[prefix + "beta_weight"]
 
     inputs_rank = tf_input.shape.ndims
     reduction_axis = inputs_rank - 1
@@ -93,6 +98,8 @@ def define_instance_norm(tf_input, tf_index, weights, prefix):
 
     del moments_axes[reduction_axis]
     del moments_axes[0]
+
+    _tf = _lazy_import_tensorflow()
 
     indexed_gamma = _tf.gather(gamma, tf_index)
     indexed_beta = _tf.gather(beta, tf_index)
@@ -102,13 +109,10 @@ def define_instance_norm(tf_input, tf_index, weights, prefix):
 
     mean, variance = _tf.nn.moments(tf_input, moments_axes, keep_dims=True)
     return _tf.nn.batch_normalization(
-        tf_input,
-        mean,
-        variance,
-        expanded_beta,
-        expanded_gamma,
-        epsilon)
-    
+        tf_input, mean, variance, expanded_beta, expanded_gamma, epsilon
+    )
+
+
 def define_residual(tf_input, tf_index, weights, prefix):
     """
     This function defines the residual network using the tensorflow nn api.
@@ -131,7 +135,9 @@ def define_residual(tf_input, tf_index, weights, prefix):
     out: tensorflow.Tensor
         The sigmoid output tensor to the network.
     """
+    _tf = _lazy_import_tensorflow()
     # TODO: Refactor Instance Norm
+
     conv_1_paddings = _tf.constant([[0, 0], [1, 1], [1, 1], [0, 0]])
     conv_1_pad = _tf.pad(tf_input, conv_1_paddings, "REFLECT")
     conv_1_filter = weights[prefix + "conv_1_weight"]
@@ -175,6 +181,7 @@ def define_resnet(tf_input, tf_index, weights, prefix="transformer_"):
     out: tensorflow.Tensor
         The sigmoid output tensor to the network.
     """
+    _tf = _lazy_import_tensorflow()
 
     # encoding 1
     conv_1_paddings = _tf.constant([[0, 0], [4, 4], [4, 4], [0, 0]])
@@ -334,6 +341,8 @@ def define_vgg16(tf_input, weights, prefix="vgg_"):
         `relu` from the fourth block of `conv` and `relu`
 
     """
+    _tf = _lazy_import_tensorflow()
+
     # block 1
     conv_1_filter = weights[prefix + "block_1_conv_1_weight"]
     conv_1 = _tf.nn.conv2d(
@@ -426,6 +435,8 @@ def define_vgg_pre_processing(tf_input):
     out: tensorflow.Tensor
         The scaled output tensor of the network.
     """
+    _tf = _lazy_import_tensorflow()
+
     scaled_input = tf_input * 255.00
     red_channel, green_channel, blue_channel = _tf.split(scaled_input, 3, axis=3)
 
@@ -454,6 +465,8 @@ def define_gram_matrix(tf_input):
     out: tensorflow.Tensor
         The gram matrix output of the network.
     """
+    _tf = _lazy_import_tensorflow()
+
     defined_shape = _tf.shape(tf_input)
     reshaped_output = _tf.reshape(
         tf_input, [-1, defined_shape[1] * defined_shape[2], defined_shape[3]]
@@ -528,6 +541,8 @@ def define_style_transfer_network(
         gram_style_relu_4 = define_gram_matrix(style_relu_4)
 
         # L2 Loss Between the Nodes
+        _tf = _lazy_import_tensorflow()
+
         style_loss_1 = _tf.losses.mean_squared_error(
             gram_style_relu_1, gram_output_relu_1, weights=1e-4
         )
@@ -567,6 +582,8 @@ class StyleTransferTensorFlowModel(TensorFlowModel):
         for key in config.keys():
             config[key] = _utils.convert_shared_float_array_to_numpy(config[key])
 
+        _tf = _lazy_import_tensorflow()
+
         self.st_graph = _tf.Graph()
         self._batch_size = 1
         self._finetune_all_params = True
@@ -577,6 +594,8 @@ class StyleTransferTensorFlowModel(TensorFlowModel):
             self.init_style_transfer_graph(net_params)
 
     def init_style_transfer_graph(self, net_params):
+        _tf = _lazy_import_tensorflow()
+
         self._tf_variables = define_tensorflow_variables(net_params)
 
         # TODO: take care of batch size
@@ -612,6 +631,8 @@ class StyleTransferTensorFlowModel(TensorFlowModel):
 
     @batch_size.setter
     def batch_size(self, batch_size):
+        _tf = _lazy_import_tensorflow()
+
         self._batch_size = batch_size
         with self.st_graph.as_default():
             self.tf_index = _tf.placeholder(dtype=_tf.int32, shape=[batch_size])
@@ -656,6 +677,8 @@ class StyleTransferTensorFlowModel(TensorFlowModel):
         return {"output": _np.array(stylized_cropped)}
 
     def export_weights(self):
+        _tf = _lazy_import_tensorflow()
+
         tf_export_params = {}
 
         with self.st_graph.as_default():

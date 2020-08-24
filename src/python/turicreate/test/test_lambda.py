@@ -14,6 +14,10 @@ from .._connect import main as glconnect
 from .._cython import cy_test_utils
 import os
 
+import pytest
+
+pytestmark = [pytest.mark.minimal]
+
 
 def fib(i):
     if i <= 2:

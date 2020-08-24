@@ -5,14 +5,14 @@
  * https://opensource.org/licenses/BSD-3-Clause
  */
 
-#ifndef ML_NEURAL_NET_COMBINE_FUTURES_SUBSCRIBER_HPP_
-#define ML_NEURAL_NET_COMBINE_FUTURES_SUBSCRIBER_HPP_
+#pragma once
 
-#include <cassert>
 #include <future>
 #include <memory>
 #include <queue>
 
+#include <core/util/std/make_unique.hpp>
+#include <core/util/Verify.hpp>
 #include <ml/neural_net/combine_base.hpp>
 
 namespace turi {
@@ -85,7 +85,7 @@ class FuturesSubscriber : public Subscriber<T> {
   void Receive(std::shared_ptr<Subscription> subscription) override {
     // It is a programmer error to attach the same Subscriber to more than one
     // Publisher.
-    assert(subscription_ == nullptr);
+    VerifyIsTrue(subscription_ == nullptr, TuriErrorCode::LogicError);
 
     // Reject any subscriptions after the first. Reject the first subscription
     // if we cancelled before it could start.
@@ -108,7 +108,7 @@ class FuturesSubscriber : public Subscriber<T> {
     if (completed_) return Demand::None();
 
     // Wrap the value in a unique_ptr and fulfill the promise.
-    std::unique_ptr<Input> input(new Input(std::move(element)));
+    auto input = std::make_unique<Input>(std::move(element));
     promises_.front().set_value(std::move(input));
     promises_.pop();
     return Demand::None();
@@ -161,5 +161,3 @@ class FuturesStream {
 
 }  // namespace neural_net
 }  // namespace turi
-
-#endif  // ML_NEURAL_NET_COMBINE_FUTURES_SUBSCRIBER_HPP_

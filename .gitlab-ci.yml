@@ -11,13 +11,14 @@ cache:
 build_wheel_debug_linux_python27:
   tags:
     - docker
+  image: docker:19.03.8
   services:
-    - docker:18.09-dind
-  image: docker:18.09
+    - docker:19.03.8-dind
   stage: build
   variables:
-    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_HOST: tcp://docker:2375
     DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
   script:
     - apk add bash nodejs
     - mkdir -p /etc/ssl/certs/
@@ -31,12 +32,13 @@ build_wheel_linux_python27:
   tags:
     - docker
   services:
-    - docker:18.09-dind
-  image: docker:18.09
+    - docker:19.03.8-dind
+  image: docker:19.03.8
   stage: build
   variables:
-    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_HOST: tcp://docker:2375
     DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
   script:
     - apk add bash nodejs
     - mkdir -p /etc/ssl/certs/
@@ -50,12 +52,13 @@ build_wheel_linux_python35:
   tags:
     - docker
   services:
-    - docker:18.09-dind
-  image: docker:18.09
+    - docker:19.03.8-dind
+  image: docker:19.03.8
   stage: build
   variables:
-    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_HOST: tcp://docker:2375
     DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
   script:
     - apk add bash nodejs
     - mkdir -p /etc/ssl/certs/
@@ -69,12 +72,13 @@ build_wheel_linux_python36:
   tags:
     - docker
   services:
-    - docker:18.09-dind
-  image: docker:18.09
+    - docker:19.03-dind
+  image: docker:19.03.8
   stage: build
   variables:
-    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_HOST: tcp://docker:2375
     DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
   script:
     - apk add bash nodejs
     - mkdir -p /etc/ssl/certs/
@@ -88,12 +92,13 @@ build_wheel_linux_python37:
   tags:
     - docker
   services:
-    - docker:18.09-dind
-  image: docker:18.09
+    - docker:19.03-dind
+  image: docker:19.03.8
   stage: build
   variables:
-    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_HOST: tcp://docker:2375
     DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
   script:
     - apk add bash
     - mkdir -p /etc/ssl/certs/
@@ -210,12 +215,13 @@ build_documentation:
   tags:
     - docker
   services:
-    - docker:18.09-dind
-  image: docker:18.09
+    - docker:19.03-dind
+  image: docker:19.03.8
   stage: test
   variables:
-    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_HOST: tcp://docker:2375
     DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
   dependencies:
     - build_wheel_linux_python37
   script:
@@ -231,12 +237,13 @@ test_cpp_linux:
   tags:
     - docker
   services:
-    - docker:18.09-dind
-  image: docker:18.09
+    - docker:19.03-dind
+  image: docker:19.03.8
   stage: test
   variables:
-    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_HOST: tcp://docker:2375
     DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
   dependencies:
     - build_wheel_linux_python27
   script:
@@ -248,12 +255,13 @@ test_cpp_linux_no_remotefs:
   tags:
     - docker
   services:
-    - docker:18.09-dind
-  image: docker:18.09
+    - docker:19.03-dind
+  image: docker:19.03.8
   stage: test
   variables:
-    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_HOST: tcp://docker:2375
     DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
   dependencies:
     - build_wheel_linux_python27
   script:
@@ -330,12 +338,13 @@ test_python_linux_python27:
   tags:
     - docker
   services:
-    - docker:18.09-dind
-  image: docker:18.09
+    - docker:19.03-dind
+  image: docker:19.03.8
   stage: test
   variables:
-    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_HOST: tcp://docker:2375
     DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
   dependencies:
     - build_wheel_linux_python27
   script:
@@ -347,16 +356,39 @@ test_python_linux_python27:
     paths:
       - pytest.*
 
+test_python_linux_python27_minimal:
+  tags:
+    - docker
+  services:
+    - docker:19.03-dind
+  image: docker:19.03
+  stage: test
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+  dependencies:
+    - build_wheel_linux_python27
+  script:
+    - apk add bash
+    - bash -e scripts/test_wheel.sh --docker-python2.7 --minimal
+  artifacts:
+    when: always
+    expire_in: 2 weeks
+    paths:
+      - pytest.*
+
 test_python_linux_python35:
   tags:
     - docker
   services:
-    - docker:18.09-dind
-  image: docker:18.09
+    - docker:19.03-dind
+  image: docker:19.03.8
   stage: test
   variables:
-    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_HOST: tcp://docker:2375
     DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
   dependencies:
     - build_wheel_linux_python35
   script:
@@ -372,12 +404,13 @@ test_python_linux_python36:
   tags:
     - docker
   services:
-    - docker:18.09-dind
-  image: docker:18.09
+    - docker:19.03-dind
+  image: docker:19.03.8
   stage: test
   variables:
-    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_HOST: tcp://docker:2375
     DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
   dependencies:
     - build_wheel_linux_python36
   script:
@@ -394,12 +427,13 @@ test_python_linux_python37:
   tags:
     - docker
   services:
-    - docker:18.09-dind
-  image: docker:18.09
+    - docker:19.03-dind
+  image: docker:19.03.8
   stage: test
   variables:
-    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_HOST: tcp://docker:2375
     DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
   dependencies:
     - build_wheel_linux_python37
   script:
@@ -501,56 +535,80 @@ test_python_mac_python37_10_14:
     paths:
       - pytest.*
 
+test_python_mac_python37_10_14_minimal:
+  tags:
+    - macos10.14
+  only:
+    variables:
+      - $TC_HAS_MACOS_RUNNERS == "1"
+  stage: test
+  dependencies:
+    - build_wheel_mac_10_15_python37
+  script:
+    - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/3.7/bin/virtualenv"
+    - bash -e scripts/test_wheel.sh --minimal
+  artifacts:
+    when: always
+    expire_in: 2 weeks
+    paths:
+      - pytest.*
+
 scenario_tests_linux_python27:
   tags:
     - docker
   services:
-    - docker:18.09-dind
-  image: docker:18.09
+    - docker:19.03-dind
+  image: docker:19.03.8
   stage: test
   variables:
-    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_HOST: tcp://docker:2375
     DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
   dependencies:
     - build_wheel_linux_python27
   script:
     - apk add bash
     - cd scenario-tests
-    - ./run_scenario_tests.sh --docker-python2.7 ../target/turicreate-*.whl
+    - ./run_scenario_tests.sh --docker-python2.7 \
+      ../target/turicreate-*+minimal*.whl
 
 scenario_tests_linux_python35:
   tags:
     - docker
   services:
-    - docker:18.09-dind
-  image: docker:18.09
+    - docker:19.03-dind
+  image: docker:19.03.8
   stage: test
   variables:
-    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_HOST: tcp://docker:2375
     DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
   dependencies:
     - build_wheel_linux_python35
   script:
     - apk add bash
     - cd scenario-tests
-    - ./run_scenario_tests.sh --docker-python3.5 ../target/turicreate-*.whl
+    - ./run_scenario_tests.sh --docker-python3.5 \
+      ../target/turicreate-*+minimal*.whl
 
 scenario_tests_linux_python36:
   tags:
     - docker
   services:
-    - docker:18.09-dind
-  image: docker:18.09
+    - docker:19.03-dind
+  image: docker:19.03.8
   stage: test
   variables:
-    DOCKER_HOST: tcp://docker:2375/
+    DOCKER_HOST: tcp://docker:2375
     DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
   dependencies:
     - build_wheel_linux_python36
   script:
     - apk add bash
     - cd scenario-tests
-    - ./run_scenario_tests.sh --docker-python3.6 ../target/turicreate-*.whl
+    - ./run_scenario_tests.sh --docker-python3.6 \
+      ../target/turicreate-*+minimal*.whl
 
 scenario_tests_mac_python27_10_13:
   tags:
@@ -564,7 +622,7 @@ scenario_tests_mac_python27_10_13:
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv"
     - cd scenario-tests
-    - ./run_scenario_tests.sh ../target/turicreate-*.whl
+    - ./run_scenario_tests.sh "$(ls -1 ../target/turicreate-*.whl | grep -v minimal)"
 
 scenario_tests_mac_python27_10_14:
   tags:
@@ -578,13 +636,11 @@ scenario_tests_mac_python27_10_14:
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv"
     - cd scenario-tests
-    - ./run_scenario_tests.sh ../target/turicreate-*.whl
+    - ./run_scenario_tests.sh "$(ls -1 ../target/turicreate-*.whl | grep -v minimal)"
 
 collect_artifacts:
   tags:
     - docker
-  services:
-    - docker:18.09-dind
   image: alpine:latest
   stage: collect_artifacts
   dependencies:

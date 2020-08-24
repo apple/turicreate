@@ -1,5 +1,5 @@
 /*
-  * Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+  * Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
   *
   * Licensed under the Apache License, Version 2.0 (the "License").
   * You may not use this file except in compliance with the License.
@@ -66,6 +66,16 @@ namespace Aws
             * Calculates a SHA256 Hash digest on a stream (the entire stream is read, not hex encoded.)
             */
             static ByteBuffer CalculateSHA256(Aws::IOStream& stream);
+
+            /**
+            * Calculates a SHA256 Tree Hash digest (not hex encoded, see tree hash definition: http://docs.aws.amazon.com/amazonglacier/latest/dev/checksum-calculations.html)
+            */
+            static ByteBuffer CalculateSHA256TreeHash(const Aws::String& str);
+
+            /**
+            * Calculates a SHA256 Tree Hash digest on a stream (the entire stream is read, not hex encoded.)
+            */
+            static ByteBuffer CalculateSHA256TreeHash(Aws::IOStream& stream);
 
             /**
             * Calculates a MD5 Hash value

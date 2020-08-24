@@ -1,5 +1,5 @@
-/*
-* Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+﻿/*
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 * express or implied. See the License for the specific language governing
 * permissions and limitations under the License.
 */
+
 #include <aws/s3/model/GetBucketAccelerateConfigurationResult.h>
 #include <aws/core/utils/xml/XmlSerializer.h>
 #include <aws/core/AmazonWebServiceResult.h>
@@ -24,16 +25,18 @@ using namespace Aws::Utils::Xml;
 using namespace Aws::Utils;
 using namespace Aws;
 
-GetBucketAccelerateConfigurationResult::GetBucketAccelerateConfigurationResult()
+GetBucketAccelerateConfigurationResult::GetBucketAccelerateConfigurationResult() : 
+    m_status(BucketAccelerateStatus::NOT_SET)
 {
 }
 
-GetBucketAccelerateConfigurationResult::GetBucketAccelerateConfigurationResult(const AmazonWebServiceResult<XmlDocument>& result)
+GetBucketAccelerateConfigurationResult::GetBucketAccelerateConfigurationResult(const Aws::AmazonWebServiceResult<XmlDocument>& result) : 
+    m_status(BucketAccelerateStatus::NOT_SET)
 {
   *this = result;
 }
 
-GetBucketAccelerateConfigurationResult& GetBucketAccelerateConfigurationResult::operator =(const AmazonWebServiceResult<XmlDocument>& result)
+GetBucketAccelerateConfigurationResult& GetBucketAccelerateConfigurationResult::operator =(const Aws::AmazonWebServiceResult<XmlDocument>& result)
 {
   const XmlDocument& xmlDocument = result.GetPayload();
   XmlNode resultNode = xmlDocument.GetRootElement();
@@ -43,7 +46,7 @@ GetBucketAccelerateConfigurationResult& GetBucketAccelerateConfigurationResult::
     XmlNode statusNode = resultNode.FirstChild("Status");
     if(!statusNode.IsNull())
     {
-      m_status = BucketAccelerateStatusMapper::GetBucketAccelerateStatusForName(StringUtils::Trim(statusNode.GetText().c_str()).c_str());
+      m_status = BucketAccelerateStatusMapper::GetBucketAccelerateStatusForName(StringUtils::Trim(Aws::Utils::Xml::DecodeEscapedXmlText(statusNode.GetText()).c_str()).c_str());
     }
   }
 

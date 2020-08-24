@@ -1103,6 +1103,60 @@ flexible_type unity_sarray::mean() {
   }
 }
 
+flexible_type unity_sarray::median(bool approx) {
+  log_func_entry();
+
+  flex_type_enum type = dtype();
+  if(type != flex_type_enum::INTEGER && type != flex_type_enum::FLOAT) {
+    log_and_throw("Can not calculate median on non-numeric SArray.");
+  }
+
+  // Use sketch to get a fast approximate answer
+  turi::unity_sketch* sketch = new turi::unity_sketch();
+  gl_sarray data = std::static_pointer_cast<unity_sarray>(shared_from_this());
+  data = data.dropna();
+  if (data.size() == 0) {
+    return flex_undefined();
+  }
+  sketch->construct_from_sarray(data);
+  const float quantile = 0.5;
+  double approx_median = sketch->get_quantile(quantile);
+
+  flexible_type result;
+  if (!approx) {
+    const double epsilon = sketch->numeric_epsilon();
+    const double upper_bound = sketch->get_quantile(quantile + epsilon);
+    const double lower_bound = sketch->get_quantile(quantile - epsilon);
+
+    // Count the number below lower_bound.
+    // Store all values between lower_bound and upper_bound.
+    atomic<size_t> n_below_a = 0;
+    std::vector<flexible_type> candidates;
+    std::mutex candidate_lock;
+    auto count_median = [&](size_t, const std::shared_ptr<sframe_rows>& rows) {
+      for (const auto& row : *rows) {
+        const flexible_type x = row[0];
+        if(x < lower_bound) {
+          ++n_below_a;
+        } else if(x <= upper_bound) {
+          std::lock_guard<std::mutex> lg(candidate_lock);
+          candidates.push_back(x);
+        }
+      }
+      return false;
+    };
+    data.materialize_to_callback(count_median);
+
+    size_t median_index = (data.size() / 2) - n_below_a;
+    std::nth_element(candidates.begin(), candidates.begin() + median_index, candidates.end());
+    result = candidates[median_index];
+  } else {
+    result = approx_median;
+  }
+
+  return result;
+}
+
 flexible_type unity_sarray::std(size_t ddof) {
   log_func_entry();
   flexible_type variance = this->var(ddof);
@@ -1765,6 +1819,19 @@ std::shared_ptr<unity_sarray_base> unity_sarray::tail(size_t nrows) {
   return copy_range(start, 1, end);
 }
 
+std::shared_ptr<unity_sarray_base> unity_sarray::make_uniform_int_array(size_t size, size_t max_int) {
+  uint64_t seed = random::pure_random_seed();
+
+  auto seq = std::static_pointer_cast<unity_sarray>(
+    unity_sarray::create_sequential_sarray(size, 0, false));
+
+  auto func = [max_int, seed](const flexible_type& val)->flexible_type {
+    uint64_t d = hash64_combine(hash64(val.get<flex_int>()), seed);
+    return d % max_int;
+  };
+
+  return seq->transform_lambda(func, flex_type_enum::INTEGER, false, 0);
+}
 
 std::shared_ptr<unity_sarray_base> unity_sarray::make_uniform_boolean_array(size_t size,
                                                                             float percent,

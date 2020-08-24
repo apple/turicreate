@@ -1,5 +1,5 @@
-/*
-* Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+﻿/*
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 * express or implied. See the License for the specific language governing
 * permissions and limitations under the License.
 */
+
 #include <aws/s3/model/Part.h>
 #include <aws/core/utils/xml/XmlSerializer.h>
 #include <aws/core/utils/StringUtils.h>
@@ -59,25 +60,25 @@ Part& Part::operator =(const XmlNode& xmlNode)
     XmlNode partNumberNode = resultNode.FirstChild("PartNumber");
     if(!partNumberNode.IsNull())
     {
-      m_partNumber = StringUtils::ConvertToInt32(StringUtils::Trim(partNumberNode.GetText().c_str()).c_str());
+      m_partNumber = StringUtils::ConvertToInt32(StringUtils::Trim(Aws::Utils::Xml::DecodeEscapedXmlText(partNumberNode.GetText()).c_str()).c_str());
       m_partNumberHasBeenSet = true;
     }
     XmlNode lastModifiedNode = resultNode.FirstChild("LastModified");
     if(!lastModifiedNode.IsNull())
     {
-      m_lastModified = DateTime(StringUtils::Trim(lastModifiedNode.GetText().c_str()).c_str(), DateFormat::ISO_8601);
+      m_lastModified = DateTime(StringUtils::Trim(Aws::Utils::Xml::DecodeEscapedXmlText(lastModifiedNode.GetText()).c_str()).c_str(), DateFormat::ISO_8601);
       m_lastModifiedHasBeenSet = true;
     }
     XmlNode eTagNode = resultNode.FirstChild("ETag");
     if(!eTagNode.IsNull())
     {
-      m_eTag = StringUtils::Trim(eTagNode.GetText().c_str());
+      m_eTag = Aws::Utils::Xml::DecodeEscapedXmlText(eTagNode.GetText());
       m_eTagHasBeenSet = true;
     }
     XmlNode sizeNode = resultNode.FirstChild("Size");
     if(!sizeNode.IsNull())
     {
-      m_size = StringUtils::ConvertToInt32(StringUtils::Trim(sizeNode.GetText().c_str()).c_str());
+      m_size = StringUtils::ConvertToInt64(StringUtils::Trim(Aws::Utils::Xml::DecodeEscapedXmlText(sizeNode.GetText()).c_str()).c_str());
       m_sizeHasBeenSet = true;
     }
   }
@@ -91,15 +92,15 @@ void Part::AddToNode(XmlNode& parentNode) const
   if(m_partNumberHasBeenSet)
   {
    XmlNode partNumberNode = parentNode.CreateChildElement("PartNumber");
-  ss << m_partNumber;
+   ss << m_partNumber;
    partNumberNode.SetText(ss.str());
-  ss.str("");
+   ss.str("");
   }
 
   if(m_lastModifiedHasBeenSet)
   {
-     XmlNode lastModifiedNode = parentNode.CreateChildElement("LastModified");
-     lastModifiedNode.SetText(m_lastModified.ToGmtString(DateFormat::ISO_8601));
+   XmlNode lastModifiedNode = parentNode.CreateChildElement("LastModified");
+   lastModifiedNode.SetText(m_lastModified.ToGmtString(DateFormat::ISO_8601));
   }
 
   if(m_eTagHasBeenSet)
@@ -111,9 +112,9 @@ void Part::AddToNode(XmlNode& parentNode) const
   if(m_sizeHasBeenSet)
   {
    XmlNode sizeNode = parentNode.CreateChildElement("Size");
-  ss << m_size;
+   ss << m_size;
    sizeNode.SetText(ss.str());
-  ss.str("");
+   ss.str("");
   }
 
 }

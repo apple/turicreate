@@ -15,7 +15,16 @@ from Cython.Build import cythonize
 from distutils.extension import Extension
 
 PACKAGE_NAME = "turicreate"
-VERSION = "6.1"  # {{VERSION_STRING}}
+VERSION = "6.3"  # {{VERSION_STRING}}
+# pkgs not needed for minimal pkg
+NON_MINIMAL_LIST = [
+    "coremltools",
+    "pandas",
+    "resampy",
+    "scipy",
+    "tensorflow",
+]
+
 
 # Prevent distutils from thinking we are a pure python package
 class BinaryDistribution(Distribution):
@@ -24,12 +33,38 @@ class BinaryDistribution(Distribution):
 
 
 class InstallEngine(install):
-    """Helper class to hook the python setup.py install path to download client libraries and engine"""
-    user_options = [
-        ('turi-root=', None, 'Specify the foo to bar.'),
+    """Helper class to hook the python setup.py install path to download
+    client libraries and engine
+    """
+
+    user_options = install.user_options + [
+        ("minimal", None, "control minimal installation"),  # a 'flag' option
     ]
 
+    def initialize_options(self):
+        install.initialize_options(self)
+        self.minimal = None
+
     def run(self):
+        if self.minimal is not None:
+
+            def do_not_install(require):
+                require = require.strip()
+                for name in NON_MINIMAL_LIST:
+                    if require.startswith(name):
+                        return False
+                return True
+
+            install_requires_minimal = list(
+                filter(do_not_install, self.distribution.install_requires)
+            )
+
+            orig_install_requires = self.distribution.install_requires
+            self.distribution.install_requires = install_requires_minimal
+
+            print(" minimal install: ", install_requires_minimal)
+            print("original install: ", orig_install_requires)
+
         import platform
 
         # start by running base class implementation of run
@@ -137,12 +172,8 @@ if __name__ == '__main__':
         long_description = f.read().decode("utf-8")
 
     install_requires = [
-<<<<<<< HEAD
         "coremltools==3.3",
-=======
         "cython>=0.29",
-        "coremltools==3.1",
->>>>>>> [WIP] New build system.
         "decorator >= 4.0.9",
         "numpy",
         "pandas >= 0.23.2",
@@ -152,13 +183,22 @@ if __name__ == '__main__':
         "requests >= 2.9.1",
         "scipy >= 1.1.0",
         "six >= 1.10.0",
-        "tensorflow >= 2.0.0",
     ]
+    if sys.version_info[0] == 2 or (
+        sys.version_info[0] == 3 and sys.version_info[1] == 5
+    ):
+        install_requires.append("llvmlite == 0.31.0")
+
+    if sys.platform == "darwin":
+        install_requires.append("tensorflow >= 2.0.0")
+    else:
+        # ST, OD, AC and DC segfault on Linux with TensorFlow 2.1.0 and 2.1.1
+        # See: https://github.com/apple/turicreate/issues/3003
+        install_requires.append("tensorflow >= 2.0.0,!= 2.1.0,!= 2.1.1")
 
     setup(
         name="turicreate",
         version=VERSION,
-<<<<<<< HEAD
         # This distribution contains platform-specific C++ libraries, but they are not
         # built with distutils. So we must create a dummy Extension object so when we
         # create a binary file it knows to make it platform-specific.
@@ -166,12 +206,6 @@ if __name__ == '__main__':
         author="Apple Inc.",
         author_email="turi-create@group.apple.com",
         cmdclass=dict(install=InstallEngine),
-=======
-
-        author='Apple Inc.',
-        author_email='turi-create@group.apple.com',
-        cmdclass=dict(install = InstallEngine),
->>>>>>> [WIP] New build system.
         distclass=BinaryDistribution,
 
         ext_modules = cythonize([
@@ -184,23 +218,12 @@ if __name__ == '__main__':
         ]),
 
         package_data={
-<<<<<<< HEAD
             "turicreate": [
                 "_cython/*.so",
                 "_cython/*.pyd",
                 "*.so",
                 "*.dylib",
                 "toolkits/*.so",
-=======
-            'turicreate': [
-
-
-
-
-                '_cython/*.so', '_cython/*.pyd',
-                '*.so', '*.dylib', 'toolkits/*.so',
-
->>>>>>> [WIP] New build system.
                 # macOS visualization
                 "Turi Create Visualization.app/Contents/*",
                 "Turi Create Visualization.app/Contents/_CodeSignature/*",

@@ -40,7 +40,6 @@ import tempfile
 from copy import copy
 from subprocess import Popen as _Popen
 from subprocess import PIPE as _PIPE
-import coremltools as _coremltools
 
 
 if not HAS_NUMPY:
@@ -75,6 +74,8 @@ def _coreml_to_tc(preds):
 
 class RecommenderTestBase(unittest.TestCase):
     def _test_coreml_export(self, m, item_ids, ratings=None):
+        import coremltools as _coremltools
+
         temp_file_path = tempfile.NamedTemporaryFile().name
         if m.target and ratings:
             obs_data_sf = tc.SFrame(
@@ -1710,6 +1711,18 @@ U1103,135104,0"""
             self.test, [model1, model2], skip_set=self.train, make_plot=False
         )
         assert x is not None
+
+        # Passing in a non recsys model should produce a ToolkitError error.
+        non_recsys_model = tc.linear_regression.create(
+            tc.SFrame({"x": [1, 2, 3], "y": [2, 4, 6]}), "y"
+        )
+        with self.assertRaises(ToolkitError):
+            x = compare_models(
+                self.test,
+                [model1, non_recsys_model],
+                skip_set=self.train,
+                make_plot=False,
+            )
 
     def _run_recommend_consistency_test(self, is_regression):
 

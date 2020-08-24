@@ -1,5 +1,5 @@
-/*
-* Copyright 2010-2016 Amazon.com, Inc. or its affiliates. All Rights Reserved.
+﻿/*
+* Copyright 2010-2017 Amazon.com, Inc. or its affiliates. All Rights Reserved.
 *
 * Licensed under the Apache License, Version 2.0 (the "License").
 * You may not use this file except in compliance with the License.
@@ -12,6 +12,7 @@
 * express or implied. See the License for the specific language governing
 * permissions and limitations under the License.
 */
+
 #include <aws/s3/model/QueueConfigurationDeprecated.h>
 #include <aws/core/utils/xml/XmlSerializer.h>
 #include <aws/core/utils/StringUtils.h>
@@ -53,7 +54,7 @@ QueueConfigurationDeprecated& QueueConfigurationDeprecated::operator =(const Xml
     XmlNode idNode = resultNode.FirstChild("Id");
     if(!idNode.IsNull())
     {
-      m_id = StringUtils::Trim(idNode.GetText().c_str());
+      m_id = Aws::Utils::Xml::DecodeEscapedXmlText(idNode.GetText());
       m_idHasBeenSet = true;
     }
     XmlNode eventsNode = resultNode.FirstChild("Event");
@@ -71,7 +72,7 @@ QueueConfigurationDeprecated& QueueConfigurationDeprecated::operator =(const Xml
     XmlNode queueNode = resultNode.FirstChild("Queue");
     if(!queueNode.IsNull())
     {
-      m_queue = StringUtils::Trim(queueNode.GetText().c_str());
+      m_queue = Aws::Utils::Xml::DecodeEscapedXmlText(queueNode.GetText());
       m_queueHasBeenSet = true;
     }
   }
@@ -99,7 +100,7 @@ void QueueConfigurationDeprecated::AddToNode(XmlNode& parentNode) const
 
   if(m_queueHasBeenSet)
   {
-   XmlNode queueNode = parentNode.CreateChildElement("Event");
+   XmlNode queueNode = parentNode.CreateChildElement("Queue");
    queueNode.SetText(m_queue);
   }
 
