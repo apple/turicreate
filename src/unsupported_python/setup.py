@@ -33,6 +33,7 @@ class InstallEngine(install):
             * 3.5
             * 3.6
             * 3.7
+            * 3.8
 
 
         Another possible cause of this error is an outdated pip version. Try:
