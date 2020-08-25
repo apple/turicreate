@@ -600,7 +600,9 @@ class CoreMlCustomModelPreprocessingTest(unittest.TestCase):
         self.assertEqual(y2.shape, (1, 96, 64))
         self.assertTrue(np.isclose(y1, y2, atol=1e-04).all())
 
-
+# Skip tests on Linux for Python 3.8
+@unittest.skipIf(sys.platform != "darwin" and sys.version_info[0] == 3 and sys.version_info[1] == 8,
+                 "https://github.com/apple/turicreate/issues/3303")
 class ReuseDeepFeatures(unittest.TestCase):
     def test_simple_case(self):
         data = copy(binary_test_data)
