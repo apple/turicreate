@@ -486,6 +486,7 @@ class ActivityClassifierTest(unittest.TestCase):
         Check the export_coreml() function.
         """
         import coremltools
+        import platform
 
         # Export the model as a CoreML model file
         filename = tempfile.NamedTemporaryFile(suffix=".mlmodel").name
@@ -493,22 +494,18 @@ class ActivityClassifierTest(unittest.TestCase):
 
         # Load the model back from the CoreML model file
         coreml_model = coremltools.models.MLModel(filename)
-        import platform
+        metadata = coreml_model.user_defined_metadata
 
-        self.assertDictEqual(
-            {
-                "com.github.apple.turicreate.version": tc.__version__,
-                "com.github.apple.os.platform": platform.platform(),
-                "target": self.target,
-                "type": "activity_classifier",
-                "prediction_window": str(self.prediction_window),
-                "session_id": self.session_id,
-                "features": ",".join(self.features),
-                "max_iterations": "10",
-                "version": "2",
-            },
-            dict(coreml_model.user_defined_metadata),
-        )
+        self.assertEqual(metadata["com.github.apple.turicreate.version"], tc.__version__)
+        self.assertEqual(metadata["com.github.apple.os.platform"], platform.platform())
+        self.assertEqual(metadata["target"], self.target)
+        self.assertEqual(metadata["type"], "activity_classifier")
+        self.assertEqual(metadata["prediction_window"], str(self.prediction_window))
+        self.assertEqual(metadata["session_id"], self.session_id)
+        self.assertEqual(metadata["features"], ",".join(self.features))
+        self.assertEqual(metadata["max_iterations"], "10")
+        self.assertEqual(metadata["version"], "2")
+
         expected_result = "Activity classifier created by Turi Create (version %s)" % (
             tc.__version__
         )

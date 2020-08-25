@@ -514,7 +514,7 @@ cdef inline bint _var_set_dict_internal(variant_map_type& ret_as_vm, flex_dict& 
                         writing_to_flex_dict = False
 
                     pos += 1
-                else:
+                else:     # Not writing to a flex_dict
                     tr_code = get_var_tr_code(v)
                     _convert_to_variant_type(ret_as_vm[str_to_cpp(k)], v, tr_code)
 

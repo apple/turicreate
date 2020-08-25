@@ -467,22 +467,20 @@ class ObjectDetectorTest(unittest.TestCase):
         self.model.export_coreml(filename, include_non_maximum_suppression=False)
 
         coreml_model = coremltools.models.MLModel(filename)
-        self.assertDictEqual(
-            {
-                "com.github.apple.turicreate.version": tc.__version__,
-                "com.github.apple.os.platform": platform.platform(),
-                "annotations": self.annotations,
-                "type": "object_detector",
-                "classes": ",".join(sorted(_CLASSES)),
-                "feature": self.feature,
-                "include_non_maximum_suppression": "False",
-                "max_iterations": "1",
-                "model": "YOLOv2",
-                "training_iterations": "1",
-                "version": "1",
-            },
-            dict([(str(k), v) for k, v in coreml_model.user_defined_metadata.items()]),
-        )
+        metadata = coreml_model.user_defined_metadata
+
+        self.assertEqual(metadata["com.github.apple.turicreate.version"], tc.__version__)
+        self.assertEqual(metadata["com.github.apple.os.platform"], platform.platform())
+        self.assertEqual(metadata["type"], "object_detector")
+        self.assertEqual(metadata["version"], "1")
+        self.assertEqual(metadata["annotations"], self.annotations)
+        self.assertEqual(metadata["classes"], ",".join(sorted(_CLASSES)))
+        self.assertEqual(metadata["feature"], self.feature)
+        self.assertEqual(metadata["include_non_maximum_suppression"], "False")
+        self.assertEqual(metadata["max_iterations"], "1")
+        self.assertEqual(metadata["model"], "YOLOv2")
+        self.assertEqual(metadata["training_iterations"], "1")
+
         expected_result = "Object detector created by Turi Create (version %s)" % (
             tc.__version__
         )

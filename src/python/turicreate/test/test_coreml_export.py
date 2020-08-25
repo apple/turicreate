@@ -81,14 +81,11 @@ class CoreMLExportTest(unittest.TestCase):
             import coremltools
 
             coreml_model = coremltools.models.MLModel(mlmodel_filename)
-            self.assertDictEqual(
-                {
-                    "com.github.apple.turicreate.version": tc.__version__,
-                    "com.github.apple.os.platform": platform.platform(),
-                    "type": model.__class__.__name__,
-                },
-                dict(coreml_model.user_defined_metadata),
-            )
+            metadata = coreml_model.user_defined_metadata
+
+            self.assertEqual(metadata["com.github.apple.turicreate.version"], tc.__version__)
+            self.assertEqual(metadata["com.github.apple.os.platform"], platform.platform())
+            self.assertEqual(metadata["type"], model.__class__.__name__)
 
             if _mac_ver() < (10, 13):
                 print("Skipping export test; model not supported on this platform.")

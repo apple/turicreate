@@ -3,6 +3,10 @@
 set -e
 set -x
 
+# Once new docker images have been verified, you should manually push them to the GitLab registry.
+# To do this, first log: registry.gitlab.com`.
+# Then for each docker image: `docker push <image name>`.
+
 SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 WORKSPACE=${SCRIPT_DIR}/..
 cd ${WORKSPACE}

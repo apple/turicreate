@@ -33,7 +33,7 @@ class InstallEngine(install):
             * 3.5
             * 3.6
             * 3.7
-
+            * 3.8
 
         Another possible cause of this error is an outdated pip version. Try:
             `pip install -U pip`
@@ -64,6 +64,7 @@ if __name__ == '__main__':
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: Implementation :: CPython",
         "Topic :: Scientific/Engineering",
         "Topic :: Scientific/Engineering :: Information Analysis",

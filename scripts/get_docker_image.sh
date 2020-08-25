@@ -37,7 +37,7 @@ if [[ -z "${UBUNTU_VERSION}" && -z "${CENTOS_VERSION}" ]]; then
 fi
 
 # The build image version that will be used for building
-TC_BUILD_IMAGE_VERSION="1.0.6"
+TC_BUILD_IMAGE_VERSION="1.0.7"
 
 if [[ -z "${CENTOS_VERSION}" ]]; then
   # The base image name - using Gitlab CI registry

@@ -229,16 +229,13 @@ class ImageClassifierTest(unittest.TestCase):
         self.model.export_coreml(filename)
 
         coreml_model = coremltools.models.MLModel(filename)
-        self.assertDictEqual(
-            {
-                "com.github.apple.turicreate.version": tc.__version__,
-                "com.github.apple.os.platform": platform.platform(),
-                "type": "ImageClassifier",
-                "coremltoolsVersion": coremltools.__version__,
-                "version": "1",
-            },
-            dict(coreml_model.user_defined_metadata),
-        )
+
+        metadata = coreml_model.user_defined_metadata
+        self.assertEqual(metadata["com.github.apple.turicreate.version"], tc.__version__)
+        self.assertEqual(metadata["com.github.apple.os.platform"], platform.platform())
+        self.assertEqual(metadata["type"], "ImageClassifier")
+        self.assertEqual(metadata["version"], "1")
+
         expected_result = (
             "Image classifier (%s) created by Turi Create (version %s)"
             % (self.model.model.lower(), tc.__version__)
@@ -254,6 +251,7 @@ class ImageClassifierTest(unittest.TestCase):
 
         coreml_model = coremltools.models.MLModel(filename)
         if self.feature == "awesome_image":
+            # tc.image_classifier.create(...) was not called with deep features
             img = data[0:1][self.feature][0]
             img_fixed = tc.image_analysis.resize(img, *reversed(self.input_image_shape))
             from PIL import Image
@@ -270,9 +268,6 @@ class ImageClassifierTest(unittest.TestCase):
                     list(self.model.predict(img_fixed, output_type="probability_vector")),
                     self.tolerance,
                 )
-        else:
-            # If the code came here that means the type of the feature used is deep_deatures and the predict fwature in coremltools doesn't work with deep_features yet so we will ignore this specific test case unitl the same is written.
-            pass
 
     def test_classify(self):
         model = self.model

@@ -136,6 +136,7 @@ if __name__ == "__main__":
         "Programming Language :: Python :: 3.5",
         "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
+        "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: Implementation :: CPython",
         "Topic :: Scientific/Engineering",
         "Topic :: Scientific/Engineering :: Information Analysis",
@@ -163,7 +164,6 @@ if __name__ == "__main__":
         long_description = f.read().decode("utf-8")
 
     install_requires = [
-        "coremltools==3.3",
         "decorator >= 4.0.9",
         "numpy",
         "pandas >= 0.23.2",
@@ -179,12 +179,26 @@ if __name__ == "__main__":
     ):
         install_requires.append("llvmlite == 0.31.0")
 
+    if sys.version_info[0] == 3 and sys.version_info[1] == 8:
+        # Only 4.0 betas support Python 3.8
+        install_requires.append("coremltools==4.0b3")
+    else:
+        install_requires.append("coremltools==3.3")
+
     if sys.platform == "darwin":
         install_requires.append("tensorflow >= 2.0.0")
     else:
         # ST, OD, AC and DC segfault on Linux with TensorFlow 2.1.0 and 2.1.1
         # See: https://github.com/apple/turicreate/issues/3003
-        install_requires.append("tensorflow >= 2.0.0,!= 2.1.0,!= 2.1.1")
+
+        # SC errors out on Linux with TensorFlow 2.2 and 2.3
+        # See: https://github.com/apple/turicreate/issues/3303
+
+        if sys.version_info[0] != 3 or sys.version_info[1] != 8:
+            install_requires.append("tensorflow >= 2.0.0,<2.1.0")
+        else:
+            # Only TensorFlow >= 2.2 supports Python 3.8
+            install_requires.append("tensorflow >= 2.0.0")
 
         # numba 0.51 started using "manylinux2014" rather than "manylinux2010".
         # This breaks a lot of Linux installs.

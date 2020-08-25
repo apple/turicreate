@@ -27,8 +27,9 @@ function linux_patch_sigfpe_handler {
   if [[ $OSTYPE == linux* ]]; then
     targfile=deps/local/include/pyfpe.h
     if [[ -f $targfile ]]; then
-      echo "#undef WANT_SIGFPE_HANDLER" | cat - $targfile > tmp
-      mv -f tmp $targfile
+      temp_file=/tmp/sigfpe_handler_temp.txt
+      echo "#undef WANT_SIGFPE_HANDLER" | cat - $targfile > $temp_file
+      mv -f $temp_file $targfile
     fi
   fi
 }
