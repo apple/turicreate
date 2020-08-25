@@ -611,9 +611,9 @@ test_python_mac_python37_10_14_minimal:
     paths:
       - pytest.*
 
-test_python_mac_python38_10_14:
+test_python_mac_python38_10_15:
   tags:
-    - macos10.14
+    - macos10.15
   only:
     variables:
       - $TC_HAS_MACOS_RUNNERS == "1"
