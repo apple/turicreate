@@ -33,6 +33,7 @@ var searchData=
   ['target_5fis_5findexed',['target_is_indexed',['../classturi_1_1ml__metadata.html#a66ee2776716f5c41758c8d68cbad8c53',1,'turi::ml_metadata']]],
   ['target_5fvalue',['target_value',['../classturi_1_1ml__data__row__reference.html#ad1116f43d1b324119e9816f848d920d5',1,'turi::ml_data_row_reference::target_value()'],['../classturi_1_1v2_1_1ml__data__iterator__base.html#af722d725f636c7a108aedbb095f1d047',1,'turi::v2::ml_data_iterator_base::target_value()'],['../classturi_1_1v2_1_1ml__data__row__reference.html#aeacf1d8ab549660155651519fbb5241d',1,'turi::v2::ml_data_row_reference::target_value()']]],
   ['targets',['targets',['../structturi_1_1drawing__classifier_1_1data__iterator_1_1batch.html#a2fa188d774d14193b7d0e5207aed7b91',1,'turi::drawing_classifier::data_iterator::batch']]],
+  ['taskqueue',['TaskQueue',['../classturi_1_1neural__net_1_1TaskQueue.html',1,'turi::neural_net']]],
   ['technical_20details_3a_20cppipc',['Technical Details: CPPIPC',['../technical_details_cppipc.html',1,'using_cppipc']]],
   ['technical_20details_3a_20serialization',['Technical Details: Serialization',['../group__technical__details__serialization.html',1,'']]],
   ['tell',['Tell',['../classturi_1_1fileio_1_1s3_1_1SeekStream.html#a2538c78de0516e6d15a75871a88789b5',1,'turi::fileio::s3::SeekStream::Tell()'],['../classturi_1_1fileio_1_1s3_1_1AWSReadStreamBase.html#a377ad76445bfd1924ec1eed7e6f08e36',1,'turi::fileio::s3::AWSReadStreamBase::Tell()']]],

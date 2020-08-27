@@ -2,6 +2,7 @@ var searchData=
 [
   ['iarchive',['iarchive',['../classturi_1_1iarchive.html',1,'turi']]],
   ['iarchive_5fsoft_5ffail',['iarchive_soft_fail',['../classturi_1_1iarchive__soft__fail.html',1,'turi']]],
+  ['image',['Image',['../classturi_1_1neural__net_1_1Image.html',1,'turi::neural_net']]],
   ['image_5fannotation',['image_annotation',['../structturi_1_1neural__net_1_1image__annotation.html',1,'turi::neural_net']]],
   ['image_5faugmenter',['image_augmenter',['../classturi_1_1neural__net_1_1image__augmenter.html',1,'turi::neural_net']]],
   ['image_5fbox',['image_box',['../structturi_1_1neural__net_1_1image__box.html',1,'turi::neural_net']]],

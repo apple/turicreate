@@ -30,6 +30,8 @@ var searchData=
   ['gl_5fsgraph',['gl_sgraph',['../classturi_1_1gl__sgraph.html',1,'turi']]],
   ['global_5fstartup',['global_startup',['../classturi_1_1global__startup.html',1,'turi']]],
   ['global_5fteardown',['global_teardown',['../classturi_1_1global__teardown.html',1,'turi']]],
+  ['globalposixtaskqueue',['GlobalPosixTaskQueue',['../classturi_1_1neural__net_1_1GlobalPosixTaskQueue.html',1,'turi::neural_net']]],
+  ['grandcentraldispatchqueue',['GrandCentralDispatchQueue',['../classturi_1_1neural__net_1_1GrandCentralDispatchQueue.html',1,'turi::neural_net']]],
   ['graph_5fpylambda_5fmaster',['graph_pylambda_master',['../classturi_1_1lambda_1_1graph__pylambda__master.html',1,'turi::lambda']]],
   ['group_5faggregate_5fcontainer',['group_aggregate_container',['../classturi_1_1groupby__aggregate__impl_1_1group__aggregate__container.html',1,'turi::groupby_aggregate_impl']]],
   ['group_5faggregate_5fvalue',['group_aggregate_value',['../classturi_1_1group__aggregate__value.html',1,'turi']]],

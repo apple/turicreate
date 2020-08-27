@@ -108,7 +108,7 @@ Public Member Functions</h2></td></tr>
 <div class="textblock"><p>Provides the ability to write gl_sarrays. The <a class="el" href="classturi_1_1gl__sarray.html">gl_sarray</a> is internally cut into a collection of segments. Each segment can be written to independently, and the resultant SArray is the effective concatenation of all the segments.</p>
 <div class="fragment"><div class="line"><span class="comment">// Writes an integer SArray of 4 segments.</span></div><div class="line"><a class="code" href="classturi_1_1gl__sarray__writer.html#a00da5fa6276f98db9669a355cd967a68">gl_sarray_writer</a> writer(<a class="code" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76">flex_type_enum</a>:<a class="code" href="namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76a5d5cd46919fa987731fb2edefe0f2a0c">INTEGER</a>, 4);</div><div class="line"></div><div class="line"><span class="comment">// for each segment, write a bunch of 10 values.</span></div><div class="line"><span class="comment">// segment 0 has 10 0&#39;s,</span></div><div class="line"><span class="comment">// segment 1 has 10 1&#39;s,</span></div><div class="line"><span class="comment">// etc</span></div><div class="line"><span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> seg = 0;seg &lt; 4; ++seg) {</div><div class="line">  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0;i &lt; 10; ++i) {</div><div class="line">    writer.write(i, seg);</div><div class="line">  }</div><div class="line">}</div><div class="line"></div><div class="line">gl_sarray sa = writer.close();</div><div class="line"><span class="comment">// sa is now an SArray of 40 elements comprising of</span></div><div class="line"><span class="comment">// the sequence 10 0&#39;s, 10 1&#39;s, 10 2&#39;s, 10 3&#39;s</span></div></div><!-- fragment --><p>Different segments can be written safely in parallel. It is not safe to write to the same segment simultanously. </p>
 
-<p class="definition">Definition at line <a class="el" href="gl__sarray_8hpp_source.html#l02010">2010</a> of file <a class="el" href="gl__sarray_8hpp_source.html">gl_sarray.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="gl__sarray_8hpp_source.html#l02009">2009</a> of file <a class="el" href="gl__sarray_8hpp_source.html">gl_sarray.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a00da5fa6276f98db9669a355cd967a68"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a00da5fa6276f98db9669a355cd967a68">&#9670;&nbsp;</a></span>gl_sarray_writer()</h2>
@@ -272,7 +272,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="gl__sarray_8hpp_source.html#l02073">2073</a> of file <a class="el" href="gl__sarray_8hpp_source.html">gl_sarray.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="gl__sarray_8hpp_source.html#l02072">2072</a> of file <a class="el" href="gl__sarray_8hpp_source.html">gl_sarray.hpp</a>.</p>
 
 </div>
 </div>

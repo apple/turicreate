@@ -38,6 +38,7 @@ var searchData=
   ['heap_5fbytes',['heap_bytes',['../namespaceturi_1_1memory__info.html#a75de38c62b95bde7f11c8d0e61b9cb79',1,'turi::memory_info']]],
   ['heap_5felement',['heap_element',['../classturi_1_1mutable__queue.html#a7fe3a7faa1c23e73556075869b65c14e',1,'turi::mutable_queue']]],
   ['heapify',['heapify',['../classturi_1_1mutable__queue.html#a325f935aca3f0328f1b475371644e034',1,'turi::mutable_queue']]],
+  ['height',['Height',['../classturi_1_1neural__net_1_1CoreImageImage.html#a4e4c64d87d53cfd74e80020d791c8320',1,'turi::neural_net::CoreImageImage::Height()'],['../classturi_1_1neural__net_1_1Image.html#ac6160a3f055116b6d2564cbd2c141800',1,'turi::neural_net::Image::Height()'],['../classturi_1_1neural__net_1_1PortableImage.html#a4420edc31b1ba0efad3b9ab2dd91f725',1,'turi::neural_net::PortableImage::Height()']]],
   ['hessian',['hessian',['../group__LBFGS.html#ga5db45c025d69d7e17ebf75dd6b0c6bc9',1,'turi::optimization::solver_status::hessian()'],['../structturi_1_1optimization_1_1__solver__return.html#a70a2b532374a132ab7b15d1eba653917',1,'turi::optimization::_solver_return::hessian()']]],
   ['hilbert_5fblocked_5fparallel_5ffor',['hilbert_blocked_parallel_for',['../namespaceturi_1_1sgraph__compute.html#a089fa67e5ad46669ade8355ea4c7a97d',1,'turi::sgraph_compute']]],
   ['hilbert_5findex_5fto_5fcoordinate',['hilbert_index_to_coordinate',['../group__sgraph__compute.html#ga021ecc9d5e8e5483c70cf666749a6ced',1,'turi']]],

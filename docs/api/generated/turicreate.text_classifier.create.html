@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.text_classifier.create &mdash; Turi Create API 6.3 documentation</title>
+  <title>turicreate.text_classifier.create &mdash; Turi Create API 6.4 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="Turi Create API 6.3 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 6.4 documentation" href="../index.html"/>
         <link rel="up" title="text_classifier" href="../turicreate.toolkits.text_classifier.html"/>
         <link rel="next" title="turicreate.text_classifier.TextClassifier" href="turicreate.text_classifier.TextClassifier.html"/>
         <link rel="prev" title="text_classifier" href="../turicreate.toolkits.text_classifier.html"/> 
@@ -133,7 +133,7 @@
 <h1>turicreate.text_classifier.create<a class="headerlink" href="#turicreate-text-classifier-create" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="turicreate.text_classifier.create">
-<code class="descclassname">turicreate.text_classifier.</code><code class="descname">create</code><span class="sig-paren">(</span><em>dataset</em>, <em>target</em>, <em>features=None</em>, <em>drop_stop_words=True</em>, <em>word_count_threshold=2</em>, <em>method='auto'</em>, <em>validation_set='auto'</em>, <em>max_iterations=10</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.text_classifier.create" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">turicreate.text_classifier.</code><code class="descname">create</code><span class="sig-paren">(</span><em>dataset</em>, <em>target</em>, <em>features=None</em>, <em>drop_stop_words=True</em>, <em>word_count_threshold=2</em>, <em>method='auto'</em>, <em>validation_set='auto'</em>, <em>max_iterations=10</em>, <em>l2_penalty=0.2</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.text_classifier.create" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create a model that trains a classifier to classify text from a
 collection of documents. The model is a
 <a class="reference internal" href="turicreate.logistic_classifier.LogisticClassifier.html#turicreate.logistic_classifier.LogisticClassifier" title="turicreate.logistic_classifier.LogisticClassifier"><code class="xref py py-class docutils literal"><span class="pre">LogisticClassifier</span></code></a> model trained
@@ -181,6 +181,14 @@ are computed. The default value is ‘auto’.</p>
 the data can result in a more accurately trained model. Consider
 increasing this (the default value is 10) if the training accuracy is
 low and the <em>Grad-Norm</em> in the display is large.</p>
+</dd>
+<dt><strong>l2_penalty</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
+<dd><p class="first last">Weight on l2 regularization of the model. The larger this weight, the
+more the model coefficients shrink toward 0. This introduces bias into
+the model but decreases variance, potentially leading to better
+predictions. The default value is 0.2; setting this parameter to 0
+corresponds to unregularized logistic regression. See the ridge
+regression reference for more detail.</p>
 </dd>
 </dl>
 </td>
@@ -235,7 +243,7 @@ low and the <em>Grad-Norm</em> in the display is large.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on May 21, 2020.
+      Last updated on Aug 27, 2020.
     </p>
   </div>
 </footer>
@@ -252,7 +260,7 @@ low and the <em>Grad-Norm</em> in the display is large.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'6.3',
+            VERSION:'6.4',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

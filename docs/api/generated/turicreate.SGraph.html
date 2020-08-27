@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.SGraph &mdash; Turi Create API 6.3 documentation</title>
+  <title>turicreate.SGraph &mdash; Turi Create API 6.4 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="Turi Create API 6.3 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 6.4 documentation" href="../index.html"/>
         <link rel="up" title="Data" href="../turicreate.data_structures.html"/>
         <link rel="next" title="turicreate.Image" href="turicreate.Image.html"/>
         <link rel="prev" title="turicreate.SFrame" href="turicreate.SFrame.html"/> 
@@ -204,43 +204,43 @@ graph; the old graph gets garbage collected.</li>
 <col width="90%" />
 </colgroup>
 <tbody valign="top">
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SGraph.add_edges.html#turicreate.SGraph.add_edges" title="turicreate.SGraph.add_edges"><code class="xref py py-obj docutils literal"><span class="pre">SGraph.add_edges</span></code></a>(self,&nbsp;edges[,&nbsp;src_field,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SGraph.add_edges.html#turicreate.SGraph.add_edges" title="turicreate.SGraph.add_edges"><code class="xref py py-obj docutils literal"><span class="pre">SGraph.add_edges</span></code></a>(edges[,&nbsp;src_field,&nbsp;dst_field])</td>
 <td>Add edges to the SGraph.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SGraph.add_vertices.html#turicreate.SGraph.add_vertices" title="turicreate.SGraph.add_vertices"><code class="xref py py-obj docutils literal"><span class="pre">SGraph.add_vertices</span></code></a>(self,&nbsp;vertices[,&nbsp;vid_field])</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SGraph.add_vertices.html#turicreate.SGraph.add_vertices" title="turicreate.SGraph.add_vertices"><code class="xref py py-obj docutils literal"><span class="pre">SGraph.add_vertices</span></code></a>(vertices[,&nbsp;vid_field])</td>
 <td>Add vertices to the SGraph.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SGraph.copy.html#turicreate.SGraph.copy" title="turicreate.SGraph.copy"><code class="xref py py-obj docutils literal"><span class="pre">SGraph.copy</span></code></a>(self)</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SGraph.copy.html#turicreate.SGraph.copy" title="turicreate.SGraph.copy"><code class="xref py py-obj docutils literal"><span class="pre">SGraph.copy</span></code></a>()</td>
 <td>Returns a shallow copy of the SGraph.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SGraph.get_edge_fields.html#turicreate.SGraph.get_edge_fields" title="turicreate.SGraph.get_edge_fields"><code class="xref py py-obj docutils literal"><span class="pre">SGraph.get_edge_fields</span></code></a>(self)</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SGraph.get_edge_fields.html#turicreate.SGraph.get_edge_fields" title="turicreate.SGraph.get_edge_fields"><code class="xref py py-obj docutils literal"><span class="pre">SGraph.get_edge_fields</span></code></a>()</td>
 <td>Return a list of edge attribute fields in the graph.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="turicreate.SGraph.get_edges.html#turicreate.SGraph.get_edges" title="turicreate.SGraph.get_edges"><code class="xref py py-obj docutils literal"><span class="pre">SGraph.get_edges</span></code></a>(self[,&nbsp;src_ids,&nbsp;dst_ids,&nbsp;…])</td>
 <td>Return a collection of edges and their attributes.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SGraph.get_fields.html#turicreate.SGraph.get_fields" title="turicreate.SGraph.get_fields"><code class="xref py py-obj docutils literal"><span class="pre">SGraph.get_fields</span></code></a>(self)</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SGraph.get_fields.html#turicreate.SGraph.get_fields" title="turicreate.SGraph.get_fields"><code class="xref py py-obj docutils literal"><span class="pre">SGraph.get_fields</span></code></a>()</td>
 <td>Return a list of vertex and edge attribute fields in the SGraph.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SGraph.get_neighborhood.html#turicreate.SGraph.get_neighborhood" title="turicreate.SGraph.get_neighborhood"><code class="xref py py-obj docutils literal"><span class="pre">SGraph.get_neighborhood</span></code></a>(self,&nbsp;ids[,&nbsp;radius,&nbsp;…])</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SGraph.get_neighborhood.html#turicreate.SGraph.get_neighborhood" title="turicreate.SGraph.get_neighborhood"><code class="xref py py-obj docutils literal"><span class="pre">SGraph.get_neighborhood</span></code></a>(ids[,&nbsp;radius,&nbsp;…])</td>
 <td>Retrieve the graph neighborhood around a set of vertices, ignoring edge directions.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SGraph.get_vertex_fields.html#turicreate.SGraph.get_vertex_fields" title="turicreate.SGraph.get_vertex_fields"><code class="xref py py-obj docutils literal"><span class="pre">SGraph.get_vertex_fields</span></code></a>(self)</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SGraph.get_vertex_fields.html#turicreate.SGraph.get_vertex_fields" title="turicreate.SGraph.get_vertex_fields"><code class="xref py py-obj docutils literal"><span class="pre">SGraph.get_vertex_fields</span></code></a>()</td>
 <td>Return a list of vertex attribute fields in the SGraph.</td>
 </tr>
 <tr class="row-odd"><td><a class="reference internal" href="turicreate.SGraph.get_vertices.html#turicreate.SGraph.get_vertices" title="turicreate.SGraph.get_vertices"><code class="xref py py-obj docutils literal"><span class="pre">SGraph.get_vertices</span></code></a>(self[,&nbsp;ids,&nbsp;fields,&nbsp;format])</td>
 <td>Return a collection of vertices and their attributes.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SGraph.save.html#turicreate.SGraph.save" title="turicreate.SGraph.save"><code class="xref py py-obj docutils literal"><span class="pre">SGraph.save</span></code></a>(self,&nbsp;filename[,&nbsp;format])</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SGraph.save.html#turicreate.SGraph.save" title="turicreate.SGraph.save"><code class="xref py py-obj docutils literal"><span class="pre">SGraph.save</span></code></a>(filename[,&nbsp;format])</td>
 <td>Save the SGraph to disk.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SGraph.select_fields.html#turicreate.SGraph.select_fields" title="turicreate.SGraph.select_fields"><code class="xref py py-obj docutils literal"><span class="pre">SGraph.select_fields</span></code></a>(self,&nbsp;fields)</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SGraph.select_fields.html#turicreate.SGraph.select_fields" title="turicreate.SGraph.select_fields"><code class="xref py py-obj docutils literal"><span class="pre">SGraph.select_fields</span></code></a>(fields)</td>
 <td>Return a new SGraph with only the selected fields.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="turicreate.SGraph.summary.html#turicreate.SGraph.summary" title="turicreate.SGraph.summary"><code class="xref py py-obj docutils literal"><span class="pre">SGraph.summary</span></code></a>(self)</td>
+<tr class="row-even"><td><a class="reference internal" href="turicreate.SGraph.summary.html#turicreate.SGraph.summary" title="turicreate.SGraph.summary"><code class="xref py py-obj docutils literal"><span class="pre">SGraph.summary</span></code></a>()</td>
 <td>Return the number of vertices and edges as a dictionary.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="turicreate.SGraph.triple_apply.html#turicreate.SGraph.triple_apply" title="turicreate.SGraph.triple_apply"><code class="xref py py-obj docutils literal"><span class="pre">SGraph.triple_apply</span></code></a>(self,&nbsp;triple_apply_fn,&nbsp;…)</td>
+<tr class="row-odd"><td><a class="reference internal" href="turicreate.SGraph.triple_apply.html#turicreate.SGraph.triple_apply" title="turicreate.SGraph.triple_apply"><code class="xref py py-obj docutils literal"><span class="pre">SGraph.triple_apply</span></code></a>(triple_apply_fn,&nbsp;…[,&nbsp;…])</td>
 <td>Apply a transform function to each edge and its associated source and target vertices in parallel.</td>
 </tr>
 </tbody>
@@ -265,7 +265,7 @@ graph; the old graph gets garbage collected.</li>
 
   <div role="contentinfo">
     <p>
-      Last updated on May 21, 2020.
+      Last updated on Aug 27, 2020.
     </p>
   </div>
 </footer>
@@ -282,7 +282,7 @@ graph; the old graph gets garbage collected.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'6.3',
+            VERSION:'6.4',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

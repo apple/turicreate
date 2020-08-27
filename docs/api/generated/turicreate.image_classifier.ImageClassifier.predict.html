@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.image_classifier.ImageClassifier.predict &mdash; Turi Create API 6.3 documentation</title>
+  <title>turicreate.image_classifier.ImageClassifier.predict &mdash; Turi Create API 6.4 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="Turi Create API 6.3 documentation" href="../index.html"/> 
+    <link rel="top" title="Turi Create API 6.4 documentation" href="../index.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -126,7 +126,7 @@
 <h1>turicreate.image_classifier.ImageClassifier.predict<a class="headerlink" href="#turicreate-image-classifier-imageclassifier-predict" title="Permalink to this headline">¶</a></h1>
 <dl class="method">
 <dt id="turicreate.image_classifier.ImageClassifier.predict">
-<code class="descclassname">ImageClassifier.</code><code class="descname">predict</code><span class="sig-paren">(</span><em>self</em>, <em>dataset</em>, <em>output_type='class'</em>, <em>batch_size=64</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.image_classifier.ImageClassifier.predict" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">ImageClassifier.</code><code class="descname">predict</code><span class="sig-paren">(</span><em>dataset</em>, <em>output_type='class'</em>, <em>batch_size=64</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.image_classifier.ImageClassifier.predict" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return predictions for <code class="docutils literal"><span class="pre">dataset</span></code>, using the trained logistic
 regression model. Predictions can be generated as class labels,
 probabilities that the target value is True, or margins (i.e. the
@@ -145,8 +145,8 @@ Turi Create evaluation toolkit.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
-<dt><strong>dataset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame | SArray | turicreate.Image</span></dt>
-<dd><p class="first last">The images to be classified.
+<dt><strong>dataset</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SFrame | SArray | turicreate.Image | array</span></dt>
+<dd><p class="first last">The images to be classified or extracted features.
 If dataset is an SFrame, it must have columns with the same names as
 the features used for model training, but does not require a target
 column. Additional columns are ignored.</p>
@@ -207,7 +207,7 @@ return value will be a single prediction.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on May 21, 2020.
+      Last updated on Aug 27, 2020.
     </p>
   </div>
 </footer>
@@ -224,7 +224,7 @@ return value will be a single prediction.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'6.3',
+            VERSION:'6.4',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

@@ -122,6 +122,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:ab679855ff0f34b37306e262ebb13d3d9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae785c8113cb083b9dc79646ab0e84a4a"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sketch.html#ae785c8113cb083b9dc79646ab0e84a4a">min</a> ()</td></tr>
 <tr class="separator:ae785c8113cb083b9dc79646ab0e84a4a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2af21c2419118fd69b71cfca464b6156"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sketch.html#a2af21c2419118fd69b71cfca464b6156">numeric_epsilon</a> ()</td></tr>
+<tr class="separator:a2af21c2419118fd69b71cfca464b6156"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a993dd2e36eefdcaf5af6fa9e723fc7fc"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sketch.html#a993dd2e36eefdcaf5af6fa9e723fc7fc">sum</a> ()</td></tr>
 <tr class="separator:a993dd2e36eefdcaf5af6fa9e723fc7fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aebb8aa7d8f199b62759068077a10c948"><td class="memItemLeft" align="right" valign="top">double&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1unity__sketch.html#aebb8aa7d8f199b62759068077a10c948">var</a> ()</td></tr>
@@ -181,7 +183,7 @@ Public Member Functions</h2></td></tr>
 <p>For SArray of type dict, user can also pass in a list of dictionary keys to sketch_summary function, this would cause one sub sketch for each of the key. For example: &gt;&gt;&gt; sketch = sa.sketch_summary(sub_sketch_keys=["a", "b"]) Then the sub summary may be retrieved by: &gt;&gt;&gt; sketch.element_sub_sketch() Or: &gt;&gt;&gt; sketch.element_sub_sketch(["key1", "key2"]) for subset of keys</p>
 <p>Similarly, for SArray of type vector(array), user can also pass in a list of integers which is the index into the vector to get sub sketch For example: &gt;&gt;&gt; sketch = sa.sketch_summary(sub_sketch_keys=[1,3,5]) Then the sub summary may be retrieved by: &gt;&gt;&gt; sketch.element_sub_sketch() Or: &gt;&gt;&gt; sketch.element_sub_sketch([1,3]) for subset of keys </p>
 
-<p class="definition">Definition at line <a class="el" href="unity__sketch_8hpp_source.html#l00139">139</a> of file <a class="el" href="unity__sketch_8hpp_source.html">unity_sketch.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="unity__sketch_8hpp_source.html#l00136">136</a> of file <a class="el" href="unity__sketch_8hpp_source.html">unity_sketch.hpp</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="ad89edab7e606b83d15437f155525fe4b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ad89edab7e606b83d15437f155525fe4b">&#9670;&nbsp;</a></span>cancel()</h2>
@@ -413,7 +415,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns the max of the values in the sarray. Returns NaN on an empty array. Throws an exception if called on an sarray with non-numeric type. </p>
 
-<p class="definition">Definition at line <a class="el" href="unity__sketch_8hpp_source.html#l00257">257</a> of file <a class="el" href="unity__sketch_8hpp_source.html">unity_sketch.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="unity__sketch_8hpp_source.html#l00254">254</a> of file <a class="el" href="unity__sketch_8hpp_source.html">unity_sketch.hpp</a>.</p>
 
 </div>
 </div>
@@ -441,7 +443,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns the mean of the values in the sarray. Returns 0 on an empty array. Throws an exception if called on an sarray with non-numeric type. </p>
 
-<p class="definition">Definition at line <a class="el" href="unity__sketch_8hpp_source.html#l00245">245</a> of file <a class="el" href="unity__sketch_8hpp_source.html">unity_sketch.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="unity__sketch_8hpp_source.html#l00242">242</a> of file <a class="el" href="unity__sketch_8hpp_source.html">unity_sketch.hpp</a>.</p>
 
 </div>
 </div>
@@ -469,7 +471,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns the min of the values in the sarray. Returns NaN on an empty array. Throws an exception if called on an sarray with non-numeric type. </p>
 
-<p class="definition">Definition at line <a class="el" href="unity__sketch_8hpp_source.html#l00269">269</a> of file <a class="el" href="unity__sketch_8hpp_source.html">unity_sketch.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="unity__sketch_8hpp_source.html#l00266">266</a> of file <a class="el" href="unity__sketch_8hpp_source.html">unity_sketch.hpp</a>.</p>
 
 </div>
 </div>
@@ -515,7 +517,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns the number of undefined elements in the input SArray. </p>
 
-<p class="definition">Definition at line <a class="el" href="unity__sketch_8hpp_source.html#l00310">310</a> of file <a class="el" href="unity__sketch_8hpp_source.html">unity_sketch.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="unity__sketch_8hpp_source.html#l00319">319</a> of file <a class="el" href="unity__sketch_8hpp_source.html">unity_sketch.hpp</a>.</p>
 
 </div>
 </div>
@@ -534,6 +536,34 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 <p>Returns a sketched estimate of the number of unique values in the SArray based on the Hyperloglog sketch. </p>
+
+</div>
+</div>
+<a id="a2af21c2419118fd69b71cfca464b6156"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2af21c2419118fd69b71cfca464b6156">&#9670;&nbsp;</a></span>numeric_epsilon()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">double turi::unity_sketch::numeric_epsilon </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Returns the epsilon value used by the numeric sketch. Returns NaN on an empty array. Throws an exception if called on an sarray with non-numeric type. </p>
+
+<p class="definition">Definition at line <a class="el" href="unity__sketch_8hpp_source.html#l00278">278</a> of file <a class="el" href="unity__sketch_8hpp_source.html">unity_sketch.hpp</a>.</p>
 
 </div>
 </div>
@@ -561,7 +591,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns the number of elements in the input SArray. </p>
 
-<p class="definition">Definition at line <a class="el" href="unity__sketch_8hpp_source.html#l00303">303</a> of file <a class="el" href="unity__sketch_8hpp_source.html">unity_sketch.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="unity__sketch_8hpp_source.html#l00312">312</a> of file <a class="el" href="unity__sketch_8hpp_source.html">unity_sketch.hpp</a>.</p>
 
 </div>
 </div>
@@ -607,7 +637,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns the sum of the values in the sarray. Returns 0 on an empty array. Throws an exception if called on an sarray with non-numeric type. </p>
 
-<p class="definition">Definition at line <a class="el" href="unity__sketch_8hpp_source.html#l00281">281</a> of file <a class="el" href="unity__sketch_8hpp_source.html">unity_sketch.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="unity__sketch_8hpp_source.html#l00290">290</a> of file <a class="el" href="unity__sketch_8hpp_source.html">unity_sketch.hpp</a>.</p>
 
 </div>
 </div>
@@ -635,7 +665,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Returns the variance of the values in the sarray. Returns 0 on an empty array. Throws an exception if called on an sarray with non-numeric type. </p>
 
-<p class="definition">Definition at line <a class="el" href="unity__sketch_8hpp_source.html#l00292">292</a> of file <a class="el" href="unity__sketch_8hpp_source.html">unity_sketch.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="unity__sketch_8hpp_source.html#l00301">301</a> of file <a class="el" href="unity__sketch_8hpp_source.html">unity_sketch.hpp</a>.</p>
 
 </div>
 </div>

@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.text_analytics.count_ngrams &mdash; Turi Create API 6.3 documentation</title>
+  <title>turicreate.text_analytics.count_ngrams &mdash; Turi Create API 6.4 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="Turi Create API 6.3 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 6.4 documentation" href="../index.html"/>
         <link rel="up" title="text_analytics" href="../turicreate.toolkits.text_analytics.html"/>
         <link rel="next" title="turicreate.text_analytics.parse_sparse" href="turicreate.text_analytics.parse_sparse.html"/>
         <link rel="prev" title="turicreate.text_analytics.count_words" href="turicreate.text_analytics.count_words.html"/> 
@@ -133,7 +133,7 @@
 <h1>turicreate.text_analytics.count_ngrams<a class="headerlink" href="#turicreate-text-analytics-count-ngrams" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
 <dt id="turicreate.text_analytics.count_ngrams">
-<code class="descclassname">turicreate.text_analytics.</code><code class="descname">count_ngrams</code><span class="sig-paren">(</span><em>text, n=2, method='word', to_lower=True, delimiters=['r', 'x0b', 'n', 'x0c', 't', ' ', '!', '#', '$', '%', '&amp;', &quot;'&quot;, '&quot;', '(', ')', '*', '+', ',', '-', '.', '/', ':', ';', '&lt;', '=', '&gt;', '?', '&#64;', '[', '\', ']', '^', '_', '`', '{', '|', '}', '~'], ignore_punct=True, ignore_space=True</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.text_analytics.count_ngrams" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">turicreate.text_analytics.</code><code class="descname">count_ngrams</code><span class="sig-paren">(</span><em>text, n=2, method='word', to_lower=True, delimiters=['\r', '\x0b', '\n', '\x0c', '\t', ' ', '!', '#', '$', '%', '&amp;', &quot;'&quot;, '&quot;', '(', ')', '*', '+', ',', '-', '.', '/', ':', ';', '&lt;', '=', '&gt;', '?', '&#64;', '[', '\\', ']', '^', '_', '`', '{', '|', '}', '~'], ignore_punct=True, ignore_space=True</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.text_analytics.count_ngrams" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return an SArray of <code class="docutils literal"><span class="pre">dict</span></code> type where each element contains the count
 for each of the n-grams that appear in the corresponding input element.
 The n-grams can be specified to be either character n-grams or word
@@ -270,7 +270,7 @@ punctuations, spaces, neither, or both.</li>
 
   <div role="contentinfo">
     <p>
-      Last updated on May 21, 2020.
+      Last updated on Aug 27, 2020.
     </p>
   </div>
 </footer>
@@ -287,7 +287,7 @@ punctuations, spaces, neither, or both.</li>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'6.3',
+            VERSION:'6.4',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

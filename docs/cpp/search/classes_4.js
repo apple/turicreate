@@ -5,7 +5,7 @@ var searchData=
   ['darknetyolocheckpoint',['DarknetYOLOCheckpoint',['../classturi_1_1object__detection_1_1DarknetYOLOCheckpoint.html',1,'turi::object_detection']]],
   ['darknetyolocheckpointer',['DarknetYOLOCheckpointer',['../classturi_1_1object__detection_1_1DarknetYOLOCheckpointer.html',1,'turi::object_detection']]],
   ['darknetyolomodeltrainer',['DarknetYOLOModelTrainer',['../classturi_1_1object__detection_1_1DarknetYOLOModelTrainer.html',1,'turi::object_detection']]],
-  ['data_5fiterator',['data_iterator',['../classturi_1_1object__detection_1_1data__iterator.html',1,'turi::object_detection::data_iterator'],['../classturi_1_1activity__classification_1_1data__iterator.html',1,'turi::activity_classification::data_iterator'],['../classturi_1_1drawing__classifier_1_1data__iterator.html',1,'turi::drawing_classifier::data_iterator']]],
+  ['data_5fiterator',['data_iterator',['../classturi_1_1drawing__classifier_1_1data__iterator.html',1,'turi::drawing_classifier::data_iterator'],['../classturi_1_1object__detection_1_1data__iterator.html',1,'turi::object_detection::data_iterator'],['../classturi_1_1activity__classification_1_1data__iterator.html',1,'turi::activity_classification::data_iterator']]],
   ['dataaugmenter',['DataAugmenter',['../classturi_1_1object__detection_1_1DataAugmenter.html',1,'turi::object_detection']]],
   ['databatch',['DataBatch',['../structturi_1_1object__detection_1_1DataBatch.html',1,'turi::object_detection::DataBatch'],['../structturi_1_1style__transfer_1_1DataBatch.html',1,'turi::style_transfer::DataBatch']]],
   ['dataframe_5frow_5fiterator',['dataframe_row_iterator',['../classturi_1_1dataframe__row__iterator.html',1,'turi']]],

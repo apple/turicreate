@@ -94,15 +94,13 @@ $(document).ready(function(){initNavTree('classturi_1_1object__detection_1_1Chec
 Public Member Functions</h2></td></tr>
 <tr class="memitem:a2915e35400717f40193c8f4c917ec76b"><td class="memItemLeft" align="right" valign="top">virtual std::unique_ptr&lt; <a class="el" href="classturi_1_1object__detection_1_1ModelTrainer.html">ModelTrainer</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1object__detection_1_1Checkpoint.html#a2915e35400717f40193c8f4c917ec76b">CreateModelTrainer</a> (<a class="el" href="classturi_1_1neural__net_1_1compute__context.html">neural_net::compute_context</a> *context) const =0</td></tr>
 <tr class="separator:a2915e35400717f40193c8f4c917ec76b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aef12ee8bdf3469d78610652b11343b2b"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classturi_1_1neural__net_1_1pipeline__spec.html">neural_net::pipeline_spec</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1object__detection_1_1Checkpoint.html#aef12ee8bdf3469d78610652b11343b2b">ExportToCoreML</a> (const std::string &amp;input_name, const std::string &amp;coordinates_output_name, const std::string &amp;confidence_output_name) const =0</td></tr>
-<tr class="separator:aef12ee8bdf3469d78610652b11343b2b"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a3110445c6e5f1571d60878c1d018cd8a"><td class="memItemLeft" align="right" valign="top">virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1object__detection_1_1Checkpoint.html#a3110445c6e5f1571d60878c1d018cd8a">GetNumberOfPredictions</a> () const =0</td></tr>
-<tr class="separator:a3110445c6e5f1571d60878c1d018cd8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a72abb797aea4f431c2cc850141874b02"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="classturi_1_1neural__net_1_1pipeline__spec.html">neural_net::pipeline_spec</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1object__detection_1_1Checkpoint.html#a72abb797aea4f431c2cc850141874b02">ExportToCoreML</a> (const std::string &amp;input_name, const std::string &amp;coordinates_name, const std::string &amp;confidence_name, bool use_nms_layer, float iou_threshold, float confidence_threshold) const =0</td></tr>
+<tr class="separator:a72abb797aea4f431c2cc850141874b02"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>A representation of all the parameters needed to reconstruct a model.</p>
 
-<p class="definition">Definition at line <a class="el" href="od__model__trainer_8hpp_source.html#l00141">141</a> of file <a class="el" href="od__model__trainer_8hpp_source.html">od_model_trainer.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="od__model__trainer_8hpp_source.html#l00159">159</a> of file <a class="el" href="od__model__trainer_8hpp_source.html">od_model_trainer.hpp</a>.</p>
 </div><h2 class="groupheader">Member Function Documentation</h2>
 <a id="a2915e35400717f40193c8f4c917ec76b"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a2915e35400717f40193c8f4c917ec76b">&#9670;&nbsp;</a></span>CreateModelTrainer()</h2>
@@ -133,8 +131,8 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="aef12ee8bdf3469d78610652b11343b2b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aef12ee8bdf3469d78610652b11343b2b">&#9670;&nbsp;</a></span>ExportToCoreML()</h2>
+<a id="a72abb797aea4f431c2cc850141874b02"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a72abb797aea4f431c2cc850141874b02">&#9670;&nbsp;</a></span>ExportToCoreML()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -152,13 +150,31 @@ Public Member Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>coordinates_output_name</em>, </td>
+          <td class="paramname"><em>coordinates_name</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const std::string &amp;&#160;</td>
-          <td class="paramname"><em>confidence_output_name</em>&#160;</td>
+          <td class="paramname"><em>confidence_name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>use_nms_layer</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>iou_threshold</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>confidence_threshold</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -175,35 +191,7 @@ Public Member Functions</h2></td></tr>
 <p>Returns the CoreML spec corresponding to the current model.</p>
 <p>The result must be a pipeline that accepts an image input and yields at least two outputs, all with the given names. The outputs must be suitable for passing directly into a NonMaximumSuppression model. </p>
 
-<p>Implemented in <a class="el" href="classturi_1_1object__detection_1_1DarknetYOLOCheckpoint.html#a0107bddeef0622b20c6e78f52e13b64f">turi::object_detection::DarknetYOLOCheckpoint</a>.</p>
-
-</div>
-</div>
-<a id="a3110445c6e5f1571d60878c1d018cd8a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3110445c6e5f1571d60878c1d018cd8a">&#9670;&nbsp;</a></span>GetNumberOfPredictions()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">virtual size_t turi::object_detection::Checkpoint::GetNumberOfPredictions </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">pure virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-<p>Returns the number of predictions for the loaded model. </p>
-
-<p>Implemented in <a class="el" href="classturi_1_1object__detection_1_1DarknetYOLOCheckpoint.html#a9ebc5a01d96a6d9effd10879381e8880">turi::object_detection::DarknetYOLOCheckpoint</a>.</p>
+<p>Implemented in <a class="el" href="classturi_1_1object__detection_1_1DarknetYOLOCheckpoint.html#a293a2ea6cf48a9b6021d4d4058aa8d46">turi::object_detection::DarknetYOLOCheckpoint</a>.</p>
 
 </div>
 </div>

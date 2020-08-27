@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.image_classifier.create &mdash; Turi Create API 6.3 documentation</title>
+  <title>turicreate.image_classifier.create &mdash; Turi Create API 6.4 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
         <link rel="index" title="Index"
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
-    <link rel="top" title="Turi Create API 6.3 documentation" href="../index.html"/>
+    <link rel="top" title="Turi Create API 6.4 documentation" href="../index.html"/>
         <link rel="up" title="image_classifier" href="../turicreate.toolkits.image_classifier.html"/>
         <link rel="next" title="turicreate.image_classifier.ImageClassifier" href="turicreate.image_classifier.ImageClassifier.html"/>
         <link rel="prev" title="image_classifier" href="../turicreate.toolkits.image_classifier.html"/> 
@@ -154,10 +154,10 @@ and 1 being the reference class. Use <cite>model.classes</cite> to retrieve
 the order in which the classes are mapped.</p>
 </dd>
 <dt><strong>feature</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string, optional</span></dt>
-<dd><p class="first last">indicates that the SFrame has only column of Image type and that will
-Name of the column containing the input images. ‘None’ (the default)
-indicates the only image column in <cite>dataset</cite> should be used as the
-feature.</p>
+<dd><p class="first last">indicates that the SFrame has either column of Image type or array type 
+(extracted features) and that will be the name of the column containing the input
+images or features. ‘None’ (the default) indicates that only feature column or the 
+only image column in <cite>dataset</cite> should be used as the feature.</p>
 </dd>
 <dt><strong>l2_penalty</strong> <span class="classifier-delimiter">:</span> <span class="classifier">float, optional</span></dt>
 <dd><p class="first last">Weight on l2 regularization of the model. The larger this weight, the
@@ -341,7 +341,7 @@ have a powerful computer, increasing this value may improve performance.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on May 21, 2020.
+      Last updated on Aug 27, 2020.
     </p>
   </div>
 </footer>
@@ -358,7 +358,7 @@ have a powerful computer, increasing this value may improve performance.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../',
-            VERSION:'6.3',
+            VERSION:'6.4',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  false

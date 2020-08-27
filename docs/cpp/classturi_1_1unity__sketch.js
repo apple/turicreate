@@ -16,6 +16,7 @@ var classturi_1_1unity__sketch =
     [ "num_elements_processed", "classturi_1_1unity__sketch.html#a015732d96b6f41c913e5a5ad600f9e6a", null ],
     [ "num_undefined", "classturi_1_1unity__sketch.html#a5dfbdbc08a8934e2e5732f04db063cbb", null ],
     [ "num_unique", "classturi_1_1unity__sketch.html#a5c9e028f7f0b4ee22b00240f670db5a0", null ],
+    [ "numeric_epsilon", "classturi_1_1unity__sketch.html#a2af21c2419118fd69b71cfca464b6156", null ],
     [ "size", "classturi_1_1unity__sketch.html#a6aff4d6e5ca642baf90c1f3719b98f02", null ],
     [ "sketch_ready", "classturi_1_1unity__sketch.html#a0b356a7473ee3622a1e8a1d4256bf59c", null ],
     [ "sum", "classturi_1_1unity__sketch.html#a993dd2e36eefdcaf5af6fa9e723fc7fc", null ],

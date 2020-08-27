@@ -20,6 +20,8 @@ var searchData=
   ['planner',['planner',['../classturi_1_1query__eval_1_1planner.html',1,'turi::query_eval']]],
   ['planner_5fnode',['planner_node',['../structturi_1_1query__eval_1_1planner__node.html',1,'turi::query_eval']]],
   ['plus_5fequal_5foperator',['plus_equal_operator',['../structturi_1_1flexible__type__impl_1_1plus__equal__operator.html',1,'turi::flexible_type_impl']]],
+  ['portableimage',['PortableImage',['../classturi_1_1neural__net_1_1PortableImage.html',1,'turi::neural_net']]],
+  ['posixtaskqueue',['PosixTaskQueue',['../classturi_1_1neural__net_1_1PosixTaskQueue.html',1,'turi::neural_net']]],
   ['precision',['precision',['../classturi_1_1evaluation_1_1precision.html',1,'turi::evaluation']]],
   ['precision_5frecall_5fbase',['precision_recall_base',['../classturi_1_1evaluation_1_1precision__recall__base.html',1,'turi::evaluation']]],
   ['process',['process',['../classturi_1_1process.html',1,'turi']]],

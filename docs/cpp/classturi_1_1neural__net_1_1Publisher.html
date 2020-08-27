@@ -110,7 +110,7 @@ class turi::neural_net::Publisher&lt; T &gt;</h3>
 <p>Each concrete implementation defines whether it is unicast or multicast: whether multiple Subscribers observe the same values or not. (An implementation might only support one <a class="el" href="classturi_1_1neural__net_1_1Subscriber.html">Subscriber</a>, by passing an immediate <a class="el" href="classturi_1_1neural__net_1_1Completion.html">Completion</a> to each <a class="el" href="classturi_1_1neural__net_1_1Subscriber.html">Subscriber</a> after the first.)</p>
 <p>Note: instances of this class are intended to be stored using shared_ptr. Many of the operators rely on generating strong references to the instance being augmented. </p>
 
-<p class="definition">Definition at line <a class="el" href="combine__base_8hpp_source.html#l00206">206</a> of file <a class="el" href="combine__base_8hpp_source.html">combine_base.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="combine__base_8hpp_source.html#l00214">214</a> of file <a class="el" href="combine__base_8hpp_source.html">combine_base.hpp</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="a86891646d32edf277f7be8a7becf868e"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a86891646d32edf277f7be8a7becf868e">&#9670;&nbsp;</a></span>Output</h2>
@@ -127,7 +127,7 @@ template&lt;typename T&gt; </div>
 </div><div class="memdoc">
 <p>The type of values that this <a class="el" href="classturi_1_1neural__net_1_1Publisher.html">Publisher</a> produces. </p>
 
-<p class="definition">Definition at line <a class="el" href="combine__base_8hpp_source.html#l00209">209</a> of file <a class="el" href="combine__base_8hpp_source.html">combine_base.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="combine__base_8hpp_source.html#l00217">217</a> of file <a class="el" href="combine__base_8hpp_source.html">combine_base.hpp</a>.</p>
 
 </div>
 </div>
@@ -160,7 +160,7 @@ template&lt;typename T&gt; </div>
 <p>Establishes a connection between this <a class="el" href="classturi_1_1neural__net_1_1Publisher.html">Publisher</a> and the given Subcriber.</p>
 <p>The <a class="el" href="classturi_1_1neural__net_1_1Publisher.html">Publisher</a> must eventually call Subscriber::Receive(Subscription) on the given <a class="el" href="classturi_1_1neural__net_1_1Subscriber.html">Subscriber</a> (and may do so synchronously). The <a class="el" href="classturi_1_1neural__net_1_1Publisher.html">Publisher</a> must then conform to the protocol established by the <a class="el" href="classturi_1_1neural__net_1_1Subscription.html">Subscription</a>. </p>
 
-<p>Implemented in <a class="el" href="classturi_1_1neural__net_1_1IteratorPublisher.html#a4d402b4ff7e86f017274f44c28d8dbc8">turi::neural_net::IteratorPublisher&lt; T &gt;</a>, and <a class="el" href="classturi_1_1neural__net_1_1MapPublisher.html#a848b3433439a64563ba5c72f928cfce9">turi::neural_net::MapPublisher&lt; T, U &gt;</a>.</p>
+<p>Implemented in <a class="el" href="classturi_1_1neural__net_1_1ReceiveOnQueuePublisher.html#ab02acfad1186c797a1c612b33b6c5d25">turi::neural_net::ReceiveOnQueuePublisher&lt; T &gt;</a>, <a class="el" href="classturi_1_1neural__net_1_1IteratorPublisher.html#a4d402b4ff7e86f017274f44c28d8dbc8">turi::neural_net::IteratorPublisher&lt; T &gt;</a>, <a class="el" href="classturi_1_1neural__net_1_1MapPublisher.html#a848b3433439a64563ba5c72f928cfce9">turi::neural_net::MapPublisher&lt; T, U &gt;</a>, and <a class="el" href="classturi_1_1neural__net_1_1SubscribeOnQueuePublisher.html#a27d6efb4bc2a235c35f7402ee1c5df41">turi::neural_net::SubscribeOnQueuePublisher&lt; T &gt;</a>.</p>
 
 </div>
 </div>

@@ -1,5 +1,15 @@
 var NAVTREEINDEX3 =
 {
+"classturi_1_1factorization_1_1implicit__ranking__sgd__solver.html#ae173f840b50eb1f3ce05f5658aa491e4":[4,0,3,6,3,3],
+"classturi_1_1factorization_1_1implicit__ranking__sgd__solver.html#af5c1a0876cc4df122882fdda90d5402d":[4,0,3,6,3,8],
+"classturi_1_1factorization_1_1loss__logistic.html":[4,0,3,6,4],
+"classturi_1_1factorization_1_1loss__model__profile.html":[4,0,3,6,5],
+"classturi_1_1factorization_1_1loss__ranking__hinge.html":[4,0,3,6,6],
+"classturi_1_1factorization_1_1loss__ranking__logit.html":[4,0,3,6,7],
+"classturi_1_1factorization_1_1loss__squared__error.html":[4,0,3,6,8],
+"classturi_1_1factorization_1_1ranking__sgd__solver__base.html":[4,0,3,6,9],
+"classturi_1_1factorization_1_1ranking__sgd__solver__base.html#a4249a46ee280ecc4e1bee0d13cbfbf04":[4,0,3,6,9,8],
+"classturi_1_1factorization_1_1ranking__sgd__solver__base.html#a45c9ec1407607ffeb52efed489593d39":[4,0,3,6,9,1],
 "classturi_1_1factorization_1_1ranking__sgd__solver__base.html#a46d8b7fdca126ca10ac48dca72bd98dd":[4,0,3,6,9,10],
 "classturi_1_1factorization_1_1ranking__sgd__solver__base.html#a5a6f5394e86fb0e86fe4b15b85b92d3c":[4,0,3,6,9,5],
 "classturi_1_1factorization_1_1ranking__sgd__solver__base.html#a622063fa11523a2c80162b20138b8126":[4,0,3,6,9,7],
@@ -239,15 +249,5 @@ var NAVTREEINDEX3 =
 "classturi_1_1flexible__type.html#af0aaa4b7c7fe0705b86c7a3916e82e09":[4,0,3,80,46],
 "classturi_1_1flexible__type.html#af43e325c1cfa699a414eac59ead2ba9b":[4,0,3,80,90],
 "classturi_1_1flexible__type.html#af53b3520c60da7f16acf3c589362cd1c":[4,0,3,80,73],
-"classturi_1_1flexible__type.html#af597974b07b643dffdc19de841853d6c":[4,0,3,80,74],
-"classturi_1_1flexible__type.html#af7bf644ebc38488169492df18aa0afdd":[4,0,3,80,15],
-"classturi_1_1flexible__type.html#afe86bf41dac86c9285d175c6f220056d":[4,0,3,80,8],
-"classturi_1_1flexible__type.html#afe8b66fb8c79d711e2ea2af24113d97a":[4,0,3,80,54],
-"classturi_1_1flexible__type.html#afe906e7e6f9293cfcb7c488dfd65a2d9":[4,0,3,80,58],
-"classturi_1_1flexible__type__impl_1_1date__time__string__reader.html":[4,0,3,9,4],
-"classturi_1_1flexible__type__impl_1_1date__time__string__reader.html#a2d9ba4221c0bd7391fc8411f85ec5187":[4,0,3,9,4,1],
-"classturi_1_1flexible__type__impl_1_1date__time__string__reader.html#a9cfd1de304e17a46e5520fffdbdad6a5":[4,0,3,9,4,0],
-"classturi_1_1flexible__type__impl_1_1ndarray.html":[4,0,3,9,26],
-"classturi_1_1flexible__type__impl_1_1ndarray.html#a0b6b02de218cec61b958d425dfdea4a2":[4,0,3,9,26,29],
-"classturi_1_1flexible__type__impl_1_1ndarray.html#a12a0a0911cbb6d2c585e5ec6150b5e0d":[4,0,3,9,26,4]
+"classturi_1_1flexible__type.html#af597974b07b643dffdc19de841853d6c":[4,0,3,80,74]
 };

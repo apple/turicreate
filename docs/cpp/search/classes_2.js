@@ -5,7 +5,7 @@ var searchData=
   ['ball_5ftree_5fneighbors',['ball_tree_neighbors',['../classturi_1_1nearest__neighbors_1_1ball__tree__neighbors.html',1,'turi::nearest_neighbors']]],
   ['barrier',['barrier',['../classbarrier.html',1,'']]],
   ['basic_5fcolumn_5fstatistics',['basic_column_statistics',['../classturi_1_1v2_1_1ml__data__internal_1_1basic__column__statistics.html',1,'turi::v2::ml_data_internal']]],
-  ['batch',['batch',['../structturi_1_1activity__classification_1_1data__iterator_1_1batch.html',1,'turi::activity_classification::data_iterator::batch'],['../structturi_1_1drawing__classifier_1_1data__iterator_1_1batch.html',1,'turi::drawing_classifier::data_iterator::batch']]],
+  ['batch',['batch',['../structturi_1_1drawing__classifier_1_1data__iterator_1_1batch.html',1,'turi::drawing_classifier::data_iterator::batch'],['../structturi_1_1activity__classification_1_1data__iterator_1_1batch.html',1,'turi::activity_classification::data_iterator::batch']]],
   ['bilinear_5fsampler',['bilinear_sampler',['../structboost_1_1gil_1_1bilinear__sampler.html',1,'boost::gil']]],
   ['blob',['blob',['../classturi_1_1blob.html',1,'turi']]],
   ['block_5fcache',['block_cache',['../classturi_1_1block__cache.html',1,'turi']]],

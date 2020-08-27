@@ -15,6 +15,7 @@ var dir_8239377371a6f5d45c33be5e6dd241b8 =
       [ "EncodedBatch", "structturi_1_1object__detection_1_1EncodedBatch.html", null ],
       [ "InferenceOutputBatch", "structturi_1_1object__detection_1_1InferenceOutputBatch.html", null ],
       [ "Config", "structturi_1_1object__detection_1_1Config.html", "structturi_1_1object__detection_1_1Config" ],
+      [ "CheckpointMetadata", "structturi_1_1object__detection_1_1CheckpointMetadata.html", "structturi_1_1object__detection_1_1CheckpointMetadata" ],
       [ "Checkpoint", "classturi_1_1object__detection_1_1Checkpoint.html", "classturi_1_1object__detection_1_1Checkpoint" ],
       [ "DataIterator", "classturi_1_1object__detection_1_1DataIterator.html", "classturi_1_1object__detection_1_1DataIterator" ],
       [ "DataAugmenter", "classturi_1_1object__detection_1_1DataAugmenter.html", "classturi_1_1object__detection_1_1DataAugmenter" ],

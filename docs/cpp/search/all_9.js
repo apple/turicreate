@@ -6,7 +6,7 @@ var searchData=
   ['iarchive_5fsoft_5ffail',['iarchive_soft_fail',['../classturi_1_1iarchive__soft__fail.html',1,'turi::iarchive_soft_fail'],['../classturi_1_1iarchive__soft__fail.html#aa25ee52d85e4618e2ccb6402df32eef4',1,'turi::iarchive_soft_fail::iarchive_soft_fail(std::istream &amp;instream)'],['../classturi_1_1iarchive__soft__fail.html#a4fd7b7a1845ea06afc46a4805e1caaf5',1,'turi::iarchive_soft_fail::iarchive_soft_fail(iarchive &amp;iarc)']]],
   ['icache_5fstream',['icache_stream',['../group__fileio.html#gae07098a1b91a5cf1f1d4bf72a410f96a',1,'turi::fileio']]],
   ['identical',['identical',['../classturi_1_1flexible__type.html#a0e5cab322c95822f63358df37dddc4a5',1,'turi::flexible_type::identical()'],['../structturi_1_1flex__date__time.html#ad18db9617a0533c0fab947622f7351c3',1,'turi::flex_date_time::identical()']]],
-  ['image',['IMAGE',['../namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76a23a12f67f614b5518c7f1c2465bf95e3',1,'turi']]],
+  ['image',['Image',['../classturi_1_1neural__net_1_1Image.html',1,'turi::neural_net::Image'],['../namespaceturi.html#a232ed812da2796b7bd317ea4b3a21f76a23a12f67f614b5518c7f1c2465bf95e3',1,'turi::IMAGE()']]],
   ['image_5fannotation',['image_annotation',['../structturi_1_1neural__net_1_1image__annotation.html',1,'turi::neural_net']]],
   ['image_5faugmenter',['image_augmenter',['../classturi_1_1neural__net_1_1image__augmenter.html',1,'turi::neural_net']]],
   ['image_5fbatch',['image_batch',['../structturi_1_1neural__net_1_1image__augmenter_1_1result.html#a4ca9cb07d71216dca216176316840ace',1,'turi::neural_net::image_augmenter::result']]],

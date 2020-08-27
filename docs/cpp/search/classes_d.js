@@ -21,7 +21,7 @@ var searchData=
   ['ml_5fdata_5ffull_5fentry',['ml_data_full_entry',['../structturi_1_1v2_1_1ml__data__full__entry.html',1,'turi::v2::ml_data_full_entry'],['../structturi_1_1ml__data__full__entry.html',1,'turi::ml_data_full_entry']]],
   ['ml_5fdata_5fiterator',['ml_data_iterator',['../classturi_1_1ml__data__iterator.html',1,'turi::ml_data_iterator'],['../classturi_1_1v2_1_1ml__data__iterator.html',1,'turi::v2::ml_data_iterator']]],
   ['ml_5fdata_5fiterator_5fbase',['ml_data_iterator_base',['../classturi_1_1v2_1_1ml__data__iterator__base.html',1,'turi::v2']]],
-  ['ml_5fdata_5frow_5freference',['ml_data_row_reference',['../classturi_1_1v2_1_1ml__data__row__reference.html',1,'turi::v2::ml_data_row_reference'],['../classturi_1_1ml__data__row__reference.html',1,'turi::ml_data_row_reference']]],
+  ['ml_5fdata_5frow_5freference',['ml_data_row_reference',['../classturi_1_1ml__data__row__reference.html',1,'turi::ml_data_row_reference'],['../classturi_1_1v2_1_1ml__data__row__reference.html',1,'turi::v2::ml_data_row_reference']]],
   ['ml_5fdata_5fside_5ffeatures',['ml_data_side_features',['../classturi_1_1v2_1_1ml__data__side__features.html',1,'turi::v2']]],
   ['ml_5fmetadata',['ml_metadata',['../classturi_1_1ml__metadata.html',1,'turi']]],
   ['ml_5fmodel_5fbase',['ml_model_base',['../classturi_1_1ml__model__base.html',1,'turi']]],

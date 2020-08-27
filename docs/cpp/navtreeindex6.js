@@ -1,5 +1,15 @@
 var NAVTREEINDEX6 =
 {
+"classturi_1_1groupby__operators_1_1distinct.html#a31c1fda5463b319f0cab9b5bd40b1b0c":[4,0,3,13,5,10],
+"classturi_1_1groupby__operators_1_1distinct.html#a6526ff7209eb04f632c65b1d1a2b6874":[4,0,3,13,5,4],
+"classturi_1_1groupby__operators_1_1distinct.html#a89733b6d67696b0a44218c33a14a7e22":[4,0,3,13,5,7],
+"classturi_1_1groupby__operators_1_1distinct.html#aba808d3874e06fbcf5160a09a5e4976f":[4,0,3,13,5,2],
+"classturi_1_1groupby__operators_1_1distinct.html#abae8cdde7a548ec7e177abaeaab47276":[4,0,3,13,5,8],
+"classturi_1_1groupby__operators_1_1distinct.html#acb132bd302dcd57b373c26d4c2fb95ca":[4,0,3,13,5,11],
+"classturi_1_1groupby__operators_1_1distinct.html#ad39e7a9da8eeb073b6bd32f431373801":[4,0,3,13,5,1],
+"classturi_1_1groupby__operators_1_1distinct.html#ad4262697510185d68dfb3397d0d7686f":[4,0,3,13,5,0],
+"classturi_1_1groupby__operators_1_1distinct.html#aedd055d53692c4fa13fbd6b55efbcd01":[4,0,3,13,5,5],
+"classturi_1_1groupby__operators_1_1frequency__count.html":[4,0,3,13,6],
 "classturi_1_1groupby__operators_1_1frequency__count.html#a31c1fda5463b319f0cab9b5bd40b1b0c":[4,0,3,13,6,10],
 "classturi_1_1groupby__operators_1_1frequency__count.html#a50b12464337b1727aeb78a65f7dd7a47":[4,0,3,13,6,2],
 "classturi_1_1groupby__operators_1_1frequency__count.html#a538847f3eb20206b829de7f21b251cb0":[4,0,3,13,6,4],
@@ -239,15 +249,5 @@ var NAVTREEINDEX6 =
 "classturi_1_1image__type.html#aa2d5b365d6c25893c65460682b83f66a":[4,0,3,113,12],
 "classturi_1_1image__type.html#ab5c85b6d6248da9e753db76f78149442":[4,0,3,113,13],
 "classturi_1_1image__type.html#abfd6ea14f0a46db252a5c21e37a0a74b":[4,0,3,113,3],
-"classturi_1_1indexed__column__groupby.html":[2,26,3],
-"classturi_1_1indexed__column__groupby.html#a3657e7cf7d8a09e3339c25d4cb5dd481":[2,26,3,0],
-"classturi_1_1indexed__column__groupby.html#aeeb26768c40ee0416f93be5e95a8c0c8":[2,26,3,1],
-"classturi_1_1join__impl_1_1hash__join__executor.html":[4,0,3,14,0],
-"classturi_1_1join__impl_1_1join__hash__table.html":[4,0,3,14,1],
-"classturi_1_1join__impl_1_1join__hash__table.html#a41fcb3cecedcab2c546ee7eb8813baf6":[4,0,3,14,1,2],
-"classturi_1_1join__impl_1_1join__hash__table.html#a4710cfdaa7f120d53b81ac911c5efa77":[4,0,3,14,1,1],
-"classturi_1_1join__impl_1_1join__hash__table.html#a4d79b02e3c6d67f653ca9800c2406795":[4,0,3,14,1,0],
-"classturi_1_1join__impl_1_1join__hash__table.html#a737d66a78a3b00a7db79b6bb8a355df6":[4,0,3,14,1,3],
-"classturi_1_1kmeans_1_1kmeans__model.html":[4,0,3,15,1],
-"classturi_1_1kmeans_1_1kmeans__model.html#a03f475849e5e98101ef72987ba76a9c4":[4,0,3,15,1,28]
+"classturi_1_1indexed__column__groupby.html":[2,26,3]
 };

@@ -97,6 +97,8 @@ Public Types</h2></td></tr>
 <tr class="separator:a0d1aa5b0fcc3c11248e0a2e33c49ff4f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a972ab38f4986dabfac28beaee2ae01ce"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1model__spec.html#a972ab38f4986dabfac28beaee2ae01ce">padding_policy</a> </td></tr>
 <tr class="separator:a972ab38f4986dabfac28beaee2ae01ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae6369ecdfff80b58bc29d092960d7248"><td class="memItemLeft" align="right" valign="top">enum &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1model__spec.html#ae6369ecdfff80b58bc29d092960d7248">pooling_type</a> </td></tr>
+<tr class="separator:ae6369ecdfff80b58bc29d092960d7248"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
@@ -112,8 +114,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:abd51b4228a76c35335450b7066f8f86c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a773b3150e362e3e5fb094e75b92baf36"><td class="memItemLeft" align="right" valign="top">float_array_map&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1model__spec.html#a773b3150e362e3e5fb094e75b92baf36">export_params_view</a> () const</td></tr>
 <tr class="separator:a773b3150e362e3e5fb094e75b92baf36"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aec2f3705367eac080429f63f2623166c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1model__spec.html#aec2f3705367eac080429f63f2623166c">update_params</a> (const float_array_map &amp;weights)</td></tr>
-<tr class="separator:aec2f3705367eac080429f63f2623166c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4dd178d33803add32ca0093cb85e0e5f"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1model__spec.html#a4dd178d33803add32ca0093cb85e0e5f">update_params</a> (const float_array_map &amp;weights, bool use_quantization=false)</td></tr>
+<tr class="separator:a4dd178d33803add32ca0093cb85e0e5f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:accf5b8ba3d48fdaf91f66a680260a216"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1model__spec.html#accf5b8ba3d48fdaf91f66a680260a216">has_layer_output</a> (const std::string &amp;layer_name) const</td></tr>
 <tr class="separator:accf5b8ba3d48fdaf91f66a680260a216"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afa970eb6f824e6cf77d4de223594bd3b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1model__spec.html#afa970eb6f824e6cf77d4de223594bd3b">add_relu</a> (const std::string &amp;name, const std::string &amp;input)</td></tr>
@@ -122,8 +124,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:acb6626db8f0340e548cff0bd05ac0ad4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a18df584c6e1eef1cf34fbcb043e935dd"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1model__spec.html#a18df584c6e1eef1cf34fbcb043e935dd">add_sigmoid</a> (const std::string &amp;name, const std::string &amp;input)</td></tr>
 <tr class="separator:a18df584c6e1eef1cf34fbcb043e935dd"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aafcbd879d251f3e3ffff3432b25b5df4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1model__spec.html#aafcbd879d251f3e3ffff3432b25b5df4">add_pooling</a> (const std::string &amp;name, const std::string &amp;input, size_t kernel_height, size_t kernel_width, size_t stride_h, size_t stride_w, <a class="el" href="classturi_1_1neural__net_1_1model__spec.html#a0d1aa5b0fcc3c11248e0a2e33c49ff4f">padding_type</a> padding, bool use_poolexcludepadding=false)</td></tr>
-<tr class="separator:aafcbd879d251f3e3ffff3432b25b5df4"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adc2c62ab713bed16008e985a5a9d8b4c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1model__spec.html#adc2c62ab713bed16008e985a5a9d8b4c">add_pooling</a> (const std::string &amp;name, const std::string &amp;input, size_t kernel_height, size_t kernel_width, size_t stride_h, size_t stride_w, <a class="el" href="classturi_1_1neural__net_1_1model__spec.html#a0d1aa5b0fcc3c11248e0a2e33c49ff4f">padding_type</a> padding, bool use_poolexcludepadding=false, <a class="el" href="classturi_1_1neural__net_1_1model__spec.html#ae6369ecdfff80b58bc29d092960d7248">pooling_type</a> pooling=pooling_type::MAX)</td></tr>
+<tr class="separator:adc2c62ab713bed16008e985a5a9d8b4c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7ccd214f01f5f7d61ed0a22a090b8751"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1model__spec.html#a7ccd214f01f5f7d61ed0a22a090b8751">add_convolution</a> (const std::string &amp;name, const std::string &amp;input, size_t num_output_channels, size_t num_kernel_channels, size_t kernel_height, size_t kernel_width, size_t stride_h, size_t stride_w, <a class="el" href="classturi_1_1neural__net_1_1model__spec.html#a0d1aa5b0fcc3c11248e0a2e33c49ff4f">padding_type</a> padding, weight_initializer weight_initializer_fn, weight_initializer bias_initializer_fn=nullptr)</td></tr>
 <tr class="separator:a7ccd214f01f5f7d61ed0a22a090b8751"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aea19bc2e165a8934924604187c3e7945"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1model__spec.html#aea19bc2e165a8934924604187c3e7945">add_padding</a> (const std::string &amp;name, const std::string &amp;input, size_t padding_top, size_t padding_bottom, size_t padding_left, size_t padding_right, <a class="el" href="classturi_1_1neural__net_1_1model__spec.html#a972ab38f4986dabfac28beaee2ae01ce">padding_policy</a> policy=padding_policy::REFLECTIVE)</td></tr>
@@ -184,6 +186,10 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:acadf5c475d1fb43f22960e471c60d8c0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aab9dfdacbdf756d3a00e23e03ab397f9"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1model__spec.html#aab9dfdacbdf756d3a00e23e03ab397f9">add_get_shape</a> (const std::string &amp;name, const std::string &amp;input)</td></tr>
 <tr class="separator:aab9dfdacbdf756d3a00e23e03ab397f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a279f83f12cf1d939898675137428e998"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1model__spec.html#a279f83f12cf1d939898675137428e998">add_slice_dynamic</a> (const std::string &amp;name, const std::vector&lt; std::string &gt; &amp;inputs)</td></tr>
+<tr class="separator:a279f83f12cf1d939898675137428e998"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afce3d4004a1d7d4300e72617d8d54025"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classturi_1_1neural__net_1_1model__spec.html#afce3d4004a1d7d4300e72617d8d54025">add_nms_layer</a> (const std::string &amp;name, const std::vector&lt; std::string &gt; &amp;inputs, const std::vector&lt; std::string &gt; &amp;outputs, float iou_threshold, float confidence_threshold, size_t max_boxes, bool per_class_supression)</td></tr>
+<tr class="separator:afce3d4004a1d7d4300e72617d8d54025"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Representation for a neural-network model (structure and parameters), optimized for convenient export to CoreML.</p>
@@ -238,6 +244,31 @@ Public Member Functions</h2></td></tr>
 <p>Parameter for convolution and pooling layers. </p>
 
 <p class="definition">Definition at line <a class="el" href="model__spec_8hpp_source.html#l00044">44</a> of file <a class="el" href="model__spec_8hpp_source.html">model_spec.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ae6369ecdfff80b58bc29d092960d7248"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae6369ecdfff80b58bc29d092960d7248">&#9670;&nbsp;</a></span>pooling_type</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="classturi_1_1neural__net_1_1model__spec.html#ae6369ecdfff80b58bc29d092960d7248">turi::neural_net::model_spec::pooling_type</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+<p>Parameter for pooling types. </p>
+
+<p class="definition">Definition at line <a class="el" href="model__spec_8hpp_source.html#l00057">57</a> of file <a class="el" href="model__spec_8hpp_source.html">model_spec.hpp</a>.</p>
 
 </div>
 </div>
@@ -1237,6 +1268,77 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
+<a id="afce3d4004a1d7d4300e72617d8d54025"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afce3d4004a1d7d4300e72617d8d54025">&#9670;&nbsp;</a></span>add_nms_layer()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void turi::neural_net::model_spec::add_nms_layer </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; std::string &gt; &amp;&#160;</td>
+          <td class="paramname"><em>inputs</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; std::string &gt; &amp;&#160;</td>
+          <td class="paramname"><em>outputs</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>iou_threshold</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">float&#160;</td>
+          <td class="paramname"><em>confidence_threshold</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">size_t&#160;</td>
+          <td class="paramname"><em>max_boxes</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>per_class_supression</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Appends a non maximum suppression layer.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>The name of the layer and its output </td></tr>
+    <tr><td class="paramname">inputs</td><td>The name of the layer's inputs </td></tr>
+    <tr><td class="paramname">outputs</td><td>The outputs of the layer </td></tr>
+    <tr><td class="paramname">iou_thrsshold</td><td>The default value for the iou threshold </td></tr>
+    <tr><td class="paramname">confidence_threshold</td><td>The default value for the confidence threshold </td></tr>
+    <tr><td class="paramname">max_boxes</td><td>The maximum number of boxes you want NMS to run </td></tr>
+    <tr><td class="paramname">per_class_suppression</td><td>When false, suppression happens for all classes. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <a id="aea19bc2e165a8934924604187c3e7945"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aea19bc2e165a8934924604187c3e7945">&#9670;&nbsp;</a></span>add_padding()</h2>
 
@@ -1351,8 +1453,8 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="aafcbd879d251f3e3ffff3432b25b5df4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aafcbd879d251f3e3ffff3432b25b5df4">&#9670;&nbsp;</a></span>add_pooling()</h2>
+<a id="adc2c62ab713bed16008e985a5a9d8b4c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adc2c62ab713bed16008e985a5a9d8b4c">&#9670;&nbsp;</a></span>add_pooling()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1403,7 +1505,13 @@ Public Member Functions</h2></td></tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>use_poolexcludepadding</em> = <code>false</code>&#160;</td>
+          <td class="paramname"><em>use_poolexcludepadding</em> = <code>false</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classturi_1_1neural__net_1_1model__spec.html#ae6369ecdfff80b58bc29d092960d7248">pooling_type</a>&#160;</td>
+          <td class="paramname"><em>pooling</em> = <code>pooling_type::MAX</code>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -1412,9 +1520,15 @@ Public Member Functions</h2></td></tr>
         </tr>
       </table>
 </div><div class="memdoc">
-<p>Appends a pooling layer. By default, it's a max pooling layer. And it can only be max pooling TODO: be able to set other pooling types</p>
+<p>Appends a pooling layer. By default, it's a max pooling layer.</p>
+<p>It can be of type:</p><ul>
+<li>MAX</li>
+<li>AVERAGE</li>
+<li>L2</li>
+</ul>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
+    <tr><td class="paramname">pooling</td><td>this sets the type of pooling this layer performs. </td></tr>
     <tr><td class="paramname">use_poolexcludepadding</td><td>padded values are excluded from the count (denominator) when computing average pooling. </td></tr>
   </table>
   </dd>
@@ -1689,6 +1803,42 @@ Public Member Functions</h2></td></tr>
   <table class="params">
     <tr><td class="paramname">name</td><td>The name of the layer and its output </td></tr>
     <tr><td class="paramname">input</td><td>The name of the layer's input </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a279f83f12cf1d939898675137428e998"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a279f83f12cf1d939898675137428e998">&#9670;&nbsp;</a></span>add_slice_dynamic()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void turi::neural_net::model_spec::add_slice_dynamic </td>
+          <td>(</td>
+          <td class="paramtype">const std::string &amp;&#160;</td>
+          <td class="paramname"><em>name</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; std::string &gt; &amp;&#160;</td>
+          <td class="paramname"><em>inputs</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+<p>Appends dynamic slicing.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">name</td><td>The name of the layer and its output </td></tr>
+    <tr><td class="paramname">inputs</td><td>The name of the layer's inputs </td></tr>
   </table>
   </dd>
 </dl>
@@ -1986,7 +2136,7 @@ Public Member Functions</h2></td></tr>
 </div><div class="memdoc">
 <p>Exposes the underlying CoreML proto. </p>
 
-<p class="definition">Definition at line <a class="el" href="model__spec_8hpp_source.html#l00085">85</a> of file <a class="el" href="model__spec_8hpp_source.html">model_spec.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="model__spec_8hpp_source.html#l00088">88</a> of file <a class="el" href="model__spec_8hpp_source.html">model_spec.hpp</a>.</p>
 
 </div>
 </div>
@@ -2029,8 +2179,8 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="aec2f3705367eac080429f63f2623166c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aec2f3705367eac080429f63f2623166c">&#9670;&nbsp;</a></span>update_params()</h2>
+<a id="a4dd178d33803add32ca0093cb85e0e5f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4dd178d33803add32ca0093cb85e0e5f">&#9670;&nbsp;</a></span>update_params()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2039,8 +2189,18 @@ Public Member Functions</h2></td></tr>
           <td class="memname">void turi::neural_net::model_spec::update_params </td>
           <td>(</td>
           <td class="paramtype">const float_array_map &amp;&#160;</td>
-          <td class="paramname"><em>weights</em></td><td>)</td>
+          <td class="paramname"><em>weights</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>use_quantization</em> = <code>false</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -2048,6 +2208,7 @@ Public Member Functions</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">weights</td><td>A dictionary whose keys follow the same naming scheme used by <code>export_params_view</code>. </td></tr>
+    <tr><td class="paramname">use_quantization</td><td>If true, weights are stored in half precision. </td></tr>
   </table>
   </dd>
 </dl>

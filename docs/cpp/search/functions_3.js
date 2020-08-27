@@ -156,6 +156,7 @@ var searchData=
   ['create_5funity_5fglobal_5fsingleton',['create_unity_global_singleton',['../namespaceturi.html#a1d20f39e4623982dbe2b03fedbdf1374',1,'turi']]],
   ['create_5fvertex_5fdata',['create_vertex_data',['../namespaceturi_1_1sgraph__compute.html#a25fac47bd194fa6dd263c2882b381977',1,'turi::sgraph_compute']]],
   ['createmodeltrainer',['CreateModelTrainer',['../classturi_1_1object__detection_1_1DarknetYOLOCheckpoint.html#a308196687ddd2c5c53bf135b42171461',1,'turi::object_detection::DarknetYOLOCheckpoint::CreateModelTrainer()'],['../classturi_1_1object__detection_1_1Checkpoint.html#a2915e35400717f40193c8f4c917ec76b',1,'turi::object_detection::Checkpoint::CreateModelTrainer()'],['../classturi_1_1style__transfer_1_1Checkpoint.html#aeedcd78f242d23f9f3f701498e33f776',1,'turi::style_transfer::Checkpoint::CreateModelTrainer()'],['../classturi_1_1style__transfer_1_1ResNet16Checkpoint.html#adc978e3c5ad3d05e39f40493c13c15c7',1,'turi::style_transfer::ResNet16Checkpoint::CreateModelTrainer()']]],
+  ['createserialqueue',['CreateSerialQueue',['../classturi_1_1neural__net_1_1TaskQueue.html#a3c83d491628d6d29cce9646fbc6c2717',1,'turi::neural_net::TaskQueue']]],
   ['cstep',['cstep',['../group__line__search.html#ga82e27ad98c7a6958f194dd7f3a16e738',1,'turi::optimization']]],
   ['csv_5fline_5ftokenizer',['csv_line_tokenizer',['../structturi_1_1csv__line__tokenizer.html#a1566754654bbddf7efbf9b077f2f6af3',1,'turi::csv_line_tokenizer']]],
   ['csv_5fprint',['csv_print',['../classturi_1_1csv__writer.html#a54266a242983965604b37a692bc9e419',1,'turi::csv_writer']]],

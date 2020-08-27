@@ -1,5 +1,15 @@
 var NAVTREEINDEX2 =
 {
+"classturi_1_1dataframe__row__iterator.html#ab04ed4120a00a4251a2483fba5e941aa":[2,20,0,10],
+"classturi_1_1dataframe__row__iterator.html#abbb8e0d5909d740e6bc9e8bfe5793922":[2,8,1,3,5],
+"classturi_1_1dataframe__row__iterator.html#abbb8e0d5909d740e6bc9e8bfe5793922":[2,20,0,5],
+"classturi_1_1dataframe__row__iterator.html#ac4d9115285d256d4097cfe6509364058":[2,8,1,3,2],
+"classturi_1_1dataframe__row__iterator.html#ac4d9115285d256d4097cfe6509364058":[2,20,0,2],
+"classturi_1_1dataframe__row__iterator.html#ac7aab3ec66c9d6fecef014f57f561557":[2,8,1,3,4],
+"classturi_1_1dataframe__row__iterator.html#ac7aab3ec66c9d6fecef014f57f561557":[2,20,0,4],
+"classturi_1_1dataframe__row__iterator.html#adb16fbf78d771826067968edb2a99ccf":[2,8,1,3,11],
+"classturi_1_1dataframe__row__iterator.html#adb16fbf78d771826067968edb2a99ccf":[2,20,0,11],
+"classturi_1_1dataframe__row__iterator.html#adca293bca3a7b0f0a4e2bb57bf28a843":[2,8,1,3,13],
 "classturi_1_1dataframe__row__iterator.html#adca293bca3a7b0f0a4e2bb57bf28a843":[2,20,0,13],
 "classturi_1_1dataframe__row__iterator.html#aeffb19bd70c32a946ad00428b7a8f114":[2,8,1,3,18],
 "classturi_1_1dataframe__row__iterator.html#aeffb19bd70c32a946ad00428b7a8f114":[2,20,0,18],
@@ -239,15 +249,5 @@ var NAVTREEINDEX2 =
 "classturi_1_1factorization_1_1implicit__ranking__sgd__solver.html#a85ee0534581451cab439fef53a7707c0":[4,0,3,6,3,1],
 "classturi_1_1factorization_1_1implicit__ranking__sgd__solver.html#a8a9908a5defc9d1ed90afbc9e4e5815c":[4,0,3,6,3,0],
 "classturi_1_1factorization_1_1implicit__ranking__sgd__solver.html#aad0e3e7e1acabe4dfb0b7e1659fde968":[4,0,3,6,3,9],
-"classturi_1_1factorization_1_1implicit__ranking__sgd__solver.html#ace81173d35dcd3edaf460c507097b10f":[4,0,3,6,3,2],
-"classturi_1_1factorization_1_1implicit__ranking__sgd__solver.html#ae173f840b50eb1f3ce05f5658aa491e4":[4,0,3,6,3,3],
-"classturi_1_1factorization_1_1implicit__ranking__sgd__solver.html#af5c1a0876cc4df122882fdda90d5402d":[4,0,3,6,3,8],
-"classturi_1_1factorization_1_1loss__logistic.html":[4,0,3,6,4],
-"classturi_1_1factorization_1_1loss__model__profile.html":[4,0,3,6,5],
-"classturi_1_1factorization_1_1loss__ranking__hinge.html":[4,0,3,6,6],
-"classturi_1_1factorization_1_1loss__ranking__logit.html":[4,0,3,6,7],
-"classturi_1_1factorization_1_1loss__squared__error.html":[4,0,3,6,8],
-"classturi_1_1factorization_1_1ranking__sgd__solver__base.html":[4,0,3,6,9],
-"classturi_1_1factorization_1_1ranking__sgd__solver__base.html#a4249a46ee280ecc4e1bee0d13cbfbf04":[4,0,3,6,9,8],
-"classturi_1_1factorization_1_1ranking__sgd__solver__base.html#a45c9ec1407607ffeb52efed489593d39":[4,0,3,6,9,1]
+"classturi_1_1factorization_1_1implicit__ranking__sgd__solver.html#ace81173d35dcd3edaf460c507097b10f":[4,0,3,6,3,2]
 };
