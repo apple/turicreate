@@ -12,12 +12,10 @@ import turicreate as _tc
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 import numpy as _np
 import tempfile
-from copy import copy as _copy
 from array import array as _array
 import sys as _sys
 from . import util as test_util
 import unittest
-import pytest
 
 
 def _build_bitmap_data():
