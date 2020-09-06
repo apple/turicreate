@@ -177,6 +177,12 @@ build_source() {
   # Configure
   cd ${WORKSPACE}
 
+  # Report ccache stats
+  path_to_ccache=$(which ccache)
+  if [[ -x "$path_to_ccache" ]]; then
+      $path_to_ccache -s
+  fi
+
   ./configure
 
   push_ld_library_path

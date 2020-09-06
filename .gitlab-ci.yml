@@ -4,7 +4,6 @@ stages:
   - collect_artifacts
 
 cache:
-  key: ${CI_COMMIT_REF_SLUG}
   paths:
     - .docker_ccache
 
@@ -22,7 +21,7 @@ build_wheel_debug_linux_python27:
   script:
     - apk add bash nodejs
     - mkdir -p /etc/ssl/certs/
-    - bash -e scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --debug --docker-python2.7
+    - bash -e scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=1 --debug --docker-python2.7
   artifacts:
     expire_in: 1 day
     paths:
@@ -137,6 +136,7 @@ build_wheel_mac_10_15_python27:
   stage: build
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/2.7/bin/virtualenv"
+    - export PYTHON_INCLUDE_DIR="/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7"
     - source scripts/use_ccache.sh
     - bash -e scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4
   artifacts:
@@ -153,6 +153,7 @@ build_wheel_mac_10_15_python35:
   stage: build
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/3.5/bin/virtualenv"
+    - export PYTHON_INCLUDE_DIR="/Library/Frameworks/Python.framework/Versions/3.5/include/python3.5m"
     - source scripts/use_ccache.sh
     - bash -e scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4
   artifacts:
@@ -169,6 +170,7 @@ build_wheel_mac_10_15_python36:
   stage: build
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/3.6/bin/virtualenv"
+    - export PYTHON_INCLUDE_DIR="/Library/Frameworks/Python.framework/Versions/3.6/include/python3.6m"
     - source scripts/use_ccache.sh
     - bash -e scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4
   artifacts:
@@ -185,6 +187,7 @@ build_wheel_mac_10_15_python37:
   stage: build
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/3.7/bin/virtualenv"
+    - export PYTHON_INCLUDE_DIR="/Library/Frameworks/Python.framework/Versions/3.7/include/python3.7m"
     - source scripts/use_ccache.sh
     - bash -e scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4
   artifacts:
