@@ -28,7 +28,7 @@ sframe_index_file_information read_sframe_index_file(std::string index_file) {
   boost::property_tree::ptree data;
   try {
     boost::property_tree::ini_parser::read_ini(fin, data);
-  } catch(boost::property_tree::ini_parser_error e) {
+  } catch(boost::property_tree::ini_parser_error& e) {
     log_and_throw(std::string("Unable to parse frame index file ") + index_file);
   }
 

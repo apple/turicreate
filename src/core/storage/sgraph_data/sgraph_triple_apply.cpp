@@ -854,7 +854,7 @@ namespace {
                                  g.get_vertex_fields(),
                                  g.get_edge_fields(),
                                  m_srcid_column, m_dstid_column);
-      } catch (cppipc::ipcexception e) {
+      } catch (cppipc::ipcexception& e) {
         throw(lambda::reinterpret_comm_failure(e));
       }
 
@@ -943,7 +943,7 @@ namespace {
       try {
         mutated_edge_data = m_evaluator->proxy->eval_triple_apply(all_edge_data, m_src_partition,
                                                                   m_dst_partition, mutated_edge_field_ids);
-      } catch (cppipc::ipcexception e) {
+      } catch (cppipc::ipcexception& e) {
         throw(lambda::reinterpret_comm_failure(e));
       }
 

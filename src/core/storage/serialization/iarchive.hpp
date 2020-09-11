@@ -117,7 +117,7 @@ namespace turi {
     template <typename T>
     inline void read_into(T& c) {
       if (buf) {
-        memcpy(&c, buf + off, sizeof(T));
+        memcpy(reinterpret_cast<void*>(&c), buf + off, sizeof(T));
         off += sizeof(T);
       } else {
         in->read(reinterpret_cast<char*>(&c), sizeof(T));

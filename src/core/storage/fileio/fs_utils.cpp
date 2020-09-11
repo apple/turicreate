@@ -41,7 +41,7 @@ EXPORT std::string make_canonical_path(const std::string& path) {
     } else {
       return fs::canonical(fs::absolute(p)).string();
     }
-  } catch (fs::filesystem_error e) {
+  } catch (fs::filesystem_error& e) {
     log_and_throw(std::string("Invalid path: ") + path + ". " + e.what());
   }
 }

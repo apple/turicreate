@@ -57,7 +57,7 @@ dir_archive_impl::archive_index_information read_index_file(std::string index_fi
   boost::property_tree::ptree data;
   try {
     boost::property_tree::ini_parser::read_ini(fin, data);
-  } catch(boost::property_tree::ini_parser_error e) {
+  } catch(boost::property_tree::ini_parser_error& e) {
     log_and_throw(std::string("Unable to parse archive index file ") + index_file);
   }
 
