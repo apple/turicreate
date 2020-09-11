@@ -63,7 +63,6 @@ def create(
     max_iterations=500,
     verbose=True,
     random_seed=None,
-    **kwargs
 ):
     """
     Create a :class:`DrawingClassifier` model.
@@ -163,17 +162,6 @@ def create(
             )
         # Replace 'auto' with name of current default Warm Start model.
         warm_start = warm_start.replace("auto", "quickdraw_245_v0")
-
-    if "_advanced_parameters" in kwargs:
-        # XXX: this code will not work. Tracking in https://github.com/apple/turicreate/issues/3007
-        # Make sure no additional parameters are provided
-        new_keys = set(kwargs["_advanced_parameters"].keys())
-        set_keys = set(params.keys())
-        unsupported = new_keys - set_keys
-        if unsupported:
-            raise _ToolkitError("Unknown advanced parameters: {}".format(unsupported))
-
-        params.update(kwargs["_advanced_parameters"])
 
     # @TODO: Should be able to automatically choose number of iterations
     # based on data size: Tracked in Github Issue #1576
