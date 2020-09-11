@@ -2,7 +2,7 @@
 
 ### extra for full pkg ###
 
-coremltools==3.3; python_version < '3.8'
+coremltools==3.4; python_version < '3.8'
 coremltools==4.0b3; python_version == '3.8'
 
 scipy==1.2.1; python_version < '3.8'

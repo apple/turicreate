@@ -409,7 +409,6 @@ class FactorizationRecommender(_Recommender):
     """
 
     def __init__(self, model_proxy):
-        """__init__(self)"""
         self.__proxy__ = model_proxy
 
     @classmethod
