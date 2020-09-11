@@ -392,7 +392,7 @@ function package_wheel() {
 set_build_number() {
   # set the build number
   cd "${WORKSPACE}/${build_type}/src/python/"
-  sed -i -e "s/'.*'#{{BUILD_NUMBER}}/'${BUILD_NUMBER}'#{{BUILD_NUMBER}}/g" turicreate/version_info.py
+  sed -i -e "s/\".*\"  # {{BUILD_NUMBER}}/\"${BUILD_NUMBER}\"  # {{BUILD_NUMBER}}/g" turicreate/version_info.py
 }
 
 set_git_SHA() {
@@ -404,7 +404,7 @@ set_git_SHA() {
   fi
 
   cd "${WORKSPACE}/${build_type}/src/python/"
-  sed -i -e "s/'.*'#{{GIT_SHA}}/'${GIT_SHA}'#{{GIT_SHA}}/g" turicreate/version_info.py
+  sed -i -e "s/\".*\"  # {{GIT_SHA}}/\"${GIT_SHA}\"  # {{GIT_SHA}}/g" turicreate/version_info.py
 }
 
 # Here is the main function()
