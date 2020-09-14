@@ -109,7 +109,7 @@ static lambda_master* instance_ptr = nullptr;
     auto release_lambda_fn = [lambda_hash](std::unique_ptr<lambda_evaluator_proxy>& proxy) {
       try {
         proxy->release_lambda(lambda_hash);
-      } catch (std::exception& e){
+      } catch (const std::exception& e){
         logstream(LOG_ERROR) << "Error on releasing lambda: " << e.what() << std::endl;
       } catch (std::string e) {
         logstream(LOG_ERROR) << "Error on releasing lambda: " << e << std::endl;
