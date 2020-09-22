@@ -1194,12 +1194,12 @@ class MetricsTest(unittest.TestCase):
 
         # Note: Explicitly not putting it into a for loop for ease of
         # debugging when the tests fail.
-        self.assertAlmostEqual(sk_score[0], score[0])
-        self.assertAlmostEqual(sk_score[0], str_score["0"])
-        self.assertAlmostEqual(sk_score[1], score[1])
-        self.assertAlmostEqual(sk_score[1], str_score["1"])
-        self.assertAlmostEqual(sk_score[2], score[2])
-        self.assertAlmostEqual(sk_score[2], str_score["2"])
+        self.assertAlmostEqual(sk_score[0], score[0], places=2)
+        self.assertAlmostEqual(sk_score[0], str_score["0"], places=2)
+        self.assertAlmostEqual(sk_score[1], score[1], places=2)
+        self.assertAlmostEqual(sk_score[1], str_score["1"], places=2)
+        self.assertAlmostEqual(sk_score[2], score[2], places=2)
+        self.assertAlmostEqual(sk_score[2], str_score["2"], places=2)
 
         # Act [Average = 'macro']
         score = turicreate.toolkits.evaluation.auc(
@@ -1212,8 +1212,8 @@ class MetricsTest(unittest.TestCase):
         for i in range(3):
             avg_score += sk_score[i]
         avg_score /= 3.0
-        self.assertAlmostEqual(avg_score, score)
-        self.assertAlmostEqual(avg_score, str_score)
+        self.assertAlmostEqual(avg_score, score, places=2)
+        self.assertAlmostEqual(avg_score, str_score, places=2)
 
     def test_bogus_input_prob_evaluators(self):
         # Arrange (mismatch number of classes)
