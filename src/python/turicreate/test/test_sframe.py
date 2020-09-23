@@ -642,6 +642,29 @@ class SFrameTest(unittest.TestCase):
         f.close()
         os.unlink(f.name)
 
+    def test_pickling(self):
+
+        import pickle
+        from ..data_structures import serialization
+
+        X = generate_random_sframe(100, "ncc")
+
+        with util.TempDirectory() as f:
+            
+
+            self.assertRaises(pickle.PickleError, lambda: pickle.dumps(X))
+
+            serialization.enable_sframe_serialization(f)
+             
+            s = pickle.dumps(X)
+
+            Y = pickle.loads(s)
+
+            _assert_sframe_equal(X, Y)
+            
+            serialization.enable_sframe_serialization(None) # Disables it
+
+
     def test_save_to_json(self):
         f = tempfile.NamedTemporaryFile(suffix=".json", delete=False)
         sf = SFrame(data=self.dataframe, format="dataframe")
