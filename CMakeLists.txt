@@ -506,6 +506,8 @@ if(APPLE)
   if(NOT ${TC_BUILD_IOS})
     AddFrameworkDependency(AppKit)
   endif()
+endif()
+
 
 FILE(GLOB_RECURSE _tc_core_files
   CONFIGURE_DEPENDS
