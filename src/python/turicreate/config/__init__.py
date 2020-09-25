@@ -19,17 +19,6 @@ _client_log_file = _os.path.join(
     _root_package_name + "_client_%d_%d.log" % (_time.time(), _os.getpid()),
 )
 
-
-def _get_log_location():
-    from .._connect import main as _glconnect
-
-    server = _glconnect.get_server()
-    if hasattr(server, "unity_log"):
-        return server.unity_log
-    else:
-        return None
-
-
 def _i_am_a_lambda_worker():
     if _re.match(".*lambda_worker.*", _sys.argv[0]) is not None:
         return True
@@ -92,13 +81,6 @@ def get_client_log_location():
     Get the location of client logs
     """
     return _client_log_file
-
-
-def get_server_log_location():
-    """
-    Get the locations of server logs
-    """
-    return _get_log_location()
 
 
 def set_num_gpus(num_gpus):
