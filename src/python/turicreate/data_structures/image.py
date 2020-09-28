@@ -226,7 +226,7 @@ class Image(object):
 
     def show(self):
         """
-        Displays the image. Requires PIL/Pillow.
+        Displays the image.
 
         Alternatively, you can create an :class:`turicreate.SArray` of this image
         and use py:func:`turicreate.SArray.show()`
