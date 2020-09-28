@@ -19,9 +19,8 @@ def enable_sframe_serialization(serialization_directory):
      
     When an SFrame or SArray is pickled, a copy of the SFrame or SArray is saved in this
     directory and a reference handle to a randomly generated subdirectory is saved in the 
-    pickle.  When possible, hard-links are used to avoid making a copy of the data.  As 
-    long as that reference handle is present in the set directory, then deserialization 
-    should work. 
+    pickle.  As long as that reference handle is present in the set directory, then
+    deserialization should work. 
     
     Note that the pickle files themselves do not contain the data -- both the directory contents
     and the pickle need to be present for deserialization to work. 

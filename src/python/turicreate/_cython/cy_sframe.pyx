@@ -388,8 +388,8 @@ cdef class UnitySFrameProxy:
 
         save_dir = _safe_serialization_directory()
         sframe_id = str(uuid.uuid4())
-
-        self.save_reference(os.path.join(save_dir, sframe_id))
+        
+        self.save(os.path.join(save_dir, sframe_id))
         return (_UnitySFrame_unpickler, (sframe_id,) )
 
 def _UnitySFrame_unpickler(sframe_id):
