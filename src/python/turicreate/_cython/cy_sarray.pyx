@@ -31,7 +31,6 @@ from .cy_sframe cimport create_proxy_wrapper_from_existing_proxy as sframe_proxy
 
 from ..data_structures.serialization import _safe_serialization_directory
 import os
-import uuid
 
 cdef create_proxy_wrapper_from_existing_proxy(const unity_sarray_base_ptr& proxy):
     if proxy.get() == NULL:
@@ -531,6 +530,7 @@ cdef class UnitySArrayProxy:
         return create_proxy_wrapper_from_existing_proxy(proxy)
 
     def __reduce__(self):
+        import uuid
 
         save_dir = _safe_serialization_directory()
         sframe_id = str(uuid.uuid4())

@@ -1,4 +1,9 @@
 
+# -*- coding: utf-8 -*-
+# Copyright © 2020 Apple Inc. All rights reserved.
+#
+# Use of this source code is governed by a BSD-3-clause license that can
+# be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
 
 # SFrames require a disk-backed file or directory to work with.  This directory 
 # has to be present to allow for serialization or deserialization. 
@@ -7,9 +12,19 @@ __serialization_directory = None
 
 def enable_sframe_serialization(serialization_directory):
     """
-    Enables pickling of sframes through the use of a user-set directory to 
-    store the objects.  This directory must be present and set through 
-    this method for deserialization to work, but may be a different directory.
+    Enables pickling of SFrames and SArrays through the use of a user-set directory to 
+    store the objects.  This directory must be set through his method for 
+    deserialization to work.  It may be a different directory for serialization and 
+    unserialization. 
+     
+    When an SFrame or SArray is pickled, a copy of the SFrame or SArray is saved in this
+    directory and a reference handle to a randomly generated subdirectory is saved in the 
+    pickle.  When possible, hard-links are used to avoid making a copy of the data.  As 
+    long as that reference handle is present in the set directory, then deserialization 
+    should work. 
+    
+    Note that the pickle files themselves do not contain the data -- both the directory contents
+    and the pickle need to be present for deserialization to work. 
     """
 
     import os
@@ -23,15 +38,17 @@ def enable_sframe_serialization(serialization_directory):
 
     # Make sure the directory exists.
     if not os.path.exists(__serialization_directory):
-        raise ValueError("Directory %s does not exist." % __serialization_directory)
+
+        # Attempt to create it
+        os.makedirs(__serialization_directory)
 
     # Is it a directory? 
-    if not os.path.isdir(__serialization_directory):
+    elif not os.path.isdir(__serialization_directory):
         raise ValueError("%s is not a directory." % __serialization_directory)
 
 
 
-def serialization_directory():
+def get_serialization_directory():
     """
     Returns the current serialization directory if set, or None otherwise. 
     """

@@ -485,7 +485,7 @@ class SArrayTest(unittest.TestCase):
         import pickle
         from ..data_structures import serialization
 
-        X = SArray(list(range(100))) 
+        X = SArray(range(100))
 
         with util.TempDirectory() as f:
 

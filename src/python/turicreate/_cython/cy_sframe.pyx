@@ -35,7 +35,6 @@ from .cy_cpp_utils cimport to_nested_vectors_of_strings, dict_to_string_string_m
         
 from ..data_structures.serialization import _safe_serialization_directory
 import os
-import uuid
 
 cdef create_proxy_wrapper_from_existing_proxy(const unity_sframe_base_ptr& proxy):
     if proxy.get() == NULL:
@@ -385,6 +384,7 @@ cdef class UnitySFrameProxy:
 
 
     def __reduce__(self):
+        import uuid
 
         save_dir = _safe_serialization_directory()
         sframe_id = str(uuid.uuid4())
