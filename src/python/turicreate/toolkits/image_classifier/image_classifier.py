@@ -267,7 +267,7 @@ def create(
         elif dataset[feature].dtype is _tc.Image:
             feature_type = "image"
         else:
-            raise _ToolkitError('The "{feature}" column of the sFrame neither has the dataype image or extracted features array.'.format(feature=feature)
+            raise _ToolkitError('The "{feature}" column of the SFrame neither has the dataype image or extracted features array.'.format(feature=feature)
                 + ' "Datasets" consists of columns with types: '
                 + ", ".join([x.__name__ for x in dataset.column_types()])
                 + "."
