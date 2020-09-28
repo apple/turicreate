@@ -29,9 +29,6 @@ from .cy_unity cimport make_function_closure_info
 ### sframe ###
 from .cy_sframe cimport create_proxy_wrapper_from_existing_proxy as sframe_proxy
 
-from ..data_structures.serialization import _safe_serialization_directory
-import os
-
 cdef create_proxy_wrapper_from_existing_proxy(const unity_sarray_base_ptr& proxy):
     if proxy.get() == NULL:
         return None
@@ -528,21 +525,3 @@ cdef class UnitySArrayProxy:
         with nogil:
             proxy = self.thisptr.to_const(val, datatype)
         return create_proxy_wrapper_from_existing_proxy(proxy)
-
-    def __reduce__(self):
-        import uuid
-
-        save_dir = _safe_serialization_directory()
-        sframe_id = str(uuid.uuid4())
-
-        self.save(os.path.join(save_dir, sframe_id))
-        return (_UnitySArray_unpickler, (sframe_id,) )
-
-def _UnitySArray_unpickler(sframe_id):
-    proxy = UnitySArrayProxy()
-
-    load_dir = _safe_serialization_directory()
-
-    proxy.load_from_sarray_index(os.path.join(load_dir, sframe_id))
-
-    return proxy

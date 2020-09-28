@@ -12,12 +12,12 @@ __serialization_directory = None
 
 def enable_sframe_serialization(serialization_directory):
     """
-    Enables pickling of SFrames and SArrays through the use of a user-set directory to 
+    Enables pickling of SFrames through the use of a user-set directory to 
     store the objects.  This directory must be set through his method for 
     deserialization to work.  It may be a different directory for serialization and 
     unserialization. 
      
-    When an SFrame or SArray is pickled, a copy of the SFrame or SArray is saved in this
+    When an SFrame is pickled, a copy of the SFrame is saved in this
     directory and a reference handle to a randomly generated subdirectory is saved in the 
     pickle.  As long as that reference handle is present in the set directory, then
     deserialization should work. 

@@ -480,27 +480,6 @@ class SArrayTest(unittest.TestCase):
             self.assertEqual(int(lines[i]), sint[i])
         self._remove_single_file("txt_int_arr")
 
-    def test_pickling(self):
-
-        import pickle
-        from ..data_structures import serialization
-
-        X = SArray(range(100))
-
-        with util.TempDirectory() as f:
-
-            self.assertRaises(pickle.PickleError, lambda: pickle.dumps(X))
-
-            serialization.enable_sframe_serialization(f)
-             
-            s = pickle.dumps(X)
-
-            Y = pickle.loads(s)
-
-            self.assertEquals(list(X), list(Y))
-            
-            serialization.enable_sframe_serialization(None) # Disables it
-
     def test_read_json(self):
         # boolean type will be read in as int
         data_pairs = [
