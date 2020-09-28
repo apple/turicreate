@@ -12,10 +12,12 @@ from __future__ import print_function as _
 from __future__ import division as _
 from __future__ import absolute_import as _
 
-__all__ = ["sframe", "sarray", "sgraph", "sketch", "image"]
+__all__ = ["sframe", "sarray", "sgraph", "sketch", "image", "serialization"]
 
 from . import image
 from . import sframe
 from . import sarray
 from . import sgraph
 from . import sketch
+from . import serialization
+
