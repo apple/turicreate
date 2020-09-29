@@ -8,6 +8,7 @@
 # SFrames require a disk-backed file or directory to work with.  This directory 
 # has to be present to allow for serialization or deserialization. 
 __serialization_directory = None 
+from sys import version_info
 
 
 def enable_sframe_serialization(serialization_directory):
@@ -28,6 +29,10 @@ def enable_sframe_serialization(serialization_directory):
 
     import os
 
+    from sys import version_info
+
+    if version_info[0] == 2:
+        raise RuntimeError("SFrame serialization not supported in python 2.")
     global __serialization_directory
     if serialization_directory is None:
         __serialization_directory = None
@@ -61,7 +66,10 @@ def _safe_serialization_directory():
     from pickle import PickleError
 
     if __serialization_directory is None:
-        raise PickleError("Serialization directory not set to enable pickling or unpickling. "
+        
+        expected_error = TypeError if (version_info[0] == 3) else PickleError
+
+        raise expected_error("Serialization directory not set to enable pickling or unpickling. "
             "Set using turicreate.data_structures.serialization.enable_sframe_serialization().")
         
     return __serialization_directory
