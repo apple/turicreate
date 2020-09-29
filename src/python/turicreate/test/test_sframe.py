@@ -643,7 +643,7 @@ class SFrameTest(unittest.TestCase):
         f.close()
         os.unlink(f.name)
 
-    @pytest.mark.skipif(version_info[0] != 3, "Not a supported feature in python 2.7")
+    @pytest.mark.skipif(version_info[0] != 3, reason="Not a supported feature in python 2.7")
     def test_pickling(self):
 
         import pickle
