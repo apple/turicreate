@@ -166,10 +166,10 @@ TCModelTrainerBackendGraphs *mlc_object_detector_backend::create_graphs(
     MLCSGDOptimizer *optimizer =
         [MLCSGDOptimizer optimizerWithDescriptor:create_optimizer_descriptor(config)
                                    momentumScale:0.9f
-                             usesNestrovMomentum:NO];
+                             usesNesterovMomentum:NO];
 
     // Instantiate training graph.
-    result.trainingGraph = [MLCTrainingGraph trainingGraphWithGraphObjects:@[ graph ]
+    result.trainingGraph = [MLCTrainingGraph graphWithGraphObjects:@[ graph ]
                                                                  lossLayer:lossLayer
                                                                  optimizer:optimizer];
 

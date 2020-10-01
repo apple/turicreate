@@ -154,7 +154,7 @@ mlc_drawing_classifier_backend::mlc_drawing_classifier_backend(MLCDevice *device
     // Instantiate training graph.
     MLCGraph *graph = [MLCGraph tc_graphForDrawingClassifierDescriptor:descriptor
                                                              batchSize:batch_size];
-    training_graph_ = [MLCTrainingGraph trainingGraphWithGraphObjects:@[ graph ]
+    training_graph_ = [MLCTrainingGraph graphWithGraphObjects:@[ graph ]
                                                             lossLayer:loss
                                                             optimizer:optimizer];
 

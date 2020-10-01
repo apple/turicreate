@@ -195,7 +195,7 @@ void mlc_layer_weights::add_optimizer_data(const std::string &layer_name,
     MLCTensorData *optimizerData1 = copy_float_array(optimizer_data_1_key, optimizer_data_1);
     MLCTensorData *optimizerData2 = copy_float_array(optimizer_data_2_key, optimizer_data_2);
     if (tensors_[layerName] != nil) {
-      BOOL success = [tensors_[layerName] optimizerData:@[ optimizerData1, optimizerData2 ]];
+      BOOL success = [tensors_[layerName] bindOptimizerData:@[ optimizerData1, optimizerData2] deviceData:nil];
       if (!success) {
         throw("Failed to load optimizer data into tensor");
       }
