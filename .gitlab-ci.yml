@@ -611,27 +611,23 @@ test_python_mac_python37_10_14_minimal:
     paths:
       - pytest.*
 
-# Core ML Tool currently has only beta support for Python 3.8.
-# We can't currently rely on it as part of our CI.
-# See GitHub issue:
-#    https://github.com/apple/coremltools/issues/372
-#test_python_mac_python38_10_15:
-#  tags:
-#    - macos10.15
-#  only:
-#    variables:
-#      - $TC_HAS_MACOS_RUNNERS == "1"
-#  stage: test
-#  dependencies:
-#    - build_wheel_mac_10_15_python38
-#  script:
-#    - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/3.8/bin/virtualenv"
-#    - bash -e scripts/test_wheel.sh
-#  artifacts:
-#    when: always
-#    expire_in: 2 weeks
-#    paths:
-#      - pytest.*
+test_python_mac_python38_10_15:
+  tags:
+    - macos10.15
+  only:
+    variables:
+      - $TC_HAS_MACOS_RUNNERS == "1"
+  stage: test
+  dependencies:
+    - build_wheel_mac_10_15_python38
+  script:
+    - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/3.8/bin/virtualenv"
+    - bash -e scripts/test_wheel.sh
+  artifacts:
+    when: always
+    expire_in: 2 weeks
+    paths:
+      - pytest.*
 
 test_python_mac_python38_10_14_minimal:
   tags:
