@@ -2,15 +2,24 @@
 
 ### extra for full pkg ###
 
-coremltools==3.3
-scipy==1.2.1
+coremltools==3.4; python_version < '3.8'
+coremltools==4.0b3; python_version == '3.8'
+
+scipy==1.2.1; python_version < '3.8'
+scipy==1.5.1; python_version == '3.8'
+
 resampy==0.2.1
-scikit-learn==0.20.3
-statsmodels==0.9.0
-tensorflow==2.0.1; python_version > '2.7'
-tensorflow==2.0.0; python_version < '3.5'   # Last version to support Python 2.7
+
+scikit-learn==0.20.3; python_version < '3.8'
+scikit-learn==0.23.1; python_version == '3.8'
+
+statsmodels==0.9.0; python_version < '3.8'
+statsmodels==0.11.1; python_version == '3.8'
+
+tensorflow==2.0.2; sys_platform == 'darwin' and python_version != '2.7' and python_version != '3.8'
+
 UISoup==2.5.7
-pyobjc==5.2; sys_platform == 'darwin'
+
 llvmlite==0.33.0; python_version >= '3.6'
 llvmlite==0.31.0; python_version < '3.6'
 

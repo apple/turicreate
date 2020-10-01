@@ -44,11 +44,13 @@ print_help() {
   echo
   echo "  --docker-python3.7       Use docker to build for Python 3.7 in CentOS 6 with Clang 8."
   echo
+  echo "  --docker-python3.8       Use docker to build for Python 3.8 in CentOS 6 with Clang 8."
+  echo
   echo "  --num_procs=n            Specify the number of proceses to run in parallel."
   echo
   echo "  --target-dir=[dir]       The directory where the wheel and associated files are put."
   echo
-  echo "Produce a local wheel and skip test and doc generation"
+  echo "Produce a local wheel and skip test"
   echo "Example: ./make_wheel.sh --skip_test"
   exit 1
 } # end of print help
@@ -70,6 +72,7 @@ while [ $# -gt 0 ]
     --docker-python3.5)     USE_DOCKER=1;DOCKER_PYTHON=3.5;;
     --docker-python3.6)     USE_DOCKER=1;DOCKER_PYTHON=3.6;;
     --docker-python3.7)     USE_DOCKER=1;DOCKER_PYTHON=3.7;;
+    --docker-python3.8)     USE_DOCKER=1;DOCKER_PYTHON=3.8;;
     --help)                 print_help ;;
     *) unknown_option $1 ;;
   esac
@@ -338,7 +341,7 @@ function package_wheel() {
 set_build_number() {
   # set the build number
   cd "${WORKSPACE}/${build_type}/src/python/"
-  sed -i -e "s/'.*'#{{BUILD_NUMBER}}/'${BUILD_NUMBER}'#{{BUILD_NUMBER}}/g" turicreate/version_info.py
+  sed -i -e "s/\".*\"  # {{BUILD_NUMBER}}/\"${BUILD_NUMBER}\"  # {{BUILD_NUMBER}}/g" turicreate/version_info.py
 }
 
 set_git_SHA() {
@@ -350,7 +353,7 @@ set_git_SHA() {
   fi
 
   cd "${WORKSPACE}/${build_type}/src/python/"
-  sed -i -e "s/'.*'#{{GIT_SHA}}/'${GIT_SHA}'#{{GIT_SHA}}/g" turicreate/version_info.py
+  sed -i -e "s/\".*\"  # {{GIT_SHA}}/\"${GIT_SHA}\"  # {{GIT_SHA}}/g" turicreate/version_info.py
 }
 
 # Here is the main function()

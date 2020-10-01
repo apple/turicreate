@@ -5,7 +5,6 @@
  * https://opensource.org/licenses/BSD-3-Clause
  */
 
-#include <iostream>
 #include <memory>
 #include <random>
 #include <sstream>

@@ -7,7 +7,7 @@
 # Builds against libstdc++ from GCC 4.8 for compatibility with older libstdc++
 # runtime versions.
 
-FROM quay.io/pypa/manylinux2010_x86_64@sha256:191e8bc35089ce4ceda48224289b7475322ee6853faa4bf7d4b8e0d9c3b0358e
+FROM quay.io/pypa/manylinux2010_x86_64
 
 # Set env variables for tools to pick up
 ENV CC="gcc"
@@ -133,6 +133,17 @@ RUN ./configure --prefix=/usr/local --enable-unicode=ucs4 --enable-shared --enab
     ldconfig && \
     rm -rf /src/Python-3.7.3*
 
+# Install Python 3.8 from source
+WORKDIR /src
+RUN curl -O https://www.python.org/ftp/python/3.8.5/Python-3.8.5.tgz
+RUN tar xf Python-3.8.5.tgz
+WORKDIR /src/Python-3.8.5
+RUN ./configure --prefix=/usr/local --enable-unicode=ucs4 --enable-shared --enable-loadable-sqlite-extensions && \
+    make -j4 --quiet && \
+    make install && \
+    ldconfig && \
+    rm -rf /src/Python-3.8.5*
+
 ENV CC="/usr/local/bin/gcc"
 ENV CXX="/usr/local/bin/g++"
 
@@ -147,6 +158,8 @@ RUN python3.6 get-pip.py
 RUN pip3.6 install virtualenv
 RUN python3.7 get-pip.py
 RUN pip3.7 install virtualenv
+RUN python3.8 get-pip.py
+RUN pip3.8 install virtualenv
 RUN rm -rf /src/get-pip.py
 
 ENV LD="/usr/local/lib64"

@@ -12,12 +12,10 @@ import turicreate as _tc
 from turicreate.toolkits._main import ToolkitError as _ToolkitError
 import numpy as _np
 import tempfile
-from copy import copy as _copy
 from array import array as _array
 import sys as _sys
 from . import util as test_util
 import unittest
-import pytest
 
 
 def _build_bitmap_data():
@@ -353,19 +351,17 @@ class DrawingClassifierTest(unittest.TestCase):
 
             # Load the model back from the CoreML model file
             coreml_model = coremltools.models.MLModel(filename)
-            self.assertDictEqual(
-                {
-                    "com.github.apple.turicreate.version": _tc.__version__,
-                    "com.github.apple.os.platform": platform.platform(),
-                    "target": self.target,
-                    "feature": self.feature,
-                    "type": "drawing_classifier",
-                    "warm_start": warm_start_ans,
-                    "max_iterations": max_iters_ans[i],
-                    "version": "2",
-                },
-                dict(coreml_model.user_defined_metadata),
-            )
+            metadata = coreml_model.user_defined_metadata
+
+            self.assertEqual(metadata["com.github.apple.turicreate.version"], _tc.__version__)
+            self.assertEqual(metadata["com.github.apple.os.platform"], platform.platform())
+            self.assertEqual(metadata["type"], "drawing_classifier")
+            self.assertEqual(metadata["version"], "2")
+            self.assertEqual(metadata["target"], self.target)
+            self.assertEqual(metadata["feature"], self.feature)
+            self.assertEqual(metadata["warm_start"], warm_start_ans)
+            self.assertEqual(metadata["max_iterations"], max_iters_ans[i])
+
             expected_result = (
                 "Drawing classifier created by Turi Create (version %s)"
                 % (_tc.__version__)

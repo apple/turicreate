@@ -710,7 +710,6 @@ def _build_native_function_call(fn):
     which can then be passed to C++.
 
     Returns a _Closure object on success, raises an exception on failure.
-
     """
     # See if fn is the native function itself
     native_function_name = _get_toolkit_function_name_from_function(fn)

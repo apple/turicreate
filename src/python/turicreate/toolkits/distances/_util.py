@@ -203,7 +203,7 @@ def _validate_composite_distance(distance):
             )
 
 
-def _scrub_composite_distance_features(distance, feature_blacklist):
+def _scrub_composite_distance_features(distance, feature_denylist):
     """
     Remove feature names from the feature lists in a composite distance
     function.
@@ -212,7 +212,7 @@ def _scrub_composite_distance_features(distance, feature_blacklist):
 
     for i, d in enumerate(distance):
         ftrs, dist, weight = d
-        new_ftrs = [x for x in ftrs if x not in feature_blacklist]
+        new_ftrs = [x for x in ftrs if x not in feature_denylist]
         if len(new_ftrs) > 0:
             dist_out.append([new_ftrs, dist, weight])
 

@@ -30,6 +30,8 @@ print_help() {
   echo
   echo "  --docker-python3.7       Use docker to test on Python 3.7 in Ubuntu 18.04."
   echo
+  echo "  --docker-python3.8       Use docker to test on Python 3.8 in Ubuntu 18.04."
+  echo
   echo "  --minimal                test the turicreate+minimal package"
   echo
   exit 1
@@ -45,6 +47,7 @@ while [ $# -gt 0 ]
     --docker-python3.5)     USE_DOCKER=1;DOCKER_PYTHON=3.5;;
     --docker-python3.6)     USE_DOCKER=1;DOCKER_PYTHON=3.6;;
     --docker-python3.7)     USE_DOCKER=1;DOCKER_PYTHON=3.7;;
+    --docker-python3.8)     USE_DOCKER=1;DOCKER_PYTHON=3.8;;
     --minimal)              USE_MINIMAL=1;;
     --help)                 print_help ;;
     *) unknown_option "$1" ;;
@@ -81,7 +84,7 @@ if [[ -n "${USE_DOCKER}" ]]; then
       --env-file "${envlist}" \
       "${TC_BUILD_IMAGE_1404}" \
       /build/scripts/test_wheel.sh ${docker_extra_args}
-  elif [[ "${DOCKER_PYTHON}" == "3.6" ]] || [[ "${DOCKER_PYTHON}" == "3.7" ]]; then
+  elif [[ "${DOCKER_PYTHON}" == "3.6" ]] || [[ "${DOCKER_PYTHON}" == "3.7" ]] || [[ "${DOCKER_PYTHON}" == "3.8" ]]; then
     docker run --rm -m=8g \
       --mount type=bind,source="$WORKSPACE",target=/build,consistency=delegated \
       --env-file "${envlist}" \
@@ -133,7 +136,7 @@ else
   exit 1
 fi
 
-pip install "$wheel_to_install"
+pip install "$wheel_to_install" --use-feature=2020-resolver
 
 PYTHON="$WORKSPACE/deps/env/bin/python"
 PYTHON_MAJOR_VERSION=$(${PYTHON} -c 'import sys; print(sys.version_info.major)')

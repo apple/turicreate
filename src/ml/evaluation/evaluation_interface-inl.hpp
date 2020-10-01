@@ -1481,7 +1481,7 @@ class roc_curve: public supervised_evaluation_interface {
   // Options
   average_type_enum average = average_type_enum::NONE;
   bool binary = false;
-  const size_t NUM_BINS=100000;
+  const size_t NUM_BINS=1000;
   size_t n_threads = 0;
   size_t num_classes = 0;
 

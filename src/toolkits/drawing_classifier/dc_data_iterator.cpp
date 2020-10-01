@@ -30,8 +30,9 @@ using neural_net::shared_float_array;
 
 void add_drawing_pixel_data_to_batch(float* next_drawing_pointer,
                                      const flex_image& bitmap) {
+  flex_image resized_bitmap = image_util::resize_image(bitmap, kDrawingWidth, kDrawingHeight, 1, true);
   image_util::copy_image_to_memory(
-      /* image input    */ bitmap,
+      /* image input    */ resized_bitmap,
       /* output pointer */ next_drawing_pointer,
       /* output strides */ {bitmap.m_width * bitmap.m_channels, bitmap.m_channels, 1},
       /* output shape   */ {bitmap.m_height, bitmap.m_width, bitmap.m_channels},

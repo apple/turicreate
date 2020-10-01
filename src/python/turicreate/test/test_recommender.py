@@ -75,6 +75,7 @@ def _coreml_to_tc(preds):
 class RecommenderTestBase(unittest.TestCase):
     def _test_coreml_export(self, m, item_ids, ratings=None):
         import coremltools as _coremltools
+        import platform
 
         temp_file_path = tempfile.NamedTemporaryFile().name
         if m.target and ratings:
@@ -109,16 +110,11 @@ class RecommenderTestBase(unittest.TestCase):
             # compare them
             self.assertEqual(predictions_tc_dict, _coreml_to_tc(predictions_coreml))
 
-            # compare user defined data
-            import platform
+            # compare user defined metadata
+            metadata = coremlmodel.user_defined_metadata
+            self.assertEqual(metadata["com.github.apple.turicreate.version"], tc.__version__)
+            self.assertEqual(metadata["com.github.apple.os.platform"], platform.platform())
 
-            self.assertDictEqual(
-                {
-                    "com.github.apple.turicreate.version": tc.__version__,
-                    "com.github.apple.os.platform": platform.platform(),
-                },
-                dict(coremlmodel.user_defined_metadata),
-            )
         os.unlink(temp_file_path)
 
     def _get_trained_model(

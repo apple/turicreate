@@ -287,5 +287,5 @@ def _is_image_deep_feature_sarray(feature_sarray, model_name):
     if type(feature_sarray[0]) != array:
         return False
     if len(feature_sarray[0]) != MODEL_TO_FEATURE_SIZE_MAPPING[model_name]:
-        return False
+        raise _ToolkitError("The given deep features are for a model other than {model_name}.".format(model_name=model_name))
     return True

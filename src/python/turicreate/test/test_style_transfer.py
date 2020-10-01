@@ -312,21 +312,19 @@ class StyleTransferTest(unittest.TestCase):
 
             ## Metadata test
             coreml_model = coremltools.models.MLModel(filename)
-            self.assertDictEqual(
-                {
-                    "com.github.apple.turicreate.version": tc.__version__,
-                    "com.github.apple.os.platform": platform.platform(),
-                    "type": "style_transfer",
-                    "content_feature": self.content_feature,
-                    "style_feature": self.style_feature,
-                    "model": self.pre_trained_model,
-                    "max_iterations": "1",
-                    "training_iterations": "1",
-                    "num_styles": str(self.num_styles),
-                    "version": "1",
-                },
-                dict(coreml_model.user_defined_metadata),
-            )
+            metadata = coreml_model.user_defined_metadata
+
+            self.assertEqual(metadata["com.github.apple.turicreate.version"], tc.__version__)
+            self.assertEqual(metadata["com.github.apple.os.platform"], platform.platform())
+            self.assertEqual(metadata["type"], "style_transfer")
+            self.assertEqual(metadata["version"], "1")
+            self.assertEqual(metadata["content_feature"], self.content_feature)
+            self.assertEqual(metadata["style_feature"], self.style_feature)
+            self.assertEqual(metadata["model"], self.pre_trained_model)
+            self.assertEqual(metadata["max_iterations"], "1")
+            self.assertEqual(metadata["training_iterations"], "1")
+            self.assertEqual(metadata["num_styles"], str(self.num_styles))
+
             expected_result = "Style transfer created by Turi Create (version %s)" % (
                 tc.__version__
             )

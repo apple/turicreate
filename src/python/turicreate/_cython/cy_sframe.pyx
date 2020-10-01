@@ -35,6 +35,9 @@ from .cy_model cimport create_model_from_proxy
 from .cy_cpp_utils cimport str_to_cpp, cpp_to_str
 from .cy_cpp_utils cimport to_vector_of_strings, from_vector_of_strings
 from .cy_cpp_utils cimport to_nested_vectors_of_strings, dict_to_string_string_map
+        
+from ..data_structures.serialization import _safe_serialization_directory
+import os
 
 cdef create_proxy_wrapper_from_existing_proxy(const unity_sframe_base_ptr& proxy):
     if proxy.get() == NULL:
@@ -55,6 +58,9 @@ cdef pydict_from_gl_error_map(gl_error_map& d):
         ret[cpp_to_str(deref(it).first)] = sarray_proxy(deref(it).second)
         inc(it)
     return ret
+
+
+
 
 cdef class UnitySFrameProxy:
 
@@ -378,3 +384,23 @@ cdef class UnitySFrameProxy:
     cpdef delete_on_close(self):
         with nogil:
           self.thisptr.delete_on_close()
+
+
+    def __reduce__(self):
+        import uuid
+
+        save_dir = _safe_serialization_directory()
+        sframe_id = str(uuid.uuid4())
+        
+        self.save(os.path.join(save_dir, sframe_id))
+        return (_UnitySFrame_unpickler, (sframe_id,) )
+
+def _UnitySFrame_unpickler(sframe_id):
+    proxy = UnitySFrameProxy()
+
+    load_dir = _safe_serialization_directory()
+
+    proxy.load_from_sframe_index(os.path.join(load_dir, sframe_id))
+
+    return proxy
+

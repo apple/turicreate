@@ -146,7 +146,7 @@ class lambda_closure_visitor(ast.NodeVisitor):
 
     def translate_ast(self, ast_node):
         # print(ast.dump(ast_node))
-        t = self.visit(ast_node)
+        self.visit(ast_node)
 
     def visit_Module(self, node):
         if self.state != self.FUNCTION:
@@ -244,6 +244,8 @@ class lambda_closure_visitor(ast.NodeVisitor):
         return self.visit_FunctionDef(node)
 
     def visit_FunctionDef(self, node):
+        from sys import version_info as python_version
+
         if self.state != self.FUNCTION:
             raise NotImplementedError("Unexpected function")
 
@@ -256,7 +258,13 @@ class lambda_closure_visitor(ast.NodeVisitor):
             # it actually shows up in the ast as a Expr.str
             # so we need to catch that and skip it
             try:
-                if type(next_node) is ast.Expr and type(next_node.value) is ast.Str:
+                # Docstrings are constants in Python 3.8 and strings in all other
+                # supported Python versions.
+                if python_version.major == 3 and python_version.minor >= 8:
+                    if type(next_node) is ast.Expr and type(next_node.value) is ast.Constant:
+                        # this is *probably* a doc string!
+                        next_node = node.body[1]
+                elif type(next_node) is ast.Expr and type(next_node.value) is ast.Str:
                     # this is *probably* a doc string!
                     next_node = node.body[1]
             except:

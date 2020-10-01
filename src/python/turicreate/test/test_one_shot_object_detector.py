@@ -213,32 +213,29 @@ class OneObjectDetectorSmokeTest(unittest.TestCase):
         filename = tempfile.NamedTemporaryFile(suffix=".mlmodel").name
         self.model.export_coreml(filename, include_non_maximum_suppression=False)
 
-        ## Test metadata
+        # Test metadata
         coreml_model = coremltools.models.MLModel(filename)
-        self.maxDiff = None
-        self.assertDictEqual(
-            {
-                "com.github.apple.turicreate.version": tc.__version__,
-                "com.github.apple.os.platform": platform.platform(),
-                "type": "object_detector",
-                "classes": ",".join(sorted(_CLASSES)),
-                "feature": self.feature,
-                "include_non_maximum_suppression": "False",
-                "annotations": "annotation",
-                "max_iterations": "1",
-                "model": "YOLOv2",
-                "training_iterations": "1",
-                "version": "1",
-            },
-            dict([(str(k), v) for k, v in coreml_model.user_defined_metadata.items()]),
-        )
+        metadata = coreml_model.user_defined_metadata
+
+        self.assertEqual(metadata["com.github.apple.turicreate.version"], tc.__version__)
+        self.assertEqual(metadata["com.github.apple.os.platform"], platform.platform())
+        self.assertEqual(metadata["type"], "object_detector")
+        self.assertEqual(metadata["version"], "1")
+        self.assertEqual(metadata["classes"], ",".join(sorted(_CLASSES)))
+        self.assertEqual(metadata["feature"], self.feature)
+        self.assertEqual(metadata["include_non_maximum_suppression"], "False")
+        self.assertEqual(metadata["annotations"], "annotation")
+        self.assertEqual(metadata["max_iterations"], "1")
+        self.assertEqual(metadata["model"], "YOLOv2")
+        self.assertEqual(metadata["training_iterations"], "1")
+
         expected_result = (
             "One shot object detector created by Turi Create (version %s)"
             % (tc.__version__)
         )
         self.assertEquals(expected_result, coreml_model.short_description)
 
-        ## Test prediction
+        # Test prediction
         img = self.train[0:1][self.feature][0]
         img_fixed = tc.image_analysis.resize(img, 416, 416, 3)
         pil_img = Image.fromarray(img_fixed.pixel_data)

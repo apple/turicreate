@@ -228,6 +228,7 @@ class ImageSimilarityTest(unittest.TestCase):
         Check the export_coreml() function.
         """
         import coremltools
+        import platform
 
         def get_psnr(x, y):
             # See: https://en.wikipedia.org/wiki/Peak_signal-to-noise_ratio
@@ -242,26 +243,16 @@ class ImageSimilarityTest(unittest.TestCase):
 
         # Load the model back from the CoreML model file
         coreml_model = coremltools.models.MLModel(filename)
-        import platform
+        metadata = coreml_model.user_defined_metadata
 
-        self.assertDictEqual(
-            {
-                "com.github.apple.turicreate.version": tc.__version__,
-                "com.github.apple.os.platform": platform.platform(),
-                "type": "ImageSimilarityModel",
-                "coremltoolsVersion": coremltools.__version__,
-                "version": "1",
-            },
-            dict(coreml_model.user_defined_metadata),
-        )
-
-        expected_result = (
-            "Image similarity (%s) created by Turi Create (version %s)"
-            % (self.model.model, tc.__version__)
-        )
+        self.assertEqual(metadata["com.github.apple.turicreate.version"], tc.__version__)
+        self.assertEqual(metadata["com.github.apple.os.platform"], platform.platform())
+        self.assertEqual(metadata["type"], "ImageSimilarityModel")
+        self.assertEqual(metadata["version"], "1")
 
         # Get model distances for comparison
         if self.feature == "awesome_image":
+            # tc.image_classifier.create(...) was not called with deep features
             img = data[0:1][self.feature][0]
             img_fixed = tc.image_analysis.resize(img, *reversed(self.input_image_shape))
             tc_ret = self.model.query(img_fixed, k=data.num_rows())
@@ -277,9 +268,6 @@ class ImageSimilarityTest(unittest.TestCase):
                 tc_distances = tc_ret.sort("reference_label")["distance"].to_numpy()
                 psnr_value = get_psnr(coreml_distances, tc_distances)
                 self.assertTrue(psnr_value > 50)
-        else:
-            # If the code came here that means the type of the feature used is deep_deatures and the predict fwature in coremltools doesn't work with deep_features yet so we will ignore this specific test case unitl the same is written.
-            pass
 
     def test_save_and_load(self):
         with test_util.TempDirectory() as filename:

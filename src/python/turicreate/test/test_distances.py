@@ -198,18 +198,18 @@ class DistanceUtilsTest(unittest.TestCase):
         ]
 
         ## Test basic functionality
-        feature_blacklist = ["goat", "horse", "ibex"]
+        feature_denylist = ["goat", "horse", "ibex"]
         ans = tc.distances._util._scrub_composite_distance_features(
-            dist, feature_blacklist
+            dist, feature_denylist
         )
 
         for d, d_ans in zip(self.dist, ans):
             self.assertSequenceEqual(d[0], d_ans[0])
 
-        ## Test removal of an entire distance component
-        feature_blacklist.append("f")  # should remove the entire last component
+        # Test removal of an entire distance component
+        feature_denylist.append("f")  # should remove the entire last component
         ans = tc.distances._util._scrub_composite_distance_features(
-            dist, feature_blacklist
+            dist, feature_denylist
         )
         self.assertEqual(len(ans), 3)
         self.assertItemsEqual(

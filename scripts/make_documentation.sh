@@ -56,7 +56,7 @@ fi
 
 TARGET_DIR=${WORKSPACE}/target
 
-virtualenv ./deps/env
+virtualenv --python=python3.7 ./deps/env
 source deps/env/bin/activate
 
 # ignore minimal build

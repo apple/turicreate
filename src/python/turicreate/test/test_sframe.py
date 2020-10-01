@@ -12,6 +12,7 @@ from ..data_structures.image import Image
 from ..util import _assert_sframe_equal, generate_random_sframe
 from .. import _launch, load_sframe, aggregate
 from . import util
+from sys import version_info
 
 import pandas as pd
 from .._cython.cy_flexible_type import GMT
@@ -641,6 +642,31 @@ class SFrameTest(unittest.TestCase):
         self.__test_equal(sf2, self.dataframe)
         f.close()
         os.unlink(f.name)
+
+    @pytest.mark.skipif(version_info[0] != 3, reason="Not a supported feature in python 2.7")
+    def test_pickling(self):
+
+        import pickle
+        from ..data_structures import serialization
+
+        X = generate_random_sframe(100, "ncc")
+
+        with util.TempDirectory() as f:
+
+            expected_error = TypeError if (version_info[0] == 3) else PicklingError
+
+            self.assertRaises(expected_error, lambda: pickle.dumps(X))
+
+            serialization.enable_sframe_serialization(f)
+             
+            s = pickle.dumps(X)
+
+            Y = pickle.loads(s)
+
+            _assert_sframe_equal(X, Y)
+            
+            serialization.enable_sframe_serialization(None) # Disables it
+
 
     def test_save_to_json(self):
         f = tempfile.NamedTemporaryFile(suffix=".json", delete=False)

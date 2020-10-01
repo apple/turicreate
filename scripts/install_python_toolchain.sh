@@ -27,17 +27,18 @@ function linux_patch_sigfpe_handler {
   if [[ $OSTYPE == linux* ]]; then
     targfile=deps/local/include/pyfpe.h
     if [[ -f $targfile ]]; then
-      echo "#undef WANT_SIGFPE_HANDLER" | cat - $targfile > tmp
-      mv -f tmp $targfile
+      temp_file=/tmp/sigfpe_handler_temp.txt
+      echo "#undef WANT_SIGFPE_HANDLER" | cat - $targfile > $temp_file
+      mv -f $temp_file $targfile
     fi
   fi
 }
 
 $PIP install --upgrade "pip"
 if [[ "$USE_MINIMAL" -eq 1  ]]; then
-  $PIP install -r scripts/requirements-minimal.txt
+  $PIP install -r scripts/requirements-minimal.txt --prefer-binary  --use-feature=2020-resolver
 else
-  $PIP install -r scripts/requirements.txt
+  $PIP install -r scripts/requirements.txt --prefer-binary  --use-feature=2020-resolver
 fi
 
 # install pre-commit hooks for git
