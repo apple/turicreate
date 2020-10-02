@@ -225,14 +225,17 @@ def get_deep_features(images, model_name, batch_size=64, verbose=True):
     out : SArray
         Returns an SArray with all the extracted features.
 
+    See Also
+    --------
+    turicreate.image_classifier.create
+    turicreate.image_similarity.create
+
     Examples
     --------
-    # Get Deep featuers from an sarray of images
-    >>> url ='https://static.turi.com/datasets/images/nested'
-    >>> image_sframe = turicreate.image_analysis.load_images(url, "auto", with_path=False, recursive=True)
+    >>> url = 'https://static.turi.com/datasets/images/nested'
+    >>> image_sframe = turicreate.load_images(url)
     >>> image_sarray = image_sframe["image"]
     >>> deep_features_sframe = turicreate.image_analysis.get_deep_features(image_sarray, model_name="resnet-50")
-
     """
 
     # Check model parameter
