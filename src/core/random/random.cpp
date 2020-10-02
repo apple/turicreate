@@ -8,8 +8,6 @@
 #include <fstream>
 #include <chrono>
 
-#include <boost/random.hpp>
-#include <boost/integer_traits.hpp>
 
 #include <core/parallel/pthread_tools.hpp>
 #include <core/parallel/atomic.hpp>
@@ -29,31 +27,6 @@
 namespace turi {
   namespace random {
 
-    /** Get as close to a true source of randomness as possible. 
-     *
-     *  nanoseconds clock from program start.  This should be pretty good.
-     *
-     *  In case subsequent calls on a platform that does not support nanosecond resolution 
-     *  happen, also increment a base count to make sure that subsequent seeds 
-     *  are never the same. 
-     *
-     *  hash all these together to get a final seed hash.
-     */
-    uint64_t pure_random_seed() { 
-      static auto base_start_time = std::chrono::high_resolution_clock::now();
-      static uint64_t base_seed = hash64(time(NULL));
-      static atomic<uint64_t> base_count = 0;
-
-
-      ++base_count; 
-
-      auto now = std::chrono::high_resolution_clock::now();
-
-      uint64_t cur_seed = std::chrono::duration_cast<std::chrono::nanoseconds>(now-base_start_time).count();
-
-      return hash64(base_seed, hash64(cur_seed, base_count));
-    }
-    
     /**
      * A truely nondeterministic generator
      */
@@ -64,81 +37,33 @@ namespace turi {
         return global_gen;
       }
 
-      typedef size_t result_type;
-      BOOST_STATIC_CONSTANT(result_type, min_value =
-                            boost::integer_traits<result_type>::const_min);
-      BOOST_STATIC_CONSTANT(result_type, max_value =
-                            boost::integer_traits<result_type>::const_max);
-      result_type min BOOST_PREVENT_MACRO_SUBSTITUTION () const { return min_value; }
-      result_type max BOOST_PREVENT_MACRO_SUBSTITUTION () const { return max_value; }
+      nondet_generator() 
+       : _random_devices(thread::cpu_count())
+      {} 
+         
+      typedef unsigned int result_type;
+      
+      static constexpr result_type min() { return std::numeric_limits<unsigned int>::min(); }
+      static constexpr result_type max() { return std::numeric_limits<unsigned int>::max(); }
 
-      nondet_generator() {
-#ifndef _WIN32
-        rnd_dev.open("/dev/urandom", std::ios::binary | std::ios::in);
-        ASSERT_TRUE(rnd_dev.good());
-#else
-        auto rnd_dev_ret = CryptAcquireContext(&rnd_dev,
-                                                NULL,
-                                                NULL,
-                                                PROV_RSA_FULL,
-                                                0);
-        if(!rnd_dev_ret) {
-          auto err_code = GetLastError();
-          if(err_code == NTE_BAD_KEYSET) {
-            if(!CryptAcquireContext(&rnd_dev,
-                                    NULL,
-                                    NULL,
-                                    PROV_RSA_FULL,
-                                    CRYPT_NEWKEYSET)) {
-            } else {
-              err_code = GetLastError();
-              log_and_throw(get_last_err_str(err_code));
-            }
-          } else {
-            log_and_throw(get_last_err_str(err_code));
-          }
-        }
-#endif
-      }
-      // Close the random number generator
-#ifndef _WIN32
-      ~nondet_generator() { rnd_dev.close(); }
-#else
-      ~nondet_generator() { CryptReleaseContext(rnd_dev, 0); }
-#endif
       // read a size_t from the source
-      result_type operator()() {
-        // read a machine word into result
-        result_type result(0);
-#ifndef _WIN32
-        mut.lock();
-        ASSERT_TRUE(rnd_dev.good());
-        rnd_dev.read(reinterpret_cast<char*>(&result), sizeof(result_type));
-        ASSERT_TRUE(rnd_dev.good());
-        mut.unlock();
-        //        std::cerr << result << std::endl;
-        return result;
-#else
-        mut.lock();
-        ASSERT_TRUE(CryptGenRandom(rnd_dev,8,(BYTE *)&result));
-        mut.unlock();
-        return result;
-#endif
+      inline result_type operator()() {
+        int thread_id = thread::thread_id();
+
+        return _random_devices.at(thread_id)();
       }
-    private:
-#ifndef _WIN32
-      std::ifstream rnd_dev;
-#else
-      HCRYPTPROV rnd_dev;
-#endif
-      mutex mut;
+
+      std::vector<std::random_device> _random_devices;
     };
     //nondet_generator global_nondet_rng;
 
-
-
-
-
+    /** Use the C++11 standard generato to get as close to a true source of randomness as possible. 
+     *
+     *  Returns a 64 bit truely random seed. 
+     */
+    uint64_t pure_random_seed() { 
+      return hash64_combine(hash64(nondet_generator::global()()), hash64(nondet_generator::global()()));
+    }
 
     /**
      * This class represents a master registery of all active random
@@ -301,12 +226,10 @@ namespace turi {
       // Get the global nondeterministic random number generator.
       nondet_generator& nondet_rnd(nondet_generator::global());
       mut.lock();
+      
       // std::cerr << "initializing real rng" << std::endl;
-      real_rng.seed(static_cast<uint32_t>(nondet_rnd()));
-      // std::cerr << "initializing discrete rng" << std::endl;
-      discrete_rng.seed(static_cast<uint32_t>(nondet_rnd()));
-      // std::cerr << "initializing fast discrete rng" << std::endl;
-      fast_discrete_rng.seed(static_cast<uint32_t>(nondet_rnd()));
+      m_rng.seed(static_cast<uint32_t>(nondet_rnd()));
+ 
       mut.unlock();
     }
 

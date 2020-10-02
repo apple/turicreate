@@ -64,7 +64,7 @@ create_quantile_sketch(std::shared_ptr<planner_node>&  sframe_planner_node,
       if (num_sampled == num_to_sample) {
         return true;
       }
-      if (turi::random::fast_bernoulli(sample_ratio)) {
+      if (turi::random::bernoulli(sample_ratio)) {
         local_sketch.add(row);
         ++num_sampled;
       }
