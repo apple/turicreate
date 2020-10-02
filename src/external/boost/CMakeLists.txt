@@ -7,7 +7,6 @@ set(__boost_lib_dir "${__boost_src_dir}/libs/")
 file(GLOB_RECURSE boost_src_files
   CONFIGURE_DEPENDS
   ${__boost_lib_dir}/system/src/*.cpp
-  ${__boost_lib_dir}/random/src/*.cpp
   ${__boost_lib_dir}/date_time/src/*.cpp
   ${__boost_lib_dir}/chrono/src/*.cpp
   ${__boost_lib_dir}/variant/src/*.cpp
