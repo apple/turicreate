@@ -47,7 +47,7 @@ void run_reconcile_test(size_t n, const std::string& run_string,
   random::seed(dc_ptr->procid());
 
   // Just so they don't all have the same number of entries
-  n += random::fast_uniform<size_t>(0, std::max<size_t>(0, n / 2));
+  n += random::uniform<size_t>(0, std::max<size_t>(0, n / 2));
 
   globals::set_global("TURI_ML_DATA_TARGET_ROW_BYTE_MINIMUM", 29);
   globals::set_global("TURI_ML_DATA_STATS_PARALLEL_ACCESS_THRESHOLD", 7);

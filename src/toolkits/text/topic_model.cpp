@@ -350,7 +350,7 @@ topic_model::count_matrix_type topic_model::predict_counts(std::shared_ptr<sarra
           } else {
 
             num_words_in_doc += freq;
-            size_t topic = random::fast_uniform<size_t>(0, num_topics - 1);
+            size_t topic = random::uniform<size_t>(0, num_topics - 1);
             DASSERT_TRUE(topic < num_topics);
             topic_assignments.push_back(topic);
             doc_topic_counts(doc_id, topic) += freq;
@@ -373,7 +373,7 @@ topic_model::count_matrix_type topic_model::predict_counts(std::shared_ptr<sarra
 
       // Sample topics for this document
       for (size_t burnin = 0; burnin < num_burnin; ++burnin) {
-        size_t shift = random::fast_uniform<size_t>(0, x.size()-1);
+        size_t shift = random::uniform<size_t>(0, x.size()-1);
         for (size_t _j = 0; _j < x.size(); ++_j) {
           size_t j = (_j + shift) % x.size();
 

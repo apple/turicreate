@@ -219,7 +219,7 @@ void run_test(const std::vector<std::vector<std::pair<size_t, T> > >& data_1,
 
     // Make sure it works with no entries at all.
     for(size_t i = 2; i < m; ++i) {
-      if(random::fast_uniform<int>(0, 1) == 0) {
+      if(random::uniform<int>(0, 1) == 0) {
         query_mask.set_bit(i);
       }
     }

@@ -92,7 +92,7 @@ void lsh_euclidean::pre_lsh(const v2::ml_data& mld_ref, bool is_sparse) {
     });
   }
   w = std::max(size_t(1), static_cast<size_t>(distance_matrix.mean()));
-  rand_vec = rand_vec.unaryExpr([&](double x) { return random::fast_uniform<double>(0., w); });
+  rand_vec = rand_vec.unaryExpr([&](double x) { return random::uniform<double>(0., w); });
 }
 
 void lsh_euclidean::init_model(size_t num_dimensions) {
@@ -101,7 +101,7 @@ void lsh_euclidean::init_model(size_t num_dimensions) {
   rand_mat.resize(num_projections, num_input_dimensions);
   rand_vec.resize(num_projections);
   rand_mat = rand_mat.unaryExpr([](double x) { return random::normal(0., 1.); });
-  rand_vec = rand_vec.unaryExpr([&](double x) { return random::fast_uniform<double>(0., w); });
+  rand_vec = rand_vec.unaryExpr([&](double x) { return random::uniform<double>(0., w); });
 }
 
 void lsh_euclidean::save(turi::oarchive& oarc) const {
@@ -172,7 +172,7 @@ void lsh_manhattan::pre_lsh(const v2::ml_data& mld_ref, bool is_sparse) {
   }
 
   w = std::max(size_t(1), static_cast<size_t>(distance_matrix.mean()));
-  rand_vec = rand_vec.unaryExpr([&](double x) { return random::fast_uniform<double>(0., w); });
+  rand_vec = rand_vec.unaryExpr([&](double x) { return random::uniform<double>(0., w); });
 }
 
 void lsh_manhattan::init_model(size_t num_dimensions) {
@@ -181,7 +181,7 @@ void lsh_manhattan::init_model(size_t num_dimensions) {
   rand_mat.resize(num_projections, num_input_dimensions);
   rand_vec.resize(num_projections);
   rand_mat = rand_mat.unaryExpr([](double x) { return random::cauchy(0., 1.); });
-  rand_vec = rand_vec.unaryExpr([&](double x) { return random::fast_uniform<double>(0., w); });
+  rand_vec = rand_vec.unaryExpr([&](double x) { return random::uniform<double>(0., w); });
 }
 
 void lsh_cosine::init_model(size_t num_dimensions) {
@@ -233,7 +233,7 @@ void lsh_jaccard::init_model(size_t num_dimensions) {
   rand_sign.assign(num_input_dimensions, 0);
   parallel_for (0, num_input_dimensions, [&](size_t idx) {
     rand_permutation[idx] = idx;
-    if (random::fast_uniform<double>(0., 1.) > 0.5) {
+    if (random::uniform<double>(0., 1.) > 0.5) {
       rand_sign[idx] = 1;
     }
   });

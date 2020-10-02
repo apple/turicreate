@@ -139,7 +139,7 @@ struct dictionary_flatting_test  {
 
   flexible_type _add_nested_component(flex_dict& final_out, std::string key_root, size_t depth) {
 
-    size_t t = random::fast_uniform<int>(0, 6);
+    size_t t = random::uniform<int>(0, 6);
 
     if(depth < 1) {
       t = t % 4;
@@ -148,29 +148,29 @@ struct dictionary_flatting_test  {
     switch(t) {
       case 0: {
         // integer
-        flex_int n = random::fast_uniform<int>(0, 100);
+        flex_int n = random::uniform<int>(0, 100);
         final_out.push_back( {key_root, n});
         return n;
       }
       case 1: {
         // float
-        flex_float n = random::fast_uniform<double>(0, 1);
+        flex_float n = random::uniform<double>(0, 1);
         final_out.push_back( {key_root, n});
         return n;
       }
       case 2: {
         // string
-        flex_string n = std::to_string(random::fast_uniform<int>(0, 1000));
+        flex_string n = std::to_string(random::uniform<int>(0, 1000));
         final_out.push_back( {key_root + "." + n, 1});
         return n;
       }
       case 3: {
         // vector
-        size_t length = random::fast_uniform<size_t>(0, 10);
+        size_t length = random::uniform<size_t>(0, 10);
         flex_vec v(length);
 
         for(size_t i = 0; i < length; ++i) {
-          v[i] = random::fast_uniform<double>(0, 1);
+          v[i] = random::uniform<double>(0, 1);
           final_out.push_back({key_root + "." + std::to_string(i), v[i]});
         }
 
@@ -179,7 +179,7 @@ struct dictionary_flatting_test  {
 
       case 4: {
         // list
-        size_t length = random::fast_uniform<size_t>(0, 10);
+        size_t length = random::uniform<size_t>(0, 10);
         flex_list v(length);
 
         for(size_t i = 0; i < length; ++i) {
@@ -191,12 +191,12 @@ struct dictionary_flatting_test  {
 
       case 5: {
         // dict
-        size_t length = random::fast_uniform<size_t>(0, 10);
+        size_t length = random::uniform<size_t>(0, 10);
         flex_dict d(length);
 
         for(size_t i = 0; i < length; ++i) {
           flex_string s = "key-" + std::to_string(i) + "-"
-              + std::to_string(random::fast_uniform<int>(0,1000));
+              + std::to_string(random::uniform<int>(0,1000));
 
           d[i] = {s, _add_nested_component(final_out, key_root + "." + s, depth - 1)};
         }
@@ -220,7 +220,7 @@ struct dictionary_flatting_test  {
     for(size_t i = 0; i < 20; ++i) {
       auto& p = d[i];
       p.first = "a" + std::to_string(i) + "-"
-          + std::to_string(random::fast_uniform<int>(0,1000000));
+          + std::to_string(random::uniform<int>(0,1000000));
       p.second = _add_nested_component(true_out, p.first, depth);
     }
 
@@ -247,7 +247,7 @@ struct dictionary_flatting_test  {
 
     flex_dict d(10);
     for(auto& p : d) {
-      p.first = "a" + std::to_string(random::fast_uniform<int>(0,1000000));
+      p.first = "a" + std::to_string(random::uniform<int>(0,1000000));
       p.second = _add_nested_component(true_out, p.first, 3);
     }
 

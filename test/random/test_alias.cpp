@@ -30,7 +30,7 @@ std::vector<double> create_large_pmf(size_t K) {
   auto probs = std::vector<double>(K);
   double total = 0;
   for (size_t k = 0; k < probs.size(); ++k) {
-    probs[k] = random::fast_uniform<double>(0, 100);
+    probs[k] = random::uniform<double>(0, 100);
     total += probs[k];
   }
   for (size_t k = 0; k < probs.size(); ++k) {
@@ -74,7 +74,7 @@ void run_alias_benchmark(size_t num_samples, std::vector<double> probs) {
   size_t K = probs.size();
   ti.start();
   for (size_t i=0; i < num_samples; ++i) {
-    k += random::fast_uniform<size_t>(0, K);
+    k += random::uniform<size_t>(0, K);
   }
   std::cout << std::setw(20) << "fast unif " 
             << ti.current_time() << std::endl;

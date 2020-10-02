@@ -84,7 +84,7 @@ class scvb0_solver {
   void initialize_N_theta_j(size_t C_j) {
      N_theta_j = Eigen::MatrixXd::Zero(model->num_topics, 1);
      for (size_t i = 0; i < C_j; ++i) {
-       size_t ix = random::fast_uniform<size_t>(0, model->num_topics-1);
+       size_t ix = random::uniform<size_t>(0, model->num_topics-1);
        N_theta_j(ix) += 1;
      }
   }

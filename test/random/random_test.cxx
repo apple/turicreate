@@ -24,7 +24,7 @@ void uniform_speed(const size_t max_iter) {
   double slow_time = ti.current_time();
   ti.start();
   for(size_t i = 0; i < max_iter; ++i) {
-    sum += (NumType)(turi::random::fast_uniform<NumType>(0, 10));
+    sum += (NumType)(turi::random::uniform<NumType>(0, 10));
   }
   double fast_time = ti.current_time();
   std::cout << slow_time << ", " << fast_time << std::endl; 

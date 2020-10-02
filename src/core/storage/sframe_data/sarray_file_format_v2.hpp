@@ -314,7 +314,7 @@ class sarray_format_reader_v2: public sarray_format_reader<T> {
    * (looping around).
    */
   void try_evict_something_from_cache() {
-    size_t b = turi::random::fast_uniform<size_t>(0, m_cache.size() - 1);
+    size_t b = turi::random::uniform<size_t>(0, m_cache.size() - 1);
     /*
      * if the current bit is not 1, try to find the next one bit
      * if there is no bit after that, loop around, reset and 0 and try the bit

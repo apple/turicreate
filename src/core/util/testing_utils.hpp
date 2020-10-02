@@ -48,7 +48,7 @@ void _save_and_load_object(T& dest, const U& src, std::string dir) {
 
   std::string arc_name = dir + "/test_archive";
 
-  uint64_t random_number = hash64(random::fast_uniform<size_t>(0,size_t(-1)));
+  uint64_t random_number = hash64(random::uniform<size_t>(0,size_t(-1)));
 
   // Save it
   dir_archive archive_write;

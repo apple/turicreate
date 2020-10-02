@@ -122,10 +122,10 @@ struct recsys_algo_model_test  {
     random::seed(0);
 
     for(size_t& v : v1)
-      v = random::fast_uniform<size_t>(0, 1000);
+      v = random::uniform<size_t>(0, 1000);
 
     for(size_t& v : v2)
-      v = random::fast_uniform<size_t>(0, 1000);
+      v = random::uniform<size_t>(0, 1000);
 
     std::sort(v1.begin(), v1.end());
     std::sort(v2.begin(), v2.end());

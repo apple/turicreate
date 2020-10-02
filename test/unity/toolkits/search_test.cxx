@@ -47,7 +47,7 @@ void run_search_test(size_t num_trials = 3,
 
   std::vector<std::string> tokens = {};
   for (size_t i = 0; i < num_trials; ++i) {
-    auto word_id = random::fast_uniform<size_t>(0, vocab.size()-1);
+    auto word_id = random::uniform<size_t>(0, vocab.size()-1);
     tokens.push_back(vocab[word_id]);
   }
 

@@ -156,7 +156,7 @@ struct progress_time {
  *
  *        for(size_t i = 0; i < 50000; ++i) {
  *          table.print_progress_row(proc, proc, progress_time(), i);
- *          proc += random::fast_uniform<size_t>(0, 100);
+ *          proc += random::uniform<size_t>(0, 100);
  *          usleep(100);  // sleep for 200 microseconds
  *        }
  *

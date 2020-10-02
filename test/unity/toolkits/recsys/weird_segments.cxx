@@ -43,8 +43,8 @@ void run_test_weird_segments(const std::map<std::string, flexible_type>& opts
     std::vector<std::vector<flexible_type> > data(n_obs);
 
     for(size_t i = 0; i < n_obs; ++i) {
-      size_t user = random::fast_uniform<size_t>(0, n_users-1);
-      size_t item = random::fast_uniform<size_t>(0, n_items-1);
+      size_t user = random::uniform<size_t>(0, n_users-1);
+      size_t item = random::uniform<size_t>(0, n_items-1);
 
       data[i] = {user, item, 1.0 / (1.0 + user + item)};
     }

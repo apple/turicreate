@@ -479,7 +479,7 @@ class ranking_sgd_solver_base : public sgd::sgd_solver_base {
         // Get num_sampled_negative_examples candidate points.
 
         for(size_t i = 0; i < num_sampled_negative_examples; ++i) {
-          size_t candidate_item = random::fast_uniform<size_t>(0, n_items - 1);
+          size_t candidate_item = random::uniform<size_t>(0, n_items - 1);
           item_observed.prefetch(candidate_item);
           candidate_negative_items[i] = candidate_item;
         }
@@ -554,7 +554,7 @@ class ranking_sgd_solver_base : public sgd::sgd_solver_base {
 
       proc_buf.available_item_list_chosen_indices.resize(num_sampled_negative_examples);
       for(size_t i = 0; i < num_sampled_negative_examples; ++i) {
-        size_t idx = random::fast_uniform<size_t>(0, proc_buf.available_item_list.size()-1);
+        size_t idx = random::uniform<size_t>(0, proc_buf.available_item_list.size()-1);
         chosen_negative_items[i] = proc_buf.available_item_list[idx];
         proc_buf.available_item_list_chosen_indices[i] = idx;
         DASSERT_FALSE(item_observed.get(chosen_negative_items[i]));

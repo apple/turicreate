@@ -76,8 +76,8 @@ struct topic_model_test {
     std::vector<std::pair<flexible_type, flexible_type>> elem(doc_length);
     for(size_t i = 0; i < num_documents; ++i) {
       for(size_t j = 0; j < doc_length; ++j) {
-        flexible_type word_id = random::fast_uniform<size_t>(0, vocab_size);
-        size_t freq = random::fast_uniform<size_t>(1, max_word_frequency);
+        flexible_type word_id = random::uniform<size_t>(0, vocab_size);
+        size_t freq = random::uniform<size_t>(1, max_word_frequency);
         elem[j] = std::make_pair((flex_string) word_id, freq);
       }
       /* std::cout << flexible_type(elem) << std::endl; */

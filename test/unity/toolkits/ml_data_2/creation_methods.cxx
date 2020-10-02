@@ -407,7 +407,7 @@ struct test_selection  {
 
     for(size_t i = 0; i < 500; ++i) {
 
-      pull_indices.push_back(random::fast_uniform<size_t>(0, 199));
+      pull_indices.push_back(random::uniform<size_t>(0, 199));
 
       std::sort(pull_indices.begin(), pull_indices.end());
 

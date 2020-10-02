@@ -59,6 +59,7 @@ namespace turi {
           return distribution_type(min, max)(m_rng);
         }
       };
+
       template<>
       struct uniform<double> {
         typedef std::uniform_real_distribution<double> distribution_type;
@@ -132,7 +133,7 @@ namespace turi {
        * Generate a random number in the uniform real with range [min,
        * max) or [min, max] if the number type is discrete.
        */
-      template <typename NumType> 
+      template <typename NumType = uint32_t> 
       inline NumType uniform(const NumType min, const NumType max,
           typename std::enable_if<std::is_integral<NumType>::value>::type* = nullptr) {
  
@@ -144,7 +145,7 @@ namespace turi {
       /**
        * Generate a random number in the uniform real with range [min,
        * max) or [min, max] if the number type is discrete.
-       * [Double overload]
+       * [Float overload]
        */
       template <typename NumType>
       inline NumType uniform(const NumType min, const NumType max, 
@@ -155,14 +156,6 @@ namespace turi {
         return d(m_rng);
       } // end of uniform 
       
-      /**
-       * Generate a random number in the uniform real with range [min,
-       * max) or [min, max] if the number type is discrete.
-       */
-      template <typename NumType>
-      inline NumType fast_uniform(const NumType min, const NumType max) {
-        return uniform<NumType>(min, max);
-      }
 
       /**
        * Generate a random number in the uniform real with range [min,
@@ -381,18 +374,6 @@ namespace turi {
     
     /**
      * \ingroup random
-     * Generate a random number in the uniform real with range [min,
-     * max) or [min, max] if the number type is discrete.
-     */
-    template<typename NumType>
-    inline NumType fast_uniform(const NumType min, const NumType max) {
-      if (min == max) return min;
-      return get_source().fast_uniform<NumType>(min, max);
-    } // end of uniform
-
-
-    /**
-     * \ingroup random
      * Generate a random number between 0 and 1
      */
     inline double rand01() { return uniform<double>(0, 1); }
@@ -401,7 +382,7 @@ namespace turi {
      * \ingroup random
      * Simulates the standard rand function as defined in cstdlib
      */
-    inline int rand() { return uniform(0, RAND_MAX); }
+    inline int rand() { return uniform<int>(0, RAND_MAX); }
 
 
     /**

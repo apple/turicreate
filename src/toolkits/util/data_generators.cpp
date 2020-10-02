@@ -139,7 +139,7 @@ sframe lm_data_generator::generate(size_t n_observations,
           if(n_categorical_values[j] == 0) {
             x[j] = random::normal(0, 1);
           } else {
-            x[j] = random::fast_uniform<size_t>(0, n_categorical_values[j] - 1);
+            x[j] = random::uniform<size_t>(0, n_categorical_values[j] - 1);
           }
         }
 

@@ -28,8 +28,8 @@ int main(int argc, char** argv) {
 
 
   auto tr_dist = [](size_t k) {
-    random::fast_uniform<size_t>(0, k);
-    return random::fast_uniform<size_t>(0, std::max<size_t>(1, k));
+    random::uniform<size_t>(0, k);
+    return random::uniform<size_t>(0, std::max<size_t>(1, k));
   };
 
   size_t n_threads = thread::cpu_count();

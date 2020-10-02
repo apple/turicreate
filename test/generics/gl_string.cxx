@@ -21,7 +21,7 @@
 using namespace turi;
 
 int random_int() {
-  return random::fast_uniform<int>(0, std::numeric_limits<int>::max());
+  return random::uniform<int>(0, std::numeric_limits<int>::max());
 }
 
 void verify_serialization(const gl_string& v) {
@@ -181,7 +181,7 @@ void verify_consistency(const gl_string& v) {
 
 void stress_test(size_t n_tests) {
 
-  auto gen_element = [](){ return char(random::fast_uniform<int>(32, 127)); };
+  auto gen_element = [](){ return char(random::uniform<int>(32, 127)); };
   
   gl_string v;
   std::string v_ref;
@@ -204,7 +204,7 @@ void stress_test(size_t n_tests) {
 
   operations.push_back([&]() {
       auto e = gen_element();
-      size_t idx = random::fast_uniform<size_t>(0, v.size());
+      size_t idx = random::uniform<size_t>(0, v.size());
       v.insert(v.begin() + idx, e);
       v_ref.insert(v_ref.begin() + idx, e);
     });
@@ -224,7 +224,7 @@ void stress_test(size_t n_tests) {
 
   operations.push_back([&]() {
       auto e = gen_element();
-      size_t idx = random::fast_uniform<size_t>(0, v.size());
+      size_t idx = random::uniform<size_t>(0, v.size());
       v.insert(v.begin() + idx, 3, e);
       v_ref.insert(v_ref.begin() + idx, 3, e);
     });
@@ -246,7 +246,7 @@ void stress_test(size_t n_tests) {
   operations.push_back([&]() {
       auto e = gen_element();
       auto e2 = e;
-      size_t idx = random::fast_uniform<size_t>(0, v.size());
+      size_t idx = random::uniform<size_t>(0, v.size());
       v.insert(v.begin() + idx, std::move(e));
       v_ref.insert(v_ref.begin() + idx, std::move(e2));
     });
@@ -267,7 +267,7 @@ void stress_test(size_t n_tests) {
 
   operations.push_back([&]() {
       std::string ev = {gen_element(), gen_element(), gen_element()};
-      size_t idx = random::fast_uniform<size_t>(0, v.size());
+      size_t idx = random::uniform<size_t>(0, v.size());
       v.insert(v.begin() + idx, ev.begin(), ev.end());
       v_ref.insert(v_ref.begin() + idx, ev.begin(), ev.end());
     });
@@ -281,7 +281,7 @@ void stress_test(size_t n_tests) {
   // Erase, single element.
   operations.push_back([&]() {
       if(v.empty()) return;
-      size_t idx = random::fast_uniform<size_t>(0, v.size() - 1);
+      size_t idx = random::uniform<size_t>(0, v.size() - 1);
       v.erase(v.begin() + idx);
       v_ref.erase(v_ref.begin() + idx);
     });
@@ -289,8 +289,8 @@ void stress_test(size_t n_tests) {
   // Erase, block
   operations.push_back([&]() {
       if(v.empty()) return;
-      size_t idx_1 = random::fast_uniform<size_t>(0, v.size() - 1);
-      size_t idx_2 = random::fast_uniform<size_t>(0, v.size() - 1);
+      size_t idx_1 = random::uniform<size_t>(0, v.size() - 1);
+      size_t idx_2 = random::uniform<size_t>(0, v.size() - 1);
       v.erase(v.begin() + std::min(idx_1, idx_2), v.begin() + std::max(idx_1, idx_2));
       v_ref.erase(v_ref.begin() + std::min(idx_1, idx_2), v_ref.begin() + std::max(idx_1, idx_2));
     });
@@ -298,7 +298,7 @@ void stress_test(size_t n_tests) {
   // Erase, to end
   operations.push_back([&]() {
       if(v.empty()) return;
-      size_t idx = random::fast_uniform<size_t>(0, v.size() - 1);
+      size_t idx = random::uniform<size_t>(0, v.size() - 1);
       v.erase(v.begin() + idx, v.end());
       v_ref.erase(v_ref.begin() + idx, v_ref.end());
     });
@@ -306,7 +306,7 @@ void stress_test(size_t n_tests) {
   // Erase, from beginning
   operations.push_back([&]() {
       if(v.empty()) return;
-      size_t idx = random::fast_uniform<size_t>(0, v.size() - 1);
+      size_t idx = random::uniform<size_t>(0, v.size() - 1);
       v.erase(v.begin(), v.begin() + idx);
       v_ref.erase(v_ref.begin(), v_ref.begin() + idx);
     });
@@ -366,7 +366,7 @@ void stress_test(size_t n_tests) {
   // shuffle by index
   operations.push_back([&]() {
       for(size_t j = 0; j < v.size(); ++j) {
-        size_t idx = random::fast_uniform<size_t>(0, v.size() - 1);
+        size_t idx = random::uniform<size_t>(0, v.size() - 1);
         std::swap(v[j], v[idx]);
         std::swap(v_ref[j], v_ref[idx]);
       }
@@ -375,7 +375,7 @@ void stress_test(size_t n_tests) {
   // shuffle by iterator
   operations.push_back([&]() {
       for(size_t j = 0; j < v.size(); ++j) {
-        size_t idx = random::fast_uniform<size_t>(0, v.size() - 1);
+        size_t idx = random::uniform<size_t>(0, v.size() - 1);
         std::swap(*(v.begin() + j), *(v.begin() + idx));
         std::swap(*(v_ref.begin() + j), *(v_ref.begin() + idx));
       }
@@ -384,7 +384,7 @@ void stress_test(size_t n_tests) {
   // shuffle by reverse iterator
   operations.push_back([&]() {
       for(size_t j = 0; j < v.size(); ++j) {
-        size_t idx = random::fast_uniform<size_t>(0, v.size() - 1);
+        size_t idx = random::uniform<size_t>(0, v.size() - 1);
         std::swap(*(v.rbegin() + j), *(v.rbegin() + idx));
         std::swap(*(v_ref.rbegin() + j), *(v_ref.rbegin() + idx));
       }
@@ -398,7 +398,7 @@ void stress_test(size_t n_tests) {
       v.swap(v2);
       v_ref.swap(v2_ref);
 
-      size_t idx = random::fast_uniform<size_t>(0, v.size());
+      size_t idx = random::uniform<size_t>(0, v.size());
       v.insert(v.begin() + idx, v2.begin(), v2.end());
       v_ref.insert(v_ref.begin() + idx, v2_ref.begin(), v2_ref.end());
     });
@@ -441,8 +441,8 @@ void stress_test(size_t n_tests) {
   // substring
   operations.push_back([&]() {
 
-      size_t n1 = random::fast_uniform<size_t>(0, v.size());
-      size_t n2 = random::fast_uniform<size_t>(0, v.size());
+      size_t n1 = random::uniform<size_t>(0, v.size());
+      size_t n2 = random::uniform<size_t>(0, v.size());
 
       if(n1 > n2) std::swap(n1, n2);
 
@@ -457,7 +457,7 @@ void stress_test(size_t n_tests) {
     });
   
   for(size_t i = 0; i < n_tests; ++i) {
-    size_t idx = random::fast_uniform<size_t>(0, operations.size() - 1);
+    size_t idx = random::uniform<size_t>(0, operations.size() - 1);
     operations[idx]();
 
     ASSERT_EQ(v.size(), v_ref.size());

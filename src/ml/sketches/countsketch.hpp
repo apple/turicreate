@@ -62,8 +62,8 @@ class countsketch {
       gen.seed(seed);
       // Initialize hash functions and count matrix
       for (size_t j = 0; j < num_hash; ++j) {
-        seeds.push_back(gen.fast_uniform<size_t>(0, std::numeric_limits<size_t>::max()));
-        seeds_binary.push_back(gen.fast_uniform<size_t>(0, std::numeric_limits<size_t>::max()));
+        seeds.push_back(gen.uniform<size_t>(0, std::numeric_limits<size_t>::max()));
+        seeds_binary.push_back(gen.uniform<size_t>(0, std::numeric_limits<size_t>::max()));
 
         counts.push_back(std::vector<counter_int>(num_bins));
       }

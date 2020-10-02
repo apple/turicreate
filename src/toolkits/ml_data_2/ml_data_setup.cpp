@@ -564,7 +564,7 @@ void ml_data::_fill_data_blocks(bool in_training_mode) {
             while(true) {
 
               // If it's a full block, write it to a random location.
-              size_t write_out_segment = random::fast_uniform<size_t>(0, output_iterators.size()-1);
+              size_t write_out_segment = random::uniform<size_t>(0, output_iterators.size()-1);
 
               if(output_iterator_locks[write_out_segment].try_lock()) {
                 auto& it_out = output_iterators[write_out_segment];
