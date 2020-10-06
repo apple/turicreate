@@ -128,7 +128,7 @@ func bow(text: String) -> [String: Double] {
 
 let testInput = "Hi! How are you?"
 
-let bagOfWords = bow(text: test_input)
+let bagOfWords = bow(text: testInput)
 
 let model = MyTextMessageClassifier()
 // "text" is the name of the input column
