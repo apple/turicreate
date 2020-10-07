@@ -162,8 +162,9 @@ def get_environment_config():
 def set_log_level(level):
     """
     Sets the log level.
-    Lower log levels log more.
-    if level is 8, nothing is logged. If level is 0, everything is logged.
+
+    The lower the log level, the more information is logged. At level 8, nothing is logged.
+    At level 0, everything is logged.
     """
     from .._connect import main as _glconnect
 

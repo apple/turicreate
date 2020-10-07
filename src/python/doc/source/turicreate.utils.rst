@@ -29,3 +29,4 @@ runtime
   set_num_gpus
   set_runtime_config
   get_environment_config
+  set_log_level
