@@ -238,7 +238,7 @@ class BoostedTreesClassifier(_Classifier, _TreeModelMixin):
 
         Parameters
         ----------
-        dataset : SFrame
+        dataset : SFrame | dict
           A dataset that has the same columns that were used during training.
           If the target column exists in ``dataset`` it will be ignored
           while making predictions.
