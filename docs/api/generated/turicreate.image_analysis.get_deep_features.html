@@ -1,0 +1,268 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>turicreate.image_analysis.get_deep_features &mdash; Turi Create API 6.4.1 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 6.4.1 documentation" href="../index.html"/>
+        <link rel="up" title="image_analysis" href="../turicreate.toolkits.image_analysis.html"/>
+        <link rel="next" title="turicreate.image_analysis.load_images" href="turicreate.image_analysis.load_images.html"/>
+        <link rel="prev" title="image_analysis" href="../turicreate.toolkits.image_analysis.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../index.html" class="fa fa-home"> Turi Create API</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.data_structures.html">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#id1">Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#data-types">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../turicreate.toolkits.html">Modelling</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#applications">Applications</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../turicreate.toolkits.html#essentials">Essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#utilities">Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.utils.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.config.get_client_log_location.html">turicreate.config.get_client_log_location</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.config.get_environment_config.html">turicreate.config.get_environment_config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.config.get_num_gpus.html">turicreate.config.get_num_gpus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.config.get_runtime_config.html">turicreate.config.get_runtime_config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.config.set_log_level.html">turicreate.config.set_log_level</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.config.set_num_gpus.html">turicreate.config.set_num_gpus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.config.set_runtime_config.html">turicreate.config.set_runtime_config</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+      
+        <span class="powered-by">
+          <a id="footer-logo" href="https://github.com/apple/turicreate"><img src="../_static/tc_logo_white.png"/></a>
+        </span>
+      
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">Turi Create API</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.html">Modelling</a> &raquo;</li>
+      
+          <li><a href="../turicreate.toolkits.image_analysis.html"><code class="docutils literal"><span class="pre">image_analysis</span></code></a> &raquo;</li>
+      
+    <li>turicreate.image_analysis.get_deep_features</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="turicreate-image-analysis-get-deep-features">
+<h1>turicreate.image_analysis.get_deep_features<a class="headerlink" href="#turicreate-image-analysis-get-deep-features" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="turicreate.image_analysis.get_deep_features">
+<code class="descclassname">turicreate.image_analysis.</code><code class="descname">get_deep_features</code><span class="sig-paren">(</span><em>images</em>, <em>model_name</em>, <em>batch_size=64</em>, <em>verbose=True</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.image_analysis.get_deep_features" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts features from images from a specific model.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first docutils">
+<dt><strong>images</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SArray</span></dt>
+<dd><p class="first last">Input data.</p>
+</dd>
+<dt><strong>model_name</strong> <span class="classifier-delimiter">:</span> <span class="classifier">string</span></dt>
+<dd><p class="first">string optional
+Uses a pretrained model to bootstrap an image classifier:</p>
+<blockquote>
+<div><ul class="simple">
+<li><dl class="first docutils">
+<dt>“resnet-50” <span class="classifier-delimiter">:</span> <span class="classifier">Uses a pretrained resnet model.</span></dt>
+<dd>Exported Core ML model will be ~90M.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>“squeezenet_v1.1” <span class="classifier-delimiter">:</span> <span class="classifier">Uses a pretrained squeezenet model.</span></dt>
+<dd>Exported Core ML model will be ~4.7M.</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>“VisionFeaturePrint_Scene”: Uses an OS internal feature extractor.</dt>
+<dd>Only on available on iOS 12.0+,
+macOS 10.14+ and tvOS 12.0+.
+Exported Core ML model will be ~41K.</dd>
+</dl>
+</li>
+</ul>
+</div></blockquote>
+<p class="last">Models are downloaded from the internet if not available locally. Once
+downloaded, the models are cached for future use.</p>
+</dd>
+</dl>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>out</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SArray</span></dt>
+<dd><p class="first last">Returns an SArray with all the extracted features.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<dl class="last docutils">
+<dt><a class="reference internal" href="turicreate.image_classifier.create.html#turicreate.image_classifier.create" title="turicreate.image_classifier.create"><code class="xref py py-obj docutils literal"><span class="pre">turicreate.image_classifier.create</span></code></a></dt>
+<dd></dd>
+<dt><a class="reference internal" href="turicreate.image_similarity.create.html#turicreate.image_similarity.create" title="turicreate.image_similarity.create"><code class="xref py py-obj docutils literal"><span class="pre">turicreate.image_similarity.create</span></code></a></dt>
+<dd></dd>
+</dl>
+</div>
+<p class="rubric">Examples</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">url</span> <span class="o">=</span> <span class="s1">&#39;https://static.turi.com/datasets/images/nested&#39;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">image_sframe</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">load_images</span><span class="p">(</span><span class="n">url</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">image_sarray</span> <span class="o">=</span> <span class="n">image_sframe</span><span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">deep_features_sframe</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">image_analysis</span><span class="o">.</span><span class="n">get_deep_features</span><span class="p">(</span><span class="n">image_sarray</span><span class="p">,</span> <span class="n">model_name</span><span class="o">=</span><span class="s2">&quot;resnet-50&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="turicreate.image_analysis.load_images.html" class="btn btn-neutral float-right" title="turicreate.image_analysis.load_images">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../turicreate.toolkits.image_analysis.html" class="btn btn-neutral" title="image_analysis"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      Last updated on Oct 09, 2020.
+    </p>
+  </div>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'6.4.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

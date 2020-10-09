@@ -80,8 +80,13 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="../turicreate.visualization.html">Visualization</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../turicreate.utils.html">Configuration</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#logging">logging</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#runtime">runtime</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.config.get_client_log_location.html">turicreate.config.get_client_log_location</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.config.get_environment_config.html">turicreate.config.get_environment_config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.config.get_num_gpus.html">turicreate.config.get_num_gpus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.config.get_runtime_config.html">turicreate.config.get_runtime_config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.config.set_log_level.html">turicreate.config.set_log_level</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.config.set_num_gpus.html">turicreate.config.set_num_gpus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.config.set_runtime_config.html">turicreate.config.set_runtime_config</a></li>
 </ul>
 </li>
 </ul>
@@ -142,7 +147,16 @@
 </tbody>
 </table>
 <p class="rubric">Examples</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">model</span><span class="o">.</span><span class="n">export_coreml</span><span class="p">(</span><span class="s2">&quot;MyModel.mlmodel&quot;</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">model</span><span class="o">.</span><span class="n">export_coreml</span><span class="p">(</span><span class="s2">&quot;MyTextMessageClassifier.mlmodel&quot;</span><span class="p">)</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">coremltools.models</span> <span class="kn">import</span> <span class="n">MLModel</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coreml_model</span> <span class="o">=</span> <span class="n">MLModel</span><span class="p">(</span><span class="s2">&quot;MyTextMessageClassifier.mlmodel&quot;</span><span class="p">)</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">test_input</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">SArray</span><span class="p">([</span><span class="s2">&quot;Hi! How are you?&quot;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">bag_of_words</span> <span class="o">=</span> <span class="n">tc</span><span class="o">.</span><span class="n">text_analytics</span><span class="o">.</span><span class="n">count_words</span><span class="p">(</span><span class="n">test_input</span><span class="p">)</span>
+<span class="go">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># &quot;text&quot; is the input column name</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">coreml_model</span><span class="o">.</span><span class="n">predict</span><span class="p">({</span><span class="s2">&quot;text&quot;</span><span class="p">:</span> <span class="n">bag_of_words</span><span class="p">[</span><span class="mi">0</span><span class="p">]})</span>
 </pre></div>
 </div>
 </dd></dl>
@@ -158,7 +172,7 @@
 
   <div role="contentinfo">
     <p>
-      Last updated on Sep 30, 2020.
+      Last updated on Oct 09, 2020.
     </p>
   </div>
 </footer>

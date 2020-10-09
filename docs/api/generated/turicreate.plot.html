@@ -1,0 +1,253 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>turicreate.plot &mdash; Turi Create API 6.4.1 documentation</title>
+  
+
+  
+  
+    <link rel="shortcut icon" href="../_static/favicon.ico"/>
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+
+  
+        <link rel="index" title="Index"
+              href="../genindex.html"/>
+        <link rel="search" title="Search" href="../search.html"/>
+    <link rel="top" title="Turi Create API 6.4.1 documentation" href="../index.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../index.html" class="fa fa-home"> Turi Create API</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.data_structures.html">Data</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#id1">Data Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#data-types">Data Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.data_structures.html#utilities">Utilities</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.toolkits.html">Modelling</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#applications">Applications</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#essentials">Essentials</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../turicreate.toolkits.html#utilities">Utilities</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.visualization.html">Visualization</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../turicreate.utils.html">Configuration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.config.get_client_log_location.html">turicreate.config.get_client_log_location</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.config.get_environment_config.html">turicreate.config.get_environment_config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.config.get_num_gpus.html">turicreate.config.get_num_gpus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.config.get_runtime_config.html">turicreate.config.get_runtime_config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.config.set_log_level.html">turicreate.config.set_log_level</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.config.set_num_gpus.html">turicreate.config.set_num_gpus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.config.set_runtime_config.html">turicreate.config.set_runtime_config</a></li>
+</ul>
+</li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+      
+        <span class="powered-by">
+          <a id="footer-logo" href="https://github.com/apple/turicreate"><img src="../_static/tc_logo_white.png"/></a>
+        </span>
+      
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">Turi Create API</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+    <li>turicreate.plot</li>
+      <li class="wy-breadcrumbs-aside">
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="turicreate-plot">
+<h1>turicreate.plot<a class="headerlink" href="#turicreate-plot" title="Permalink to this headline">¶</a></h1>
+<dl class="function">
+<dt id="turicreate.plot">
+<code class="descclassname">turicreate.</code><code class="descname">plot</code><span class="sig-paren">(</span><em>x</em>, <em>y</em>, <em>xlabel='__TURI_DEFAULT_LABEL'</em>, <em>ylabel='__TURI_DEFAULT_LABEL'</em>, <em>title='__TURI_DEFAULT_LABEL'</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.plot" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots the data in <cite>x</cite> on the X axis and the data in <cite>y</cite> on the Y axis
+in a 2d visualization, and shows the resulting visualization.
+Uses the following heuristic to choose the visualization:</p>
+<ul class="simple">
+<li>If <cite>x</cite> and <cite>y</cite> are both numeric (SArray of int or float), and they contain
+fewer than or equal to 5,000 values, show a scatter plot.</li>
+<li>If <cite>x</cite> and <cite>y</cite> are both numeric (SArray of int or float), and they contain
+more than 5,000 values, show a heat map.</li>
+<li>If <cite>x</cite> is numeric and <cite>y</cite> is an SArray of string, show a box and whisker
+plot for the distribution of numeric values for each categorical (string)
+value.</li>
+<li>If <cite>x</cite> and <cite>y</cite> are both SArrays of string, show a categorical heat map.</li>
+</ul>
+<p>This show method supports SArrays of dtypes: int, float, str.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><dl class="first last docutils">
+<dt><strong>x</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SArray</span></dt>
+<dd><p class="first last">The data to plot on the X axis of a 2d visualization.</p>
+</dd>
+<dt><strong>y</strong> <span class="classifier-delimiter">:</span> <span class="classifier">SArray</span></dt>
+<dd><p class="first last">The data to plot on the Y axis of a 2d visualization. Must be the same
+length as <cite>x</cite>.</p>
+</dd>
+<dt><strong>xlabel</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str (optional)</span></dt>
+<dd><p class="first last">The text label for the X axis. Defaults to “X”.</p>
+</dd>
+<dt><strong>ylabel</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str (optional)</span></dt>
+<dd><p class="first last">The text label for the Y axis. Defaults to “Y”.</p>
+</dd>
+<dt><strong>title</strong> <span class="classifier-delimiter">:</span> <span class="classifier">str (optional)</span></dt>
+<dd><p class="first last">The title of the plot. Defaults to LABEL_DEFAULT. If the value is
+LABEL_DEFAULT, the title will be “&lt;xlabel&gt; vs. &lt;ylabel&gt;”. If the value
+is None, the title will be omitted. Otherwise, the string passed in as the
+title will be used as the plot title.</p>
+</dd>
+</dl>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Notes</p>
+<ul class="simple">
+<li>The plot will be returned as a Plot object, which can then be shown,
+saved, etc. and will display automatically in a Jupyter Notebook.</li>
+</ul>
+<p class="rubric">Examples</p>
+<p>Show a categorical heat map of pets and their feelings.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SArray</span><span class="p">([</span><span class="s1">&#39;dog&#39;</span><span class="p">,</span> <span class="s1">&#39;cat&#39;</span><span class="p">,</span> <span class="s1">&#39;dog&#39;</span><span class="p">,</span> <span class="s1">&#39;dog&#39;</span><span class="p">,</span> <span class="s1">&#39;cat&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SArray</span><span class="p">([</span><span class="s1">&#39;happy&#39;</span><span class="p">,</span> <span class="s1">&#39;grumpy&#39;</span><span class="p">,</span> <span class="s1">&#39;grumpy&#39;</span><span class="p">,</span> <span class="s1">&#39;happy&#39;</span><span class="p">,</span> <span class="s1">&#39;grumpy&#39;</span><span class="p">])</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">turicreate</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Show a scatter plot of the function y = 2x, for x from 0 through 9, labeling
+the axes and plot title with custom strings.</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">x</span> <span class="o">=</span> <span class="n">turicreate</span><span class="o">.</span><span class="n">SArray</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">y</span> <span class="o">=</span> <span class="n">x</span> <span class="o">*</span> <span class="mi">2</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">turicreate</span><span class="o">.</span><span class="n">show</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span>
+<span class="gp">... </span>                <span class="n">xlabel</span><span class="o">=</span><span class="s2">&quot;Custom X label&quot;</span><span class="p">,</span>
+<span class="gp">... </span>                <span class="n">ylabel</span><span class="o">=</span><span class="s2">&quot;Custom Y label&quot;</span><span class="p">,</span>
+<span class="gp">... </span>                <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Custom title&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</dd></dl>
+
+</div>
+
+
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+      Last updated on Oct 09, 2020.
+    </p>
+  </div>
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'6.4.1',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  false
+        };
+    </script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+
+  
+
+  <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

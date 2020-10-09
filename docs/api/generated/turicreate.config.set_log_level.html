@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>turicreate.config.init_logger &mdash; Turi Create API 6.4.1 documentation</title>
+  <title>turicreate.config.set_log_level &mdash; Turi Create API 6.4.1 documentation</title>
   
 
   
@@ -32,7 +32,8 @@
         <link rel="search" title="Search" href="../search.html"/>
     <link rel="top" title="Turi Create API 6.4.1 documentation" href="../index.html"/>
         <link rel="up" title="Configuration" href="../turicreate.utils.html"/>
-        <link rel="next" title="turicreate.config.get_num_gpus" href="turicreate.config.get_num_gpus.html"/> 
+        <link rel="next" title="turicreate.config.set_num_gpus" href="turicreate.config.set_num_gpus.html"/>
+        <link rel="prev" title="turicreate.config.get_runtime_config" href="turicreate.config.get_runtime_config.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -82,8 +83,13 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../turicreate.visualization.html">Visualization</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../turicreate.utils.html">Configuration</a><ul class="current">
-<li class="toctree-l2 current"><a class="reference internal" href="../turicreate.utils.html#logging">logging</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../turicreate.utils.html#runtime">runtime</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.config.get_client_log_location.html">turicreate.config.get_client_log_location</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.config.get_environment_config.html">turicreate.config.get_environment_config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.config.get_num_gpus.html">turicreate.config.get_num_gpus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.config.get_runtime_config.html">turicreate.config.get_runtime_config</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">turicreate.config.set_log_level</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.config.set_num_gpus.html">turicreate.config.set_num_gpus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="turicreate.config.set_runtime_config.html">turicreate.config.set_runtime_config</a></li>
 </ul>
 </li>
 </ul>
@@ -117,7 +123,7 @@
       
           <li><a href="../turicreate.utils.html">Configuration</a> &raquo;</li>
       
-    <li>turicreate.config.init_logger</li>
+    <li>turicreate.config.set_log_level</li>
       <li class="wy-breadcrumbs-aside">
         
       </li>
@@ -126,13 +132,14 @@
 </div>
           <div role="main" class="document">
             
-  <div class="section" id="turicreate-config-init-logger">
-<h1>turicreate.config.init_logger<a class="headerlink" href="#turicreate-config-init-logger" title="Permalink to this headline">¶</a></h1>
+  <div class="section" id="turicreate-config-set-log-level">
+<h1>turicreate.config.set_log_level<a class="headerlink" href="#turicreate-config-set-log-level" title="Permalink to this headline">¶</a></h1>
 <dl class="function">
-<dt id="turicreate.config.init_logger">
-<code class="descclassname">turicreate.config.</code><code class="descname">init_logger</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.config.init_logger" title="Permalink to this definition">¶</a></dt>
-<dd><p>Initialize the logging configuration for the turicreate package.</p>
-<p>This does not affect the root logging config.</p>
+<dt id="turicreate.config.set_log_level">
+<code class="descclassname">turicreate.config.</code><code class="descname">set_log_level</code><span class="sig-paren">(</span><em>level</em><span class="sig-paren">)</span><a class="headerlink" href="#turicreate.config.set_log_level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the log level.</p>
+<p>The lower the log level, the more information is logged. At level 8, nothing is logged.
+At level 0, everything is logged.</p>
 </dd></dl>
 
 </div>
@@ -143,8 +150,10 @@
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="turicreate.config.get_num_gpus.html" class="btn btn-neutral float-right" title="turicreate.config.get_num_gpus">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="turicreate.config.set_num_gpus.html" class="btn btn-neutral float-right" title="turicreate.config.set_num_gpus">Next <span class="fa fa-arrow-circle-right"></span></a>
       
+      
+        <a href="turicreate.config.get_runtime_config.html" class="btn btn-neutral" title="turicreate.config.get_runtime_config"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -153,7 +162,7 @@
 
   <div role="contentinfo">
     <p>
-      Last updated on Sep 30, 2020.
+      Last updated on Oct 09, 2020.
     </p>
   </div>
 </footer>

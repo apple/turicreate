@@ -82,8 +82,13 @@
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="turicreate.visualization.html">Visualization</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Configuration</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#logging">logging</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#runtime">runtime</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/turicreate.config.get_client_log_location.html">turicreate.config.get_client_log_location</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/turicreate.config.get_environment_config.html">turicreate.config.get_environment_config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/turicreate.config.get_num_gpus.html">turicreate.config.get_num_gpus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/turicreate.config.get_runtime_config.html">turicreate.config.get_runtime_config</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/turicreate.config.set_log_level.html">turicreate.config.set_log_level</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/turicreate.config.set_num_gpus.html">turicreate.config.set_num_gpus</a></li>
+<li class="toctree-l2"><a class="reference internal" href="generated/turicreate.config.set_runtime_config.html">turicreate.config.set_runtime_config</a></li>
 </ul>
 </li>
 </ul>
@@ -128,8 +133,6 @@
 <h1>Configuration<a class="headerlink" href="#configuration" title="Permalink to this headline">¶</a></h1>
 <p>Parameters and settings to optimize performance of Turi Create on various
 hardware.</p>
-<div class="section" id="logging">
-<h2>logging<a class="headerlink" href="#logging" title="Permalink to this headline">¶</a></h2>
 <table border="1" class="longtable docutils">
 <colgroup>
 <col width="10%" />
@@ -139,41 +142,26 @@ hardware.</p>
 <tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.config.get_client_log_location.html#turicreate.config.get_client_log_location" title="turicreate.config.get_client_log_location"><code class="xref py py-obj docutils literal"><span class="pre">get_client_log_location</span></code></a></td>
 <td>Get the location of client logs</td>
 </tr>
-<tr class="row-even"><td><code class="xref py py-obj docutils literal"><span class="pre">get_server_log_location</span></code></td>
-<td></td>
+<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.config.get_environment_config.html#turicreate.config.get_environment_config" title="turicreate.config.get_environment_config"><code class="xref py py-obj docutils literal"><span class="pre">get_environment_config</span></code></a></td>
+<td>Returns all the Turi Create configuration variables that can only be set via environment variables.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.config.init_logger.html#turicreate.config.init_logger" title="turicreate.config.init_logger"><code class="xref py py-obj docutils literal"><span class="pre">init_logger</span></code></a></td>
-<td>Initialize the logging configuration for the turicreate package.</td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="section" id="runtime">
-<h2>runtime<a class="headerlink" href="#runtime" title="Permalink to this headline">¶</a></h2>
-<table border="1" class="longtable docutils">
-<colgroup>
-<col width="10%" />
-<col width="90%" />
-</colgroup>
-<tbody valign="top">
 <tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.config.get_num_gpus.html#turicreate.config.get_num_gpus" title="turicreate.config.get_num_gpus"><code class="xref py py-obj docutils literal"><span class="pre">get_num_gpus</span></code></a></td>
 <td>Get the current option for how many GPUs to use when applicable.</td>
 </tr>
 <tr class="row-even"><td><a class="reference internal" href="generated/turicreate.config.get_runtime_config.html#turicreate.config.get_runtime_config" title="turicreate.config.get_runtime_config"><code class="xref py py-obj docutils literal"><span class="pre">get_runtime_config</span></code></a></td>
 <td>Returns all the Turi Create configuration variables that can be set at runtime.</td>
 </tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.config.set_num_gpus.html#turicreate.config.set_num_gpus" title="turicreate.config.set_num_gpus"><code class="xref py py-obj docutils literal"><span class="pre">set_num_gpus</span></code></a></td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.config.set_log_level.html#turicreate.config.set_log_level" title="turicreate.config.set_log_level"><code class="xref py py-obj docutils literal"><span class="pre">set_log_level</span></code></a></td>
+<td>Sets the log level.</td>
+</tr>
+<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.config.set_num_gpus.html#turicreate.config.set_num_gpus" title="turicreate.config.set_num_gpus"><code class="xref py py-obj docutils literal"><span class="pre">set_num_gpus</span></code></a></td>
 <td>Set the number of GPUs to use whenever applicable.</td>
 </tr>
-<tr class="row-even"><td><a class="reference internal" href="generated/turicreate.config.set_runtime_config.html#turicreate.config.set_runtime_config" title="turicreate.config.set_runtime_config"><code class="xref py py-obj docutils literal"><span class="pre">set_runtime_config</span></code></a></td>
+<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.config.set_runtime_config.html#turicreate.config.set_runtime_config" title="turicreate.config.set_runtime_config"><code class="xref py py-obj docutils literal"><span class="pre">set_runtime_config</span></code></a></td>
 <td>Configures system behavior at runtime.</td>
-</tr>
-<tr class="row-odd"><td><a class="reference internal" href="generated/turicreate.config.get_environment_config.html#turicreate.config.get_environment_config" title="turicreate.config.get_environment_config"><code class="xref py py-obj docutils literal"><span class="pre">get_environment_config</span></code></a></td>
-<td>Returns all the Turi Create configuration variables that can only be set via environment variables.</td>
 </tr>
 </tbody>
 </table>
-</div>
 </div>
 
 
@@ -194,7 +182,7 @@ hardware.</p>
 
   <div role="contentinfo">
     <p>
-      Last updated on Sep 30, 2020.
+      Last updated on Oct 09, 2020.
     </p>
   </div>
 </footer>
