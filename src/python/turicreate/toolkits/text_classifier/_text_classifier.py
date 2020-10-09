@@ -377,7 +377,16 @@ class TextClassifier(_CustomModel):
 
         Examples
         --------
-        >>> model.export_coreml("MyModel.mlmodel")
+        >>> model.export_coreml("MyTextMessageClassifier.mlmodel")
+        >>>
+        >>> from coremltools.models import MLModel
+        >>> coreml_model = MLModel("MyTextMessageClassifier.mlmodel")
+        >>>
+        >>> test_input = tc.SArray(["Hi! How are you?"])
+        >>> bag_of_words = tc.text_analytics.count_words(test_input)
+        >>>
+        >>> # "text" is the input column name
+        >>> coreml_model.predict({"text": bag_of_words[0]})
         """
         from turicreate.extensions import _logistic_classifier_export_as_model_asset
         from turicreate.toolkits import _coreml_utils

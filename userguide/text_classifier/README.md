@@ -126,6 +126,18 @@ func bow(text: String) -> [String: Double] {
     return bagOfWords
 }
 
-let bagOfWords = bow(text: text)
-let prediction = try? MySentenceClassifier().prediction(text: bagOfWords)
+let testInput = "Hi! How are you?"
+
+let bagOfWords = bow(text: testInput)
+
+let model = MyTextMessageClassifier()
+// "text" is the name of the input column
+let prediction = try? model.prediction(text: bagOfWords)
+
+// Print prediction
+print("Label: " + prediction!.label)
+print("\nProbabilities: ")
+for (key, value) in prediction!.labelProbability {
+    print("\t" + key + ": " + String(value))
+}
 ```
