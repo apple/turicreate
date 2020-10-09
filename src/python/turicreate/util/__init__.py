@@ -207,7 +207,7 @@ def get_archive_type(path):
 
     Returns
     -------
-    Returns a string of: sframe, sgraph, raises TypeError for anything else
+    Returns a string of: sarray, sframe, sgraph. Raises TypeError for anything else.
     """
     if not is_directory_archive(path):
         raise TypeError("Unable to determine the type of archive at path: %s" % path)
@@ -243,7 +243,7 @@ def crossproduct(d):
     -------
     settings = {'argument_1':[0, 1],
                 'argument_2':['a', 'b', 'c']}
-    print crossproduct(settings)
+    print(tc.util.crossproduct(settings))
     +------------+------------+
     | argument_2 | argument_1 |
     +------------+------------+

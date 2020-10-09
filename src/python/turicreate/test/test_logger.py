@@ -43,7 +43,7 @@ class LoggingConfigurationTests(TestCase):
         self.rt_logger.level = self.root_level
 
     def test_config(self):
-        tc_config.init_logger()
+        tc_config._init_logger()
 
         self.assertEqual(self.logger.level, logging.INFO)
         self.assertEqual(len(self.logger.handlers), 2)

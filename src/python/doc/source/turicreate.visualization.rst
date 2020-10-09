@@ -10,6 +10,7 @@ Visualize data in various forms including scatter plots, heat maps, categorical 
   :toctree: generated/
   :nosignatures:
 
+ plot
  show
  SArray.show
  SArray.plot
