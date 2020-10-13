@@ -599,23 +599,23 @@ void drawing_classifier::iterate_training(bool show_loss) {
     if (validation_data_iterator_) {
       if (show_loss) {
         training_table_printer_->print_progress_row(
-            iteration_idx, iteration_idx + 1, average_batch_accuracy,
+            iteration_idx + 1, iteration_idx + 1, average_batch_accuracy,
             average_batch_loss, average_val_accuracy, average_val_loss,
             progress_time());
       } else {
         training_table_printer_->print_progress_row(
-            iteration_idx, iteration_idx + 1, average_batch_accuracy,
+            iteration_idx + 1, iteration_idx + 1, average_batch_accuracy,
             average_val_accuracy, progress_time());
       }
 
     } else {
       if (show_loss) {
         training_table_printer_->print_progress_row(
-            iteration_idx, iteration_idx + 1, average_batch_accuracy,
+            iteration_idx + 1, iteration_idx + 1, average_batch_accuracy,
             average_batch_loss, progress_time());
       } else {
         training_table_printer_->print_progress_row(
-            iteration_idx, iteration_idx + 1, average_batch_accuracy,
+            iteration_idx + 1, iteration_idx + 1, average_batch_accuracy,
             progress_time());
       }
     }
