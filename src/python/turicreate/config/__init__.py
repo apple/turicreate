@@ -12,20 +12,14 @@ import os as _os
 import time as _time
 import re as _re
 
-# Return the root package name
+
 _root_package_name = "turicreate"
 _client_log_file = _os.path.join(
     _tempfile.gettempdir(),
     _root_package_name + "_client_%d_%d.log" % (_time.time(), _os.getpid()),
 )
 
-def _i_am_a_lambda_worker():
-    if _re.match(".*lambda_worker.*", _sys.argv[0]) is not None:
-        return True
-    return False
-
-
-def init_logger():
+def _init_logger():
     """
     Initialize the logging configuration for the turicreate package.
 
@@ -33,6 +27,9 @@ def init_logger():
     """
     import logging as _logging
     import logging.config
+
+    def _i_am_a_lambda_worker():
+        return _re.match(".*lambda_worker.*", _sys.argv[0]) is not None
 
     # Package level logger
     _logging.config.dictConfig(
@@ -72,8 +69,8 @@ def init_logger():
         _logging.getLogger(_root_package_name).setLevel(_logging.INFO)
 
 
-# Let's call init_logger on import
-init_logger()
+# Call init_logger on import
+_init_logger()
 
 
 def get_client_log_location():
@@ -162,8 +159,9 @@ def get_environment_config():
 def set_log_level(level):
     """
     Sets the log level.
-    Lower log levels log more.
-    if level is 8, nothing is logged. If level is 0, everything is logged.
+
+    The lower the log level, the more information is logged. At level 8, nothing is logged.
+    At level 0, everything is logged.
     """
     from .._connect import main as _glconnect
 

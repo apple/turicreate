@@ -173,6 +173,7 @@ if __name__ == "__main__":
         "requests >= 2.9.1",
         "scipy >= 1.1.0",
         "six >= 1.10.0",
+        "coremltools==4.0b4",
     ]
     if sys.version_info[0] == 2 or (
         sys.version_info[0] == 3 and sys.version_info[1] == 5

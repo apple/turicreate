@@ -244,24 +244,15 @@ os.environ["TURI_LAMBDA_WORKER_LOG_FILE"] = r"%(lambda_log)s"
 os.environ["TURI_CACHE_FILE_LOCATIONS"] = r"%(run_temp_dir)s"
 os.environ["OMP_NUM_THREADS"] = "1"
 
-try:
-    import sframe
-except Exception as e:
-    write_exception(e)
-
-    try:
-        import turicreate as sframe
-    except Exception as e:
-        write_exception(e)
-        sys.exit(55)
+import turicreate
 
 log_file = open(r"%(runtime_log)s", "w")
-for k, v in sframe.get_runtime_config().items():
+for k, v in turicreate.config.get_runtime_config().items():
     log_file.write("%%s : %%s\n" %% (str(k), str(v)))
 log_file.close()
 
 try:
-    sa = sframe.SArray(range(1000))
+    sa = turicreate.SArray(range(1000))
 except Exception as e:
     write_exception(e)
 
@@ -294,10 +285,7 @@ for f in copy_files:
         sys.stderr.write("Error with: " + f)
         write_exception(e)
 
-server_logs = (glob.glob(sframe.util.get_server_log_location() + "*")
-               + glob.glob(sframe.util.get_client_log_location() + "*"))
-
-for f in server_logs:
+for f in glob.glob(turicreate.config.get_client_log_location() + "*"):
     try:
         shutil.copy(f, join(r"%(temp_dir)s", os.path.split(f)[1]))
     except Exception as e:
@@ -373,7 +361,7 @@ for f in server_logs:
 
 def dump_directory_structure(out=sys.stdout):
     """
-    Dumps a detailed report of the turicreate/sframe directory structure
+    Dumps a detailed report of the turicreate directory structure
     and files, along with the output of os.lstat for each.  This is useful
     for debugging purposes.
     """
@@ -477,20 +465,6 @@ def _get_expanded_classpath(classpath):
     return jars
 
 
-def get_library_name():
-    """
-    Returns either sframe or turicreate depending on which library
-    this file is bundled with.
-    """
-    from os.path import split, abspath
-
-    __lib_name = split(split(abspath(sys.modules[__name__].__file__))[0])[1]
-
-    assert __lib_name in ["sframe", "turicreate"]
-
-    return __lib_name
-
-
 def get_config_file():
     """
     Returns the file name of the config file from which the environment
@@ -499,10 +473,7 @@ def get_config_file():
     import os
     from os.path import abspath, expanduser, join, exists
 
-    __lib_name = get_library_name()
-
-    assert __lib_name in ["sframe", "turicreate"]
-
+    __lib_name = "turicreate"
     __default_config_path = join(expanduser("~"), ".%s" % __lib_name, "config")
 
     if "TURI_CONFIG_FILE" in os.environ:

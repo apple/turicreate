@@ -8,15 +8,12 @@ from __future__ import division as _
 from __future__ import absolute_import as _
 import unittest
 import turicreate as tc
-import math
 import uuid
 import random
-import sys
 import copy
 from turicreate.toolkits._main import ToolkitError
 import turicreate.toolkits.evaluation as evaluation
 import shutil
-import numpy as np
 from array import array
 
 import os as _os
@@ -203,6 +200,10 @@ class BoostedTreesRegressionTest(unittest.TestCase):
             self.dtest[[c for c in self.dtest.column_names() if c != "label"]]
         )
         self.assertTrue(all((y1 - y2) * (y1 - y2) < 1e-10))
+
+        # Test calling predict with a dictionary.
+        results = self.model.predict(self.dtest[0])
+        self.assertTrue(len(results) == 1)
 
     def test_evaluate(self):
         """
