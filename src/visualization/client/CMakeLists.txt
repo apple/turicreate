@@ -62,8 +62,8 @@ if(${TC_BUILD_VISUALIZATION_CLIENT})
     ExternalProject_Add(
         cef
         PREFIX "cef"
-        URL https://cef-builds.spotifycdn.com/cef_binary_3.3282.1731.gfc9a4fa_linux32_minimal.tar.bz2
-        URL_HASH SHA1=e3d06b2fad2837a73f767d9d143eeece416178b1
+        URL https://cef-builds.spotifycdn.com/cef_binary_3.3282.1731.gfc9a4fa_linux64_minimal.tar.bz2
+        URL_HASH SHA1=4eeeabee642bfe68f561566e0f249f86afaf6634
         DOWNLOAD_DIR ${CMAKE_CURRENT_BINARY_DIR}/deps
         SOURCE_DIR ${CMAKE_CURRENT_BINARY_DIR}/deps/cef/src/cef
         BUILD_IN_SOURCE 1
