@@ -5,6 +5,7 @@
  */
 #include <functional>
 #include <algorithm>
+#include <turi_common.h>
 #include <core/util/dense_bitset.hpp>
 #include <core/parallel/thread_pool.hpp>
 #include <core/parallel/lambda_omp.hpp>

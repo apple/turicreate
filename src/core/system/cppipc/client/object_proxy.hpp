@@ -7,6 +7,7 @@
 #define CPPIPC_CLIENT_CLIENT_HPP
 #include <string>
 #include <map>
+#include <turi_common.h>
 #include <core/system/cppipc/client/comm_client.hpp>
 namespace cppipc {
 

@@ -10,6 +10,7 @@
 
 #include <vector>
 
+#include <turi_common.h>
 #include <model_server/lib/toolkit_class_specification.hpp>
 
 namespace turi {

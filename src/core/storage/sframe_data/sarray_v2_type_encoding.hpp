@@ -5,6 +5,7 @@
  */
 #ifndef TURI_SFRAME_SARRAY_V2_TYPE_ENCODING_HPP
 #define TURI_SFRAME_SARRAY_V2_TYPE_ENCODING_HPP
+#include <turi_common.h>
 #include <core/data/flexible_type/flexible_type.hpp>
 #include <core/storage/sframe_data/sarray_v2_block_types.hpp>
 #include <core/util/basic_types.hpp>

@@ -1,4 +1,6 @@
 include(CheckCXXSourceCompiles)
+include(CompilerFlags)
+
 
 macro(Set_Compiler_Specific_Flags)
 
@@ -16,7 +18,7 @@ macro(Set_Compiler_Specific_Flags)
 
   if(COMPILER_HAS_IOS_BASE_FAILURE_WITH_ERROR_CODE)
     message(STATUS "Compiler supports ios_base::failure(str, error_code)")
-    add_definitions(-DCOMPILER_HAS_IOS_BASE_FAILURE_WITH_ERROR_CODE)
+    add_compiler_source_define(COMPILER_HAS_IOS_BASE_FAILURE_WITH_ERROR_CODE)
   else()
     message(STATUS "Compiler does not support ios_base::failure(str, error_code)")
   endif()
@@ -60,11 +62,11 @@ macro(Set_Compiler_Specific_Flags)
 
     message(FATAL_ERROR "Cannot determine noexcept fladg on std::ios_base::failure.  See log.")
   elseif(COMPILER_HAS_NOEXCEPT_WHAT_ON_EXCEPTIONS_V1) 
-    add_definitions(-DCOMPILER_MODIFIER_ON_EXCEPTION_WHAT=noexcept)
+    add_compiler_source_define(COMPILER_MODIFIER_ON_EXCEPTION_WHAT=noexcept)
   elseif(COMPILER_HAS_NOEXCEPT_WHAT_ON_EXCEPTIONS_V2)
-    add_definitions(-DCOMPILER_MODIFIER_ON_EXCEPTION_WHAT=_NOEXCEPT)
+    add_compiler_source_define(DCOMPILER_MODIFIER_ON_EXCEPTION_WHAT=_NOEXCEPT)
   else()
-    add_definitions(-DCOMPILER_MODIFIER_ON_EXCEPTION_WHAT="")
+    add_compiler_source_define(COMPILER_MODIFIER_ON_EXCEPTION_WHAT=)
   endif()
 
 endmacro()

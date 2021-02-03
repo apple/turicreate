@@ -3,6 +3,7 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+#include <turi_common.h>
 #include <ml/ml_data/column_indexer.hpp>
 #include <core/storage/serialization/serialization_includes.hpp>
 #include <core/storage/sframe_data/sframe.hpp>

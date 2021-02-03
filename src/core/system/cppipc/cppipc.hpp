@@ -5,6 +5,7 @@
  */
 #ifndef CPPIPC_CPPIPC_HPP
 #define CPPIPC_CPPIPC_HPP
+#include <turi_common.h>
 #include <cxxabi.h>
 #include <typeinfo>
 #include <string>

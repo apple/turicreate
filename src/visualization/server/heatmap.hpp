@@ -7,6 +7,7 @@
 #ifndef __TC_VIS_HEATMAP
 #define __TC_VIS_HEATMAP
 
+#include <turi_common.h>
 #include <core/data/sframe/gl_sframe.hpp>
 
 #include "extrema.hpp"

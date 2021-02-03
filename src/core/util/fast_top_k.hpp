@@ -9,6 +9,7 @@
 #include <vector>
 #include <array>
 #include <algorithm>
+#include <turi_common.h>
 
 namespace turi {
 

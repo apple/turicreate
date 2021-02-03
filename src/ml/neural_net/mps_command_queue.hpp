@@ -47,3 +47,4 @@ NS_ASSUME_NONNULL_END
 #endif  // __OBJC__
 
 #endif  // UNITY_TOOLKITS_NEURAL_NET_MPS_COMMAND_QUEUE_HPP_
+#include <turi_common.h>

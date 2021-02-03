@@ -7,6 +7,7 @@
 #define TURI_LAMBDA_LAMBDA_MASTER_HPP
 
 #include <map>
+#include <turi_common.h>
 #include <core/globals/globals.hpp>
 #include <core/system/lambda/lambda_interface.hpp>
 #include <core/system/lambda/worker_pool.hpp>

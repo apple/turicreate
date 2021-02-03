@@ -4,6 +4,9 @@
  * be found in the LICENSE.txt file or at
  * https://opensource.org/licenses/BSD-3-Clause
  */
+#include <fstream>
+#include <memory>
+#include <turi_common.h>
 #include <boost/iostreams/stream.hpp>
 #include <core/storage/fileio/read_caching_device.hpp>
 #include <core/storage/fileio/s3_filesys.hpp>

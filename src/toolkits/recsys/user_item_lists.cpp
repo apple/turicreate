@@ -4,10 +4,11 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <turi_common.h>
 #include <toolkits/recsys/user_item_lists.hpp>
 #include <toolkits/recsys/recsys_model_base.hpp>
-#include <toolkits/ml_data_2/ml_data.hpp>
-#include <toolkits/ml_data_2/ml_data_iterators.hpp>
+#include <toolkits/recsys/ml_data_2/ml_data.hpp>
+#include <toolkits/recsys/ml_data_2/ml_data_iterators.hpp>
 #include <algorithm>
 #include <core/parallel/pthread_tools.hpp>
 

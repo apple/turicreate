@@ -552,4 +552,9 @@ private:
 }  // namespace neural_net
 }  // namespace turi
 
+<<<<<<< HEAD
+#endif
+#include <turi_common.h>
+=======
 NS_ASSUME_NONNULL_END
+>>>>>>> master

@@ -6,6 +6,7 @@
 #ifndef TURI_GL_VECTOR_H_
 #define TURI_GL_VECTOR_H_
 
+#include <turi_common.h>
 #include <core/generics/vector_internals.hpp>
 #include <core/generics/vector_serialization.hpp>
 #include <core/generics/is_memmovable.hpp>

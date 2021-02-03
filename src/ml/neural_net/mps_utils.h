@@ -12,6 +12,7 @@
 #include <string>
 #include <vector>
 
+#include <turi_common.h>
 #include <ml/neural_net/float_array.hpp>
 
 NS_ASSUME_NONNULL_BEGIN

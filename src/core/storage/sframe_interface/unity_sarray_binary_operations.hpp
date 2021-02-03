@@ -7,6 +7,7 @@
 #define UNITY_LIB_UNITY_SARRAY_BINARY_OPERATIONS_HPP
 #include <string>
 #include <functional>
+#include <turi_common.h>
 #include <core/data/flexible_type/flexible_type.hpp>
 namespace turi {
 namespace unity_sarray_binary_operations {

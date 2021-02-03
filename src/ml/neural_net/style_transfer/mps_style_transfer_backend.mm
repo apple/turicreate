@@ -284,4 +284,4 @@ float_array_map mps_style_transfer::train(const float_array_map& inputs) {
 } // namespace style_transfer
 } // namespace turi
 
-#endif  // #ifdef HAS_MACOS_10_15
+#endif // #ifdef HAS_MACOS_10_15

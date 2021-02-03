@@ -91,6 +91,7 @@
   __attribute__((cold, noinline, noreturn))
 
 #ifdef __SSE2__
+#include <turi_common.h>
 #include <xmmintrin.h>
 #endif
 

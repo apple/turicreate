@@ -7,6 +7,7 @@
 #define TURI_FLEXIBLE_TYPE_DETAIL_HPP
 #include <typeindex>
 #include <sstream>
+#include <turi_common.h>
 #include <cmath>
 #include <string>
 #include <core/logging/assertions.hpp>

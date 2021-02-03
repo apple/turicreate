@@ -163,7 +163,7 @@ fi
 
 push_ld_library_path() {
   OLD_LIBRARY_PATH=$LD_LIBRARY_PATH
-  export LD_LIBRARY_PATH=${WORKSPACE}/deps/local/lib:${WORKSPACE}/deps/local/lib64:$LD_LIBRARY_PATH
+  export LD_LIBRARY_PATH=${WORKSPACE}/targets/lib;$LD_LIBRARY_PATH
 }
 
 pop_ld_library_path() {
@@ -183,7 +183,7 @@ build_source() {
 
   # make src/
   cd ${WORKSPACE}/${build_type}/src
-  make -j${NUM_PROCS}
+  make -j${NUM_PROCS} install
 
   # make test/
   if [[ -z $SKIP_TEST ]]; then
@@ -194,6 +194,7 @@ build_source() {
       make -j${NUM_PROCS}
     fi
   fi
+
   pop_ld_library_path
 
   echo -e "\n\n================= Done Build Source ================\n\n"
@@ -219,50 +220,22 @@ unit_test() {
   echo -e "\n\n================= Done Python Unit Tests ================\n\n"
 }
 
-mac_patch_rpath() {
-  echo -e "\n\n\n================= Patching Mac RPath ================\n\n\n"
-  # on mac we need to do a little work to fix up RPaths
-  cd ${WORKSPACE}/${build_type}/src/python
-  # - look for all files
-  # - run 'file' on it
-  # - look for binary files (shared libraries, executables)
-  # - output is in the form [file]: type, so cut on ":", we just want the file
-  flist=`find . -type f -not -path "*/CMakeFiles/*" -not -path "./dist/*" | xargs -L 1 file | grep x86_64 | cut -f 1 -d :`
-
-  # We are generally going to be installed in
-  # a place of the form
-  # PREFIX/lib/python2.7/site-packages/[module]
-  # libpython2.7 will probably in PREFIX/lib
-  # So for instance if I am in
-  # PREFIX/lib/python2.7/site-packages/turicreate/unity_server
-  # I need to add
-  # ../../../ to the rpath (to make it to lib/)
-  # But if I am in
-  #
-  # PREFIX/lib/python2.7/site-packages/turicreate/something/somewhere
-  # I need to add
-  # ../../../../ to the rpath
-  for f in $flist; do
-    # Lets explain the regexes
-    # - The first regex removes "./"
-    # - The second regex replaces the string "[something]/" with "../"
-    #   (making sure something does not contain '/' characters)
-    # - The 3rd regex removes the last "filename" bit
-    #
-    # Example:
-    # Input: ./turicreate/cython/cy_ipc.so
-    # After 1st regex: turicreate/cython/cy_ipc.so
-    # After 2nd regex: ../../cy_ipc.so
-    # After 3rd regex: ../../
-    relative=`echo $f | sed 's:\./::g' | sed 's:[^/]*/:../:g' | sed 's:[^/]*$::'`
-    # Now we need ../../ to get to PREFIX/lib
-    rpath="@loader_path/../../$relative"
-    install_name_tool -add_rpath $rpath $f || true
-  done
-}
 
 
 ### Package the release folder into a wheel, and strip the binaries ###
+<<<<<<< HEAD
+package_wheel() {
+  cd ${WORKSPACE}/src/python
+
+  echo -e "\n\n\n================= Building Wheel  ================\n\n\n"
+  cd ${WORKSPACE}/${build_type}/src/python
+
+  VERSION_NUMBER=`${PYTHON_EXECUTABLE} -c "import setup; print(setup.VERSION)"`
+  wheel_name=`${PYTHON_EXECUTABLE} setup.py -q bdist_wheel_name`
+  old_platform_tag=`${PYTHON_EXECUTABLE} -c "import distutils; print(distutils.util.get_platform())"`
+  LD_LIBRARY_PATH='${WORKSPACE}/targets/lib' CPATH='${WORKSPACE}/targets/include' ${PYTHON_EXECUTABLE} setup.py bdist_wheel
+
+=======
 function package_wheel() {
   if [[ $OSTYPE == darwin* ]]; then
     mac_patch_rpath
@@ -301,6 +274,7 @@ function package_wheel() {
     local dist_type="bdist_wheel"
 
     cd ${WORKSPACE}/${build_type}/src/python
+>>>>>>> master
 
     if [[ "$is_minimal" -eq 1 ]] ; then
       local pkg_patch_ver=$(grep VERSION_STRING setup.py | cut -d " " -f3)
@@ -314,54 +288,29 @@ function package_wheel() {
       fi
     fi
 
-    # This produced a wheel starting with turicreate-${VERSION_NUMBER} under dist/
-    if [[ "${is_minimal}" -eq 1 ]]; then
-      "${PYTHON_EXECUTABLE}" setup.py -q "${dist_type}" install --minimal
-      # restore the scene after packing; making it reentrant
-      cp ${WORKSPACE}/src/python/setup.py setup.py
-      cp ${WORKSPACE}/src/python/turicreate/version_info.py turicreate/version.py
-    else
-      # full version
-      "${PYTHON_EXECUTABLE}" setup.py -q "${dist_type}"
-    fi
+  WHEEL_PATH=`ls ${WORKSPACE}/src/python/dist/${wheel_name}.whl`
 
-    VERSION_NUMBER=`${PYTHON_EXECUTABLE} -c "from turicreate.version_info import version; print(version)"`
+  if [[ $OSTYPE == darwin* ]]; then
 
-    cd "${WORKSPACE}"
+    DYLD_LIBRARY_PATH="${WORKSPACE}/targets/lib" delocate-wheel -v ${WHEEL_PATH}
 
-    WHEEL_PATH=$(ls "${WORKSPACE}/${build_type}/src/python/dist/turicreate-${VERSION_NUMBER}"*.whl)
+    platform_tag="macosx_10_12_intel.macosx_10_12_x86_64.macosx_10_13_intel.macosx_10_13_x86_64.macosx_10_14_intel.macosx_10_14_x86_64"
 
-    if [[ $OSTYPE == darwin* ]]; then
-      # Change the platform tag embedded in the file name
-      temp=`echo $WHEEL_PATH | perl -ne 'print m/(^.*-).*$/'`
-      temp=${temp/-cpdarwin-/-cp35m-}
+    NEW_WHEEL_PATH=${WORKSPACE}/targets/${wheel_name/$old_platform_tag/$platform_tag}.whl
 
-      platform_tag="macosx_10_12_intel.macosx_10_12_x86_64.macosx_10_13_intel.macosx_10_13_x86_64.macosx_10_14_intel.macosx_10_14_x86_64"
-      #  sdk_version=`xcrun --show-sdk-version`
-      #  if [[ $sdk_version =~ ^10\.13 ]]; then
-      #      platform_tag="macosx_10_13_intel.macosx_10_12_x86_64"
-      #  elif [[ $sdk_version =~ ^10\.12 ]]; then
-      #      platform_tag="macosx_10_12_intel.macosx_10_12_x86_64"
-      #  fi
+  else
+    LD_LIBRARY_PATH="${WORKSPACE}/targets/lib" auditwheel repair ${WHEEL_PATH}
 
-      NEW_WHEEL_PATH=${temp}${platform_tag}".whl"
-      mv ${WHEEL_PATH} ${NEW_WHEEL_PATH}
-      WHEEL_PATH=${NEW_WHEEL_PATH}
-    else
-      # Don't pick up -manylinux1 wheels, since those may have been created by a later step from a previous build.
-      # Ignore those for now by selecting only -linux wheels.
-      WHEEL_PATH=`ls ${WORKSPACE}/${build_type}/src/python/dist/turicreate-${VERSION_NUMBER}*-linux*.whl`
-    fi
+    NEW_WHEEL_PATH=${WORKSPACE}/targets/${wheel_name}.whl
+  fi
 
-    # Set Python Language Version Number
-    NEW_WHEEL_PATH=${WHEEL_PATH}
-    if [[ "$python35" == "1" ]]; then
-        NEW_WHEEL_PATH=${WHEEL_PATH/-py3-/-cp35-}
-    elif [[ "$python36" == "1" ]]; then
-        NEW_WHEEL_PATH=${WHEEL_PATH/-py3-/-cp36-}
-    else
-        NEW_WHEEL_PATH=${WHEEL_PATH/-py2-/-cp27-}
-    fi
+  mv ${WHEEL_PATH} ${NEW_WHEEL_PATH}
+  WHEEL_PATH=${NEW_WHEEL_PATH}
+
+
+  if [[ -z $SKIP_SMOKE_TEST ]]; then
+    # Install the wheel and do a smoke test
+    unset PYTHONPATH
 
     NEW_WHEEL_PATH=${NEW_WHEEL_PATH/linux/manylinux1}
     if [[ ! "${WHEEL_PATH}" == "${NEW_WHEEL_PATH}" ]]; then

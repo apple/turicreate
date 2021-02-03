@@ -44,6 +44,7 @@
 #define TURI_LOGGER_THROW_ON_FAILURE
 #endif
 
+#include <turi_common.h>
 #include <stdarg.h>
 #include <stdlib.h>
 #include <stdio.h>

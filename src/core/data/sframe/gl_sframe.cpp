@@ -6,6 +6,7 @@
 #include <ctime>
 #include <deque>
 #include <iomanip>
+#include <turi_common.h>
 #include <boost/algorithm/string.hpp>
 #include <core/parallel/pthread_tools.hpp>
 #include <core/data/sframe/gl_sarray.hpp>

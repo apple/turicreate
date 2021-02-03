@@ -6,6 +6,7 @@
 #ifndef TURI_UTIL_HOPSCOTCH_HASH_HPP
 #define TURI_UTIL_HOPSCOTCH_HASH_HPP
 
+#include <turi_common.h>
 #include <core/generics/hopscotch_table.hpp>
 
 #include <core/storage/serialization/serialization_includes.hpp>

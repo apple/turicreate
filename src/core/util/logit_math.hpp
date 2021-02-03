@@ -7,6 +7,7 @@
 #define TURI_LOGIT_MATH_H_
 
 
+#include <turi_common.h>
 #include <core/util/code_optimization.hpp>
 #include <core/logging/assertions.hpp>
 #include <cmath>

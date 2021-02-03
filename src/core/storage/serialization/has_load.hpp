@@ -8,6 +8,7 @@
 
 #include <typeinfo>
 #include <type_traits>
+#include <turi_common.h>
 
 namespace turi {
   namespace archive_detail {

@@ -6,6 +6,7 @@
 #ifndef __TC_COLUMN_SUMMARY
 #define __TC_COLUMN_SUMMARY
 
+#include <turi_common.h>
 #include <visualization/server/process_wrapper.hpp>
 #include <visualization/server/histogram.hpp>
 #include <visualization/server/item_frequency.hpp>

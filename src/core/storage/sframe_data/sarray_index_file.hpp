@@ -10,6 +10,7 @@
 #include <vector>
 #include <map>
 #include <memory>
+#include <turi_common.h>
 namespace turi {
 class oarchive;
 class iarchive;

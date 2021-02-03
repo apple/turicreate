@@ -1,6 +1,7 @@
 #ifndef TURI_CLUSTERING_REGISTRATIONS
 #define TURI_CLUSTERING_REGISTRATIONS
 
+#include <turi_common.h>
 #include <model_server/lib/toolkit_class_macros.hpp>
 #include <model_server/lib/toolkit_class_specification.hpp>
 

@@ -7,6 +7,7 @@
 #define FILEIO_GENERAL_FSTREAM_SOURCE_HPP
 #include <memory>
 #include <fstream>
+#include <turi_common.h>
 #include <boost/iostreams/stream.hpp>
 #include <core/storage/fileio/union_fstream.hpp>
 #include <core/storage/fileio/fileio_constants.hpp>

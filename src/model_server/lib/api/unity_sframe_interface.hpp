@@ -8,6 +8,7 @@
 #include <memory>
 #include <vector>
 #include <string>
+#include <turi_common.h>
 #include <core/data/flexible_type/flexible_type.hpp>
 #include <core/storage/sframe_data/dataframe.hpp>
 #include <model_server/lib/options_map.hpp>

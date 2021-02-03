@@ -5,6 +5,7 @@
  * https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <turi_common.h>
 #include <toolkits/object_detection/od_serialization.hpp>
 
 #include <stdlib.h>
@@ -13,8 +14,8 @@
 #include <toolkits/object_detection/od_yolo.hpp>
 #include <toolkits/util/float_array_serialization.hpp>
 
-#include <toolkits/coreml_export/mlmodel_include.hpp>
-#include <toolkits/coreml_export/neural_net_models_exporter.hpp>
+#include <ml/coreml_export/mlmodel_include.hpp>
+#include <ml/coreml_export/neural_net_models_exporter.hpp>
 
 namespace turi {
 namespace object_detection {

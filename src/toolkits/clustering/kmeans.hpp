@@ -9,6 +9,7 @@
 // Types
 #include <Eigen/Core>
 #include <Eigen/SparseCore>
+#include <turi_common.h>
 #include <core/storage/sframe_data/sframe.hpp>
 #include <core/data/sframe/gl_sarray.hpp>
 #include <core/parallel/atomic.hpp>
@@ -19,15 +20,15 @@
 #include <core/globals/globals.hpp>
 
 // ML Data utils
-#include <toolkits/ml_data_2/ml_data.hpp>
-#include <toolkits/ml_data_2/ml_data_iterators.hpp>
+#include <toolkits/recsys/ml_data_2/ml_data.hpp>
+#include <toolkits/recsys/ml_data_2/ml_data_iterators.hpp>
 
 // Interfaces
 #include <model_server/lib/extensions/ml_model.hpp>
 #include <model_server/lib/extensions/option_manager.hpp>
 #include <model_server/lib/variant_deep_serialize.hpp>
 #include <core/globals/globals.hpp>
-#include <toolkits/supervised_learning/supervised_learning_utils-inl.hpp>
+#include <ml/supervised_learning/supervised_learning_utils-inl.hpp>
 
 // Miscellaneous
 #include <model_server/lib/toolkit_util.hpp>

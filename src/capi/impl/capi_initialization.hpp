@@ -6,6 +6,7 @@
 #ifndef TURI_CAPI_INITIALIZATION
 #define TURI_CAPI_INITIALIZATION
 
+#include <turi_common.h>
 #include <model_server/lib/unity_global.hpp>
 
 namespace turi {

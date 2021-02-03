@@ -4,6 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <random>
+#include <turi_common.h>
 #include <boost/bind.hpp>
 #include <boost/range/adaptor/reversed.hpp>
 #include <boost/algorithm/string.hpp>

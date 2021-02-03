@@ -9,6 +9,7 @@
 #include <memory>
 #include <string>
 #include <vector>
+#include <turi_common.h>
 #include <model_server/lib/api/unity_sframe_interface.hpp>
 #include <core/storage/sframe_interface/unity_sarray.hpp>
 #include <core/storage/sframe_data/group_aggregate_value.hpp>

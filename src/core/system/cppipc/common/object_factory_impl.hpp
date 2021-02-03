@@ -5,6 +5,7 @@
  */
 #ifndef CPPIPC_COMMON_OBJECT_FACTORY_IMPL_HPP
 #define CPPIPC_COMMON_OBJECT_FACTORY_IMPL_HPP
+#include <turi_common.h>
 #include <core/system/cppipc/common/object_factory_base.hpp>
 #include <core/system/cppipc/server/comm_server.hpp>
 #include <map>

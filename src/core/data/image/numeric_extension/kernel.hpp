@@ -27,6 +27,7 @@
 #include <algorithm>
 #include <vector>
 #include <memory>
+#include <turi_common.h>
 #include <boost/array.hpp>
 #include "../../gil_config.hpp"
 #include "../../utilities.hpp"

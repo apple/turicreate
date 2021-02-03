@@ -9,6 +9,7 @@
 #include <string>
 #include <map>
 #include <memory>
+#include <turi_common.h>
 #include <core/util/any.hpp>
 #include <core/data/flexible_type/flexible_type.hpp>
 #include <core/storage/query_engine/planning/planner_node.hpp>

@@ -6,6 +6,7 @@
 #ifndef TURI_SFRAME_ENCODED_BLOCK_HPP
 #define TURI_SFRAME_ENCODED_BLOCK_HPP
 
+#include <turi_common.h>
 #include <boost/circular_buffer.hpp>
 #include <vector>
 #include <memory>

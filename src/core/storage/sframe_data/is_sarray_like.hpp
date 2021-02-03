@@ -6,6 +6,7 @@
 #ifndef TURI_UNITY_SFRAME_IS_SARRAY_LIKE_HPP
 #define TURI_UNITY_SFRAME_IS_SARRAY_LIKE_HPP
 #include <memory>
+#include <turi_common.h>
 #include <core/storage/sframe_data/is_siterable.hpp>
 #include <core/storage/sframe_data/is_swriter_base.hpp>
 namespace turi {

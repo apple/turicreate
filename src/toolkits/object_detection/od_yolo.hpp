@@ -7,6 +7,7 @@
 #ifndef TURI_OBJECT_DETECTION_OD_YOLO_H_
 #define TURI_OBJECT_DETECTION_OD_YOLO_H_
 
+#include <turi_common.h>
 #include <ml/neural_net/image_augmentation.hpp>
 #include <ml/neural_net/model_spec.hpp>
 

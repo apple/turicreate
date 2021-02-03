@@ -9,7 +9,7 @@
 #include <cfenv>
 
 #include <ml/ml_data/ml_data.hpp>
-#include <toolkits/supervised_learning/supervised_learning.hpp>
+#include <ml/supervised_learning/supervised_learning.hpp>
 #include <core/storage/sframe_data/testing_utils.hpp>
 
 using namespace turi;

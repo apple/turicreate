@@ -6,6 +6,7 @@
 #ifndef TURI_FILEIO_FILE_HANDLE_POOL_CPP
 #define TURI_FILEIO_FILE_HANDLE_POOL_CPP
 
+#include <turi_common.h>
 #include <boost/algorithm/string.hpp>
 #include <core/storage/fileio/file_ownership_handle.hpp>
 #include <core/storage/fileio/file_handle_pool.hpp>

@@ -2,6 +2,7 @@
 #define V8HANDLER_H_
 
 #include <iostream>
+#include <turi_common.h>
 
 class V8Handler : public CefV8Handler {
   public:

@@ -9,6 +9,7 @@
 #include <random>
 #include <sstream>
 
+#include <turi_common.h>
 #include <core/logging/assertions.hpp>
 #include <core/logging/logger.hpp>
 #include <core/util/string_util.hpp>
@@ -16,6 +17,10 @@
 #include <ml/neural_net/model_backend.hpp>
 #include <ml/neural_net/model_spec.hpp>
 #include <model_server/lib/variant_deep_serialize.hpp>
+#include <ml/coreml_export/neural_net_models_exporter.hpp>
+#include <ml/evaluation/metrics.hpp>
+#include <ml/supervised_learning/automatic_model_creation.hpp>
+#include <ml/util/training_utils.hpp>
 #include <toolkits/coreml_export/neural_net_models_exporter.hpp>
 #include <toolkits/evaluation/metrics.hpp>
 #include <toolkits/supervised_learning/automatic_model_creation.hpp>

@@ -13,7 +13,7 @@
 #include <string>
 #include <limits>
 #include <xgboost/src/sync/sync.h>
-#include <xgboost/src/utils/io.h>
+#include <external/xgboost/src/utils/io.h>
 #include <xgboost/src/gbm/gbm.h>
 #include "./objective.h"
 #include "./evaluation.h"

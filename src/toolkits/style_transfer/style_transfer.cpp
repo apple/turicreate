@@ -5,21 +5,22 @@
  * https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <turi_common.h>
 #include <toolkits/style_transfer/style_transfer.hpp>
 
 #include <map>
 #include <random>
 #include <string>
 #include <sstream>
-#include <timer/timer.hpp>
+#include <core/system/platform/timer/timer.hpp>
 
 #include <core/data/image/image_type.hpp>
 #include <model_server/lib/image_util.hpp>
 #include <model_server/lib/variant_deep_serialize.hpp>
 #include <toolkits/style_transfer/st_resnet16_model_trainer.hpp>
 #include <toolkits/style_transfer/style_transfer_model_definition.hpp>
+#include <ml/util/training_utils.hpp>
 #include <toolkits/util/float_array_serialization.hpp>
-#include <toolkits/util/training_utils.hpp>
 
 #ifdef HAS_MPS
 #import <ml/neural_net/mps_compute_context.hpp>

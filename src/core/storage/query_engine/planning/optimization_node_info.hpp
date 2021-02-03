@@ -6,6 +6,7 @@
 #ifndef TURI_SFRAME_QUERY_ENGINE_QUERY_NODE_INFO_H_
 #define TURI_SFRAME_QUERY_ENGINE_QUERY_NODE_INFO_H_
 
+#include <turi_common.h>
 #include <core/storage/query_engine/operators/operator.hpp>
 #include <core/storage/query_engine/operators/operator_properties.hpp>
 #include <core/storage/query_engine/planning/planner_node.hpp>

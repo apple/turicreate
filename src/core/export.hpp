@@ -7,3 +7,4 @@
 #define TURI_EXPORT_HPP
 #define EXPORT __attribute__((visibility("default")))
 #endif
+#include <turi_common.h>

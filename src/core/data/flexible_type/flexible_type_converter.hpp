@@ -10,6 +10,7 @@
 #include <unordered_map>
 #include <tuple>
 #include <type_traits>
+#include <turi_common.h>
 #include <core/util/code_optimization.hpp>
 #include <core/data/flexible_type/type_traits.hpp>
 #include <core/data/flexible_type/flexible_type.hpp>

@@ -14,6 +14,7 @@
 #ifndef GIL_RESAMPLE_HPP
 #define GIL_RESAMPLE_HPP
 
+#include <turi_common.h>
 #include <boost/lambda/lambda.hpp>
 #include <boost/lambda/bind.hpp>
 #include <boost/gil/extension/dynamic_image/dynamic_image_all.hpp>

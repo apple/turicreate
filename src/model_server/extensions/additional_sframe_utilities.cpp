@@ -5,6 +5,7 @@
  */
 #include <string>
 #include <vector>
+#include <turi_common.h>
 #include <core/parallel/lambda_omp.hpp>
 #include <core/parallel/pthread_tools.hpp>
 #include <core/data/sframe/gl_sframe.hpp>

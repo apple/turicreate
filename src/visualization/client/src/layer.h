@@ -1,6 +1,7 @@
 #ifndef LAYER_H_
 #define LAYER_H_
 
+#include <turi_common.h>
 #include "javascript_caller.h"
 
 #include <memory>

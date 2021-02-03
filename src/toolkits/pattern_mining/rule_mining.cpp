@@ -4,6 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <limits>
+#include <turi_common.h>
 #include <toolkits/pattern_mining/rule_mining.hpp>
 
 #include <core/util/basic_types.hpp>

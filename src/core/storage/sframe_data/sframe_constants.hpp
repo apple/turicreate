@@ -7,6 +7,7 @@
 #define TURI_SFRAME_CONSTANTS_HPP
 #include <cstddef>
 #include <string>
+#include <turi_common.h>
 namespace turi {
 
 

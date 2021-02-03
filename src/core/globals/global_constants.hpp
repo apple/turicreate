@@ -6,6 +6,7 @@
 #ifndef TURI_GLOBALS_GLOBAL_CONSTANTS_HPP
 #define TURI_GLOBALS_GLOBAL_CONSTANTS_HPP
 #include <string>
+#include <turi_common.h>
 namespace turi {
 extern std::string GLOBALS_MAIN_PROCESS_BINARY;
 extern std::string GLOBALS_MAIN_PROCESS_PATH;

@@ -11,6 +11,7 @@
 #include <stack>
 #include <string>
 #include <algorithm>
+#include <turi_common.h>
 #include <core/export.hpp>
 #include <core/util/dense_bitset.hpp>
 

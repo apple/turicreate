@@ -5,6 +5,7 @@
  */
 #ifndef TURI_SKETCHES_COUNTSKETCH_HPP
 #define TURI_SKETCHES_COUNTSKETCH_HPP
+#include <turi_common.h>
 #include <cmath>
 #include <cstdint>
 #include <functional>

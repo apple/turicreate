@@ -6,6 +6,7 @@
 #ifndef CPPIPC_COMMON_AUTHENTICATION_BASE_HPP
 #define CPPIPC_COMMON_AUTHENTICATION_BASE_HPP
 #include <string>
+#include <turi_common.h>
 #include <core/system/cppipc/common/message_types.hpp>
 namespace cppipc {
 

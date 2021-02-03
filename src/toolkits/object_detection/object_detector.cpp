@@ -4,6 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <turi_common.h>
 #include <toolkits/object_detection/object_detector.hpp>
 
 #include <algorithm>
@@ -21,14 +22,16 @@
 #include <core/logging/assertions.hpp>
 #include <core/logging/logger.hpp>
 #include <core/random/random.hpp>
-#include <timer/timer.hpp>
-#include <toolkits/coreml_export/neural_net_models_exporter.hpp>
+#include <core/system/platform/timer/timer.hpp>
+#include <ml/coreml_export/neural_net_models_exporter.hpp>
 #include <toolkits/object_detection/od_darknet_yolo_model_trainer.hpp>
+#include <core/system/platform/timer/timer.hpp>
+#include <ml/coreml_export/neural_net_models_exporter.hpp>
 #include <toolkits/object_detection/od_evaluation.hpp>
 #include <toolkits/object_detection/od_serialization.hpp>
 #include <toolkits/object_detection/od_yolo.hpp>
-#include <toolkits/supervised_learning/automatic_model_creation.hpp>
-#include <toolkits/util/training_utils.hpp>
+#include <ml/supervised_learning/automatic_model_creation.hpp>
+#include <ml/util/training_utils.hpp>
 
 #ifdef __APPLE__
 

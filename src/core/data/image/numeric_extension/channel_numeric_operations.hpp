@@ -29,6 +29,7 @@
 */
 
 #include <functional>
+#include <turi_common.h>
 #include <boost/gil/gil_config.hpp>
 #include <boost/gil/channel.hpp>
 

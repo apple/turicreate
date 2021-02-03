@@ -6,6 +6,7 @@
 #ifndef TURI_SGRAPH_SGRAPH_HPP
 #define TURI_SGRAPH_SGRAPH_HPP
 #include <memory>
+#include <turi_common.h>
 #include <core/data/flexible_type/flexible_type.hpp>
 #include <core/storage/sgraph_data/sgraph_constants.hpp>
 #include <core/storage/sframe_data/sframe.hpp>

@@ -11,6 +11,7 @@
 #define ARCHIVE_BASIC_TYPES_HPP
 
 #include <string>
+#include <turi_common.h>
 #include <core/storage/serialization/serializable_pod.hpp>
 #include <core/logging/assertions.hpp>
 #include <cstdint>

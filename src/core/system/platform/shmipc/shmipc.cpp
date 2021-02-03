@@ -4,12 +4,13 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <thread>
+#include <turi_common.h>
 #include <core/parallel/atomic.hpp>
 #include <core/logging/logger.hpp>
 #include <core/logging/assertions.hpp>
-#include <shmipc/shmipc.hpp>
-#include <shmipc/shmipc_garbage_collect.hpp>
-#include <process/process_util.hpp>
+#include <core/system/platform/shmipc/shmipc.hpp>
+#include <core/system/platform/shmipc/shmipc_garbage_collect.hpp>
+#include <core/system/platform/process/process_util.hpp>
 #include <boost/version.hpp>
 #if BOOST_VERSION <= 105600 && defined(_WIN32)
 #define BOOST_INTERPROCESS_WIN32_PRIMITIVES_HPP

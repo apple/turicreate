@@ -3,6 +3,9 @@
 #
 # Use of this source code is governed by a BSD-3-clause license that can
 # be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
+
+# distutils: language = c++
+
 from .cy_variant cimport variant_type
 from .cy_variant cimport variant_map_type_iterator
 from .cy_variant cimport from_dict as variant_map_from_dict

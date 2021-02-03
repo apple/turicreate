@@ -10,6 +10,7 @@
 #include <cstdint>
 #include <iostream>
 #ifdef HAS_TCMALLOC
+#include <turi_common.h>
 #include <google/malloc_extension.h>
 #endif
 #include <core/logging/assertions.hpp>

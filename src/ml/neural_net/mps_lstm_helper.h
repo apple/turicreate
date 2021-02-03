@@ -28,3 +28,4 @@ void printMatrix(MPSMatrix * matrix, const char* name, NSUInteger byteOffset);
 }  // namespace turi
 
 #endif /* mps_lstm_helper_h */
+#include <turi_common.h>

@@ -1,3 +1,4 @@
+#include <turi_common.h>
 #include <visualization/server/thread.hpp>
 
 #include <core/logging/assertions.hpp>

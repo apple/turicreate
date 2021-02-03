@@ -10,3 +10,4 @@
 + (void)attachToJavaScriptContext:(JSContext *)context;
 
 @end
+#include <turi_common.h>

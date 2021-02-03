@@ -4,6 +4,8 @@
  * be found in the LICENSE.txt file or at
  * https://opensource.org/licenses/BSD-3-Clause
  */
+#include <turi_common.h>
+#include <sys/types.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>

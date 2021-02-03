@@ -6,6 +6,7 @@
 #ifndef __SHOW_HPP
 #define __SHOW_HPP
 
+#include <turi_common.h>
 #include <core/data/sframe/gl_sarray.hpp>
 #include <model_server/lib/toolkit_function_specification.hpp>
 #include <visualization/server/plot.hpp>

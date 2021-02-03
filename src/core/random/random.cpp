@@ -8,18 +8,19 @@
 #include <fstream>
 #include <chrono>
 
+#include <turi_common.h>
 #include <boost/random.hpp>
 #include <boost/integer_traits.hpp>
 
 #include <core/parallel/pthread_tools.hpp>
 #include <core/parallel/atomic.hpp>
 #include <core/logging/assertions.hpp>
-#include <timer/timer.hpp>
+#include <core/system/platform/timer/timer.hpp>
 
 #include <core/random/random.hpp>
 
 #ifdef _WIN32
-#include <cross_platform/windows_wrapper.hpp>
+#include <core/system/platform/cross_platform/windows_wrapper.hpp>
 #include <Wincrypt.h>
 #endif
 

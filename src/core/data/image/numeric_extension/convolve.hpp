@@ -29,6 +29,7 @@
 #include <algorithm>
 #include <vector>
 #include <functional>
+#include <turi_common.h>
 #include "../../gil_config.hpp"
 #include "../../image_view_factory.hpp"
 #include "../../algorithm.hpp"

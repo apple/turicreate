@@ -1,3 +1,4 @@
+#include <turi_common.h>
 #include "summary_view.hpp"
 
 #include <visualization/server/escape.hpp>

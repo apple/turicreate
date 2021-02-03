@@ -8,6 +8,7 @@
 #include <string>
 #include <map>
 #include <vector>
+#include <turi_common.h>
 #include <boost/variant/variant.hpp>
 #include <boost/variant/recursive_variant.hpp>
 #include <boost/variant/get.hpp>

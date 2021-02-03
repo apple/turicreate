@@ -4,3 +4,4 @@ int main()
 }
 
 void initdummy() {}
+#include <turi_common.h>

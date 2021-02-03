@@ -6,7 +6,8 @@
 #ifndef TURI_LAMBDA_LAMBDA_UTILS_HPP
 #define TURI_LAMBDA_LAMBDA_UTILS_HPP
 
-#include<core/system/cppipc/common/message_types.hpp>
+#include <turi_common.h>
+#include <core/system/cppipc/common/message_types.hpp>
 
 namespace turi {
 namespace lambda {

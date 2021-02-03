@@ -6,6 +6,7 @@
 #ifndef TURI_THREAD_POOL_HPP
 #define TURI_THREAD_POOL_HPP
 
+#include <turi_common.h>
 #include <boost/bind.hpp>
 #include <core/parallel/pthread_tools.hpp>
 #include <core/util/blocking_queue.hpp>

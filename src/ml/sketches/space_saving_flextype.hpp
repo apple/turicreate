@@ -7,6 +7,7 @@
 #define TURI_SKETCHES_SPACE_SAVING_SKETCH_FLEXTYPE_HPP
 
 #include <vector>
+#include <turi_common.h>
 #include <ml/sketches/space_saving.hpp>
 #include <core/data/flexible_type/flexible_type.hpp>
 

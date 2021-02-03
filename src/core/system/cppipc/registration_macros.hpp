@@ -94,3 +94,4 @@
 #define REGISTRATION_END }
 
 #endif //CPPIPC_REGISTRATION_MACROS_HPP
+#include <turi_common.h>

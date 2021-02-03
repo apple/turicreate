@@ -4,7 +4,7 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #include <iostream>
-#include <network/net_util.hpp>
+#include <core/system/platform/network/net_util.hpp>
 
 using namespace turi;
 

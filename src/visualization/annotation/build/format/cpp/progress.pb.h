@@ -6,6 +6,7 @@
 
 #include <string>
 
+#include <turi_common.h>
 #include <google/protobuf/stubs/common.h>
 
 #if GOOGLE_PROTOBUF_VERSION < 3003000

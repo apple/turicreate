@@ -10,7 +10,7 @@
 #include <ml/sketches/countsketch.hpp>
 #include <ml/sketches/countmin.hpp>
 #include <core/random/random.hpp>
-#include <timer/timer.hpp>
+#include <core/system/platform/timer/timer.hpp>
 
 struct countsketch_test {
 

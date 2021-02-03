@@ -7,6 +7,7 @@
 #define TURI_LAZY_EVAL_OPERATION_HPP
 #include <string>
 #include <vector>
+#include <turi_common.h>
 
 namespace turi {
 

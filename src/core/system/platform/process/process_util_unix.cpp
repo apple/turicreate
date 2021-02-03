@@ -3,10 +3,13 @@
  * Use of this source code is governed by a BSD-3-clause license that can
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
+#if defined(__APPLE__) || defined(__linux__) || defined(__unix__) || defined(_POSIX_VERSION)
+
+#include <turi_common.h>
 #include <unistd.h>
 #include <sys/types.h>
 #include <signal.h>
-#include <process/process_util.hpp>
+#include <core/system/platform/process/process_util.hpp>
 #include <cstdlib>
 
 namespace turi {
@@ -42,3 +45,5 @@ boost::optional<std::string> getenv_str(const char* variable_name) {
 }
 
 } // namespace turi
+
+#endif

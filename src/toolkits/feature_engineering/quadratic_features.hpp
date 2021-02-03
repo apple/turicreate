@@ -5,6 +5,7 @@
  */
 #ifndef TURI_QUADRATIC_FEATURES_H_
 #define TURI_QUADRATIC_FEATURES_H_
+#include <turi_common.h>
 #include <model_server/lib/toolkit_class_macros.hpp>
 #include <toolkits/feature_engineering/transformer_base.hpp>
 #include <core/export.hpp>

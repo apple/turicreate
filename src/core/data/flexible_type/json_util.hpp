@@ -5,6 +5,7 @@
  */
 #ifndef TURI_UNITY_JSON_UTIL_HPP
 #define TURI_UNITY_JSON_UTIL_HPP
+#include <turi_common.h>
 #include <core/data/json/json_include.hpp>
 #include <model_server/lib/api/client_base_types.hpp>
 #include <cmath>

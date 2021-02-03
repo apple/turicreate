@@ -11,6 +11,7 @@
 #include <map>
 #include <memory>
 
+#include <turi_common.h>
 #include <core/export.hpp>
 #include <ml/neural_net/float_array.hpp>
 #include <ml/neural_net/model_backend.hpp>

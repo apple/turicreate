@@ -5,6 +5,7 @@
  */
 #ifndef TURI_STARTUP_TEARDOWN_HPP
 #define TURI_STARTUP_TEARDOWN_HPP
+#include <turi_common.h>
 #include <core/export.hpp>
 #include <string>
 

@@ -5,12 +5,13 @@
  * https://opensource.org/licenses/BSD-3-Clause
  */
 
+#include <turi_common.h>
 #include <toolkits/style_transfer/style_transfer_model_definition.hpp>
 
 #include <random>
 
 #include <ml/neural_net/weight_init.hpp>
-#include <toolkits/coreml_export/mlmodel_include.hpp>
+#include <ml/coreml_export/mlmodel_include.hpp>
 
 namespace turi {
 namespace style_transfer {

@@ -62,3 +62,4 @@ void sframe_save_weak_reference(const sframe& sf,
 }; // naemspace turicreate
 
 #endif
+#include <turi_common.h>

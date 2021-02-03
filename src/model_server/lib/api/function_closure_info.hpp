@@ -6,6 +6,7 @@
 // this file should not be included directly
 // due to circular include issues with variant.hpp
 // instead. we redirect to variant.hpp which will then include this again.
+#include <turi_common.h>
 #include <model_server/lib/variant.hpp>
 #ifndef TURI_UNITY_LIB_API_FUNCTION_CLOSURE_INFO_HPP
 #define TURI_UNITY_LIB_API_FUNCTION_CLOSURE_INFO_HPP

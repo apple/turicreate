@@ -7,6 +7,7 @@
 #define TURI_UNITY_TOOLKITS_TRANSFORM_TO_FLAT_DICT_HPP
 
 #include <string>
+#include <turi_common.h>
 #include <model_server/lib/toolkit_class_macros.hpp>
 #include <toolkits/feature_engineering/dict_transform_utils.hpp>
 #include <core/export.hpp>

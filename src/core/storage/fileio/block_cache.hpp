@@ -6,6 +6,7 @@
 #ifndef TURI_FILEIO_BLOCK_CACHE_HPP
 #define TURI_FILEIO_BLOCK_CACHE_HPP
 #include <cstdint>
+#include <turi_common.h>
 #include <core/util/lru.hpp>
 #include <core/parallel/mutex.hpp>
 #include <core/storage/fileio/fixed_size_cache_manager.hpp>

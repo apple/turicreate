@@ -529,4 +529,4 @@
 }
 
 @end
-#endif  // #ifdef HAS_MACOS_10_15
+#endif // #ifdef HAS_MACOS_10_15

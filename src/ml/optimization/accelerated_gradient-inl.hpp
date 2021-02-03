@@ -7,6 +7,7 @@
 #define TURI_ACCELERATED_GRADIENT_H_
 
 // Types
+#include <turi_common.h>
 #include <core/data/flexible_type/flexible_type.hpp>
 #include <Eigen/Core>
 

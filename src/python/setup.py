@@ -11,6 +11,8 @@ import sys
 from setuptools import setup, find_packages, Extension
 from setuptools.dist import Distribution
 from setuptools.command.install import install
+from Cython.Build import cythonize
+from distutils.extension import Extension
 
 PACKAGE_NAME = "turicreate"
 VERSION = "6.4.1"  # {{VERSION_STRING}}
@@ -119,7 +121,8 @@ class InstallEngine(install):
             sys.exit(1)
 
 
-if __name__ == "__main__":
+if __name__ == '__main__':
+
     from distutils.util import get_platform
 
     classifiers = [
@@ -141,7 +144,13 @@ if __name__ == "__main__":
         "Topic :: Scientific/Engineering",
         "Topic :: Scientific/Engineering :: Information Analysis",
     ]
+
+    # Get the include directories.
+    include_dirs = os.environ.get('CPATH', '').split(';')
+    library_dirs = os.environ.get('LD_LIBRARY_PATH', '').split(';')
+
     cur_platform = get_platform()
+
     if cur_platform.startswith("macosx"):
         classifiers.append("Operating System :: MacOS :: MacOS X")
     elif cur_platform.startswith("linux"):
@@ -164,6 +173,8 @@ if __name__ == "__main__":
         long_description = f.read().decode("utf-8")
 
     install_requires = [
+        "coremltools==3.3",
+        "cython>=0.29",
         "decorator >= 4.0.9",
         "numpy",
         "pandas >= 0.23.2",
@@ -210,6 +221,16 @@ if __name__ == "__main__":
         author_email="turi-create@group.apple.com",
         cmdclass=dict(install=InstallEngine),
         distclass=BinaryDistribution,
+
+        ext_modules = cythonize([
+            # Everything but primes.pyx is included here.
+            Extension("*", ["turicreate/_cython/*.pyx"],
+                include_dirs=include_dirs,
+                libraries=['TuriCore'],
+                library_dirs=library_dirs,
+                extra_compile_args=['-O3', '-DNDEBUG', '-std=c++11', '-w']),
+        ]),
+
         package_data={
             "turicreate": [
                 "_cython/*.so",

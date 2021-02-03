@@ -7,6 +7,7 @@
 #define TEST_MACROS_HPP
 
 #include <mutex>
+#include <turi_common.h>
 
 static std::recursive_mutex __b_lock__;
 #define _TS_ADD_LOCK_GUARD std::lock_guard<std::recursive_mutex> __guard_b__(__b_lock__)

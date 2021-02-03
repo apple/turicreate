@@ -22,3 +22,4 @@ JSExportAs(createElement,
 @property (atomic, strong) TCVegaCGCanvas* canvas;
 
 @end
+#include <turi_common.h>

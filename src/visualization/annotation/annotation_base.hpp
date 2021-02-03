@@ -6,6 +6,7 @@
 #include <string>
 #include <vector>
 
+#include <turi_common.h>
 #include <core/export.hpp>
 
 #include <core/data/flexible_type/flexible_type.hpp>

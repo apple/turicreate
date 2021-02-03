@@ -5,6 +5,7 @@
  */
 #ifndef TURI_SERIALIZE_HPP
 #define TURI_SERIALIZE_HPP
+#include <turi_common.h>
 #include <core/storage/serialization/iarchive.hpp>
 #include <core/storage/serialization/oarchive.hpp>
 #include <core/storage/serialization/basic_types.hpp>

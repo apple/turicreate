@@ -10,6 +10,7 @@
 #include <functional>
 #include <type_traits>
 
+#include <turi_common.h>
 #include <core/util/basic_types.hpp>
 #include <core/parallel/thread_pool.hpp>
 

@@ -1,9 +1,0 @@
-subdirs(data
-generics
-globals
-logging
-parallel
-random
-storage
-system
-util)

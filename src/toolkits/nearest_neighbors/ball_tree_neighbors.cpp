@@ -4,10 +4,11 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 // ML Data
-#include <toolkits/ml_data_2/ml_data.hpp>
-#include <toolkits/ml_data_2/metadata.hpp>
-#include <toolkits/ml_data_2/ml_data_iterators.hpp>
-#include <toolkits/ml_data_2/sframe_index_mapping.hpp>
+#include <turi_common.h>
+#include <toolkits/recsys/ml_data_2/ml_data.hpp>
+#include <toolkits/recsys/ml_data_2/metadata.hpp>
+#include <toolkits/recsys/ml_data_2/ml_data_iterators.hpp>
+#include <toolkits/recsys/ml_data_2/sframe_index_mapping.hpp>
 
 // Toolkits
 #include <toolkits/nearest_neighbors/nearest_neighbors.hpp>
@@ -20,7 +21,7 @@
 #include <core/storage/sframe_data/sarray.hpp>
 
 // Miscellaneous
-#include <timer/timer.hpp>
+#include <core/system/platform/timer/timer.hpp>
 #include <algorithm>
 #include <Eigen/SparseCore>
 #include <limits>

@@ -6,6 +6,7 @@
 #ifndef CPPIPC_IPC_DESERIALIZER_MINIMAL_HPP
 #define CPPIPC_IPC_DESERIALIZER_MINIMAL_HPP
 #include <type_traits>
+#include <turi_common.h>
 #include <core/storage/serialization/iarchive.hpp>
 #include <core/system/cppipc/ipc_object_base.hpp>
 

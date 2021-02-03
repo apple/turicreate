@@ -6,6 +6,7 @@
 #ifndef TURI_SFRAME_TESTING_UTILS_H_
 #define TURI_SFRAME_TESTING_UTILS_H_
 
+#include <turi_common.h>
 #include <core/storage/sframe_data/sframe.hpp>
 #include <core/parallel/pthread_tools.hpp>
 #include <vector>

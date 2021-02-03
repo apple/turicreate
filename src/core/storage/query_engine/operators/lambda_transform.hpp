@@ -5,6 +5,7 @@
  */
 #ifndef TURI_SFRAME_QUERY_MANAGER_LAMBDA_TRANSFORM_HPP
 #define TURI_SFRAME_QUERY_MANAGER_LAMBDA_TRANSFORM_HPP
+#include <turi_common.h>
 #include <core/data/flexible_type/flexible_type.hpp>
 #include <core/storage/query_engine/operators/operator.hpp>
 #include <core/storage/query_engine/execution/query_context.hpp>

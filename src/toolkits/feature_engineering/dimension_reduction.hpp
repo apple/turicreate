@@ -5,6 +5,7 @@
  */
 #ifndef TURI_DIMENSION_REDUCTION_H_
 #define TURI_DIMENSION_REDUCTION_H_
+#include <turi_common.h>
 #include <model_server/lib/toolkit_class_macros.hpp>
 #include <toolkits/feature_engineering/transformer_base.hpp>
 #include <Eigen/Core>

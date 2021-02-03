@@ -14,6 +14,7 @@
 #ifndef GIL_AFFINE_HPP
 #define GIL_AFFINE_HPP
 
+#include <turi_common.h>
 #include <boost/gil/utilities.hpp>     // point2
 
 ////////////////////////////////////////////////////////////////////////////////////////

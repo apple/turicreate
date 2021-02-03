@@ -8,6 +8,7 @@
 
 #include <string>
 #include <iostream>
+#include <turi_common.h>
 
 namespace turi {
 

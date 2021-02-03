@@ -9,6 +9,7 @@
 #include <sstream>
 
 #ifndef _WIN32
+#include <turi_common.h>
 #include <sys/types.h>
 #include <ifaddrs.h>
 #include <netinet/in.h>
@@ -19,7 +20,7 @@
 #endif
 
 #include <core/logging/assertions.hpp>
-#include <network/net_util.hpp>
+#include <core/system/platform/network/net_util.hpp>
 #include <core/export.hpp>
 
 #define NUM_VM_MAC_ADDRS 8

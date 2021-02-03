@@ -6,8 +6,9 @@
 #ifndef TURI_LAMBDA_GRAPH_PYLAMBDA_MASTER_HPP
 #define TURI_LAMBDA_GRAPH_PYLAMBDA_MASTER_HPP
 
-#include<core/system/lambda/graph_lambda_interface.hpp>
-#include<core/system/lambda/worker_pool.hpp>
+#include <turi_common.h>
+#include <core/system/lambda/graph_lambda_interface.hpp>
+#include <core/system/lambda/worker_pool.hpp>
 
 namespace turi {
 

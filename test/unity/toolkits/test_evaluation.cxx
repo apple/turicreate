@@ -14,7 +14,7 @@
 #include <core/storage/sframe_data/testing_utils.hpp>
 #include <core/util/testing_utils.hpp>
 #include <toolkits/recsys/models.hpp>
-#include <toolkits/evaluation/metrics.hpp>
+#include <ml/evaluation/metrics.hpp>
 #include <core/storage/sframe_data/testing_utils.hpp>
 #include <core/util/testing_utils.hpp>
 

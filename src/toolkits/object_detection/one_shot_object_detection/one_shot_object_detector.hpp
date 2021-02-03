@@ -8,10 +8,11 @@
 #ifndef TURI_ONE_SHOT_OBJECT_DETECTOR_H_
 #define TURI_ONE_SHOT_OBJECT_DETECTOR_H_
 
+#include <turi_common.h>
 #include <core/data/sframe/gl_sframe.hpp>
 #include <map>
 #include <model_server/lib/extensions/ml_model.hpp>
-#include <toolkits/coreml_export/mlmodel_wrapper.hpp>
+#include <ml/coreml_export/mlmodel_wrapper.hpp>
 #include <toolkits/object_detection/object_detector.hpp>
 
 namespace turi {

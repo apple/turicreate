@@ -6,6 +6,7 @@
 #ifndef __TC_BOXES_AND_WHISKERS
 #define __TC_BOXES_AND_WHISKERS
 
+#include <turi_common.h>
 #include <core/data/sframe/gl_sframe.hpp>
 #include <core/storage/sframe_data/groupby_aggregate_operators.hpp>
 #include <visualization/server/plot.hpp>

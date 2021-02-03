@@ -8,6 +8,7 @@
 #include <cstdint>
 #include <cstddef>
 #include <algorithm>
+#include <turi_common.h>
 #include <core/logging/logger.hpp>
 #include <core/logging/assertions.hpp>
 #include <core/storage/sframe_data/integer_pack_impl.hpp>

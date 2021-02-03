@@ -6,11 +6,12 @@
 #ifndef TURI_SFRAME_GROUPBY_HPP
 #define TURI_SFRAME_GROUPBY_HPP
 
+#include <turi_common.h>
 #include <core/parallel/mutex.hpp>
-#include<memory>
-#include<vector>
-#include<core/storage/sframe_data/sarray.hpp>
-#include<core/storage/sframe_data/sframe.hpp>
+#include <memory>
+#include <vector>
+#include <core/storage/sframe_data/sarray.hpp>
+#include <core/storage/sframe_data/sframe.hpp>
 
 namespace turi {
 

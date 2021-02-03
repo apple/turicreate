@@ -1,3 +1,4 @@
+#include <turi_common.h>
 #include <visualization/server/escape.hpp>
 
 #include <core/data/flexible_type/string_escape.hpp>

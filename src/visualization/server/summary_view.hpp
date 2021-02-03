@@ -1,6 +1,7 @@
 #ifndef _TC_SUMMARY_VIEW
 #define _TC_SUMMARY_VIEW
 
+#include <turi_common.h>
 #include <core/data/flexible_type/flexible_type.hpp>
 #include <core/parallel/lambda_omp.hpp>
 

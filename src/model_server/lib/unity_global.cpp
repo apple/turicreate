@@ -4,9 +4,10 @@
  * be found in the LICENSE.txt file or at https://opensource.org/licenses/BSD-3-Clause
  */
 #ifndef _WIN32
+#include <turi_common.h>
 #include <dlfcn.h>
 #else
-#include <cross_platform/windows_wrapper.hpp>
+#include <core/system/platform/cross_platform/windows_wrapper.hpp>
 #endif
 
 #include <core/util/syserr_reporting.hpp>
@@ -24,7 +25,7 @@
 #endif
 #include <model_server/lib/version.hpp>
 #include <model_server/lib/unity_global.hpp>
-#include <perf/memory_info.hpp>
+#include <core/system/platform/perf/memory_info.hpp>
 #include <core/globals/globals.hpp>
 #include <core/storage/sframe_interface/unity_sgraph.hpp>
 #include <core/storage/sframe_interface/unity_sarray.hpp>

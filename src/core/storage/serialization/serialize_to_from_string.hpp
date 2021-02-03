@@ -6,6 +6,7 @@
 #ifndef SERIALIZE_TO_FROM_STRING_HPP
 #define SERIALIZE_TO_FROM_STRING_HPP
 #include <sstream>
+#include <turi_common.h>
 #include <boost/iostreams/stream.hpp>
 
 namespace turi {

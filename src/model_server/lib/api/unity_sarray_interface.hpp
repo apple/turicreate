@@ -8,6 +8,7 @@
 #include <memory>
 #include <vector>
 #include <string>
+#include <turi_common.h>
 #include <core/data/flexible_type/flexible_type.hpp>
 #include <model_server/lib/api/function_closure_info.hpp>
 #include <core/system/cppipc/magic_macros.hpp>

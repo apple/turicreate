@@ -6,6 +6,7 @@
 #ifndef TURI_SKETCH_STREAMING_QUANTILE_SKETCH_HPP
 #define TURI_SKETCH_STREAMING_QUANTILE_SKETCH_HPP
 #include <vector>
+#include <turi_common.h>
 #include <ml/sketches/quantile_sketch.hpp>
 #include <core/logging/assertions.hpp>
 #include <core/storage/serialization/serialization_includes.hpp>

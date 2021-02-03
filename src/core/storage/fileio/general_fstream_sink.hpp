@@ -8,6 +8,7 @@
 #include <memory>
 #include <iostream>
 #include <fstream>
+#include <turi_common.h>
 #include <boost/iostreams/stream.hpp>
 #include <core/storage/fileio/union_fstream.hpp>
 #include <core/storage/fileio/fileio_constants.hpp>

@@ -6,6 +6,7 @@
 #ifndef _WORD_TRIMMER_H_
 #define _WORD_TRIMMER_H_
 #include <string>
+#include <turi_common.h>
 #include <model_server/lib/toolkit_class_macros.hpp>
 #include <toolkits/feature_engineering/transformer_base.hpp>
 #include <toolkits/feature_engineering/topk_indexer.hpp>

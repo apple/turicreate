@@ -8,6 +8,7 @@
 #include <cstdlib>
 #include <iostream>
 #include <mutex>
+#include <turi_common.h>
 #include <core/parallel/atomic.hpp>
 #include <boost/bind.hpp>
 #include <core/logging/logger.hpp>
@@ -16,7 +17,7 @@
 #include <core/system/nanosockets/async_reply_socket.hpp>
 #include <core/system/nanosockets/print_zmq_error.hpp>
 #include <core/system/nanosockets/get_next_port_number.hpp>
-#include <network/net_util.hpp>
+#include <core/system/platform/network/net_util.hpp>
 extern "C" {
 #include <nanomsg/nn.h>
 #include <nanomsg/reqrep.h>

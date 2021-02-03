@@ -8,3 +8,4 @@ namespace turi {
 }
 
 #endif
+#include <turi_common.h>

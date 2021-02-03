@@ -13,7 +13,7 @@
 #include <core/parallel/lambda_omp.hpp>
 #include <core/logging/table_printer/table_printer.hpp>
 #include <model_server/lib/image_util.hpp>
-#include <toolkits/coreml_export/mlmodel_include.hpp>
+#include <ml/coreml_export/mlmodel_include.hpp>
 
 #import <CoreML/CoreML.h>
 #include <memory>

@@ -9,6 +9,7 @@
 #include <string>
 #include <list>
 #include <cstring>
+#include <turi_common.h>
 #include <core/storage/serialization/oarchive.hpp>
 #include <core/storage/serialization/iarchive.hpp>
 #include <core/export.hpp>

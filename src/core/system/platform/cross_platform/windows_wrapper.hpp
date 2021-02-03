@@ -13,6 +13,7 @@
 // this by default.
 
 #ifdef _WIN32
+#include <turi_common.h>
 #include <winsock2.h>
 #include <windows.h>
 #endif

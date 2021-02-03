@@ -5,6 +5,7 @@
  */
 #ifndef TURI_SFRAME_QUERY_MANAGER_GENERALIZED_TRANSFORM_HPP
 #define TURI_SFRAME_QUERY_MANAGER_GENERALIZED_TRANSFORM_HPP
+#include <turi_common.h>
 #include <core/data/flexible_type/flexible_type.hpp>
 #include <core/random/random.hpp>
 #include <core/parallel/pthread_tools.hpp>

@@ -6,7 +6,8 @@
 #ifndef TURI_SGRAPH_IO_HPP
 #define TURI_SGRAPH_IO_HPP
 
-#include<string>
+#include <string>
+#include <turi_common.h>
 
 class sgraph;
 
