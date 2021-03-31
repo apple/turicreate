@@ -463,13 +463,13 @@ build_cmd="$CMAKE \
 if [[ $with_debug == 1 ]] ; then
   set -x
   mkdir -p ${DEBUG_DIR}
-  cd ${DEBUG_DIR} && $build_cmd -DCMAKE_BUILD_TYPE=Debug --config Debug -D CMAKE_CONFIGURATION_TYPES='Debug;Release' ${TURI_HOME}
+  cd ${DEBUG_DIR} && $build_cmd -DCMAKE_BUILD_TYPE=Debug -D CMAKE_CONFIGURATION_TYPES='Debug;Release' ${TURI_HOME}
   set +x
 fi
 
 if [[ $with_release == 1 ]] ; then
   set -x
   mkdir -p ${RELEASE_DIR}
-  cd ${RELEASE_DIR} && $build_cmd -DCMAKE_BUILD_TYPE=Release -D CMAKE_CONFIGURATION_TYPES='Release;Debug' --config Release ${TURI_HOME}
+  cd ${RELEASE_DIR} && $build_cmd -DCMAKE_BUILD_TYPE=Release -D CMAKE_CONFIGURATION_TYPES='Release;Debug' ${TURI_HOME}
   set +x
 fi
