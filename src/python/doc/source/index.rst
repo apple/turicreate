@@ -11,7 +11,7 @@ your app.
 
 * **Easy-to-use:** Focus on tasks instead of algorithms
 * **Visual:** Built-in, streaming visualizations to explore your data
-* **Flexible:** Supports text, images, audio, video and sensor data
+* **Flexible:** Supports text, images, audio and sensor data
 * **Fast and Scalable:** Work with large datasets on a single machine
 * **Ready To Deploy:** Export models to Core ML for use in iOS, macOS, watchOS, and tvOS apps
 
