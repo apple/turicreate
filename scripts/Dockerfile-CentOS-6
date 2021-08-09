@@ -144,6 +144,17 @@ RUN ./configure --prefix=/usr/local --enable-unicode=ucs4 --enable-shared --enab
     ldconfig && \
     rm -rf /src/Python-3.8.5*
 
+# Install Python 3.9 from source
+WORKDIR /src
+RUN curl -O https://www.python.org/ftp/python/3.9.6/Python-3.9.6.tgz
+RUN tar xf Python-3.9.6.tgz
+WORKDIR /src/Python-3.9.6
+RUN ./configure --prefix=/usr/local --enable-unicode=ucs4 --enable-shared --enable-loadable-sqlite-extensions && \
+    make -j4 --quiet && \
+    make install && \
+    ldconfig && \
+    rm -rf /src/Python-3.9.5*
+
 ENV CC="/usr/local/bin/gcc"
 ENV CXX="/usr/local/bin/g++"
 
@@ -160,6 +171,8 @@ RUN python3.7 get-pip.py
 RUN pip3.7 install virtualenv
 RUN python3.8 get-pip.py
 RUN pip3.8 install virtualenv
+RUN python3.9 get-pip.py
+RUN pip3.9 install virtualenv
 RUN rm -rf /src/get-pip.py
 
 ENV LD="/usr/local/lib64"
