@@ -128,6 +128,26 @@ build_wheel_linux_python38:
     paths:
       - target/
 
+build_wheel_linux_python39:
+  tags:
+    - docker
+  services:
+    - docker:19.03-dind
+  image: docker:19.03.8
+  stage: build
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+  script:
+    - apk add bash
+    - mkdir -p /etc/ssl/certs/
+    - bash -e scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --docker-python3.9
+  artifacts:
+    expire_in: 1 day
+    paths:
+      - target/
+
 build_wheel_mac_10_15_python27:
   tags:
     - macos10.15
@@ -201,6 +221,22 @@ build_wheel_mac_10_15_python38:
   stage: build
   script:
     - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/3.8/bin/virtualenv"
+    - source scripts/use_ccache.sh
+    - bash -e scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4
+  artifacts:
+    expire_in: 1 day
+    paths:
+      - target/
+
+build_wheel_mac_10_15_python39:
+  tags:
+    - macos10.15
+  only:
+    variables:
+      - $TC_HAS_MACOS_RUNNERS == "1"
+  stage: build
+  script:
+    - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/3.9/bin/virtualenv"
     - source scripts/use_ccache.sh
     - bash -e scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4
   artifacts:
@@ -503,6 +539,28 @@ test_python_linux_python38:
     paths:
       - pytest.*
 
+test_python_linux_python39_minimal:
+  tags:
+    - docker
+  services:
+    - docker:19.03-dind
+  image: docker:19.03.8
+  stage: test
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_DRIVER: overlay2
+    DOCKER_TLS_CERTDIR: ""
+  dependencies:
+    - build_wheel_linux_python39
+  script:
+    - apk add bash
+    - bash -e scripts/test_wheel.sh --docker-python3.9 --minimal
+  artifacts:
+    when: always
+    expire_in: 2 weeks
+    paths:
+      - pytest.*
+
 test_python_mac_python27_10_13:
   tags:
     - macos10.13
@@ -629,6 +687,24 @@ test_python_mac_python38_10_15:
     paths:
       - pytest.*
 
+test_python_mac_python39_10_15_minimal:
+  tags:
+    - macos10.15
+  only:
+    variables:
+      - $TC_HAS_MACOS_RUNNERS == "1"
+  stage: test
+  dependencies:
+    - build_wheel_mac_10_15_python39
+  script:
+    - export VIRTUALENV="/Library/Frameworks/Python.framework/Versions/3.9/bin/virtualenv"
+    - bash -e scripts/test_wheel.sh --minimal
+  artifacts:
+    when: always
+    expire_in: 2 weeks
+    paths:
+      - pytest.*
+
 test_python_mac_python38_10_14_minimal:
   tags:
     - macos10.14
@@ -745,11 +821,13 @@ collect_artifacts:
     - build_wheel_linux_python36
     - build_wheel_linux_python37
     - build_wheel_linux_python38
+    - build_wheel_linux_python39
     - build_wheel_mac_10_15_python27
     - build_wheel_mac_10_15_python35
     - build_wheel_mac_10_15_python36
     - build_wheel_mac_10_15_python37
     - build_wheel_mac_10_15_python38
+    - build_wheel_mac_10_15_python39
     - build_documentation
   script:
     - find release/src/deployment/ -name '*.dylib' -exec mv {} target/ \;
