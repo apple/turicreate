@@ -23,7 +23,8 @@ RUN add-apt-repository -y ppa:deadsnakes/ppa
 RUN apt-get -y install python3.8
 
 # Install Python 3.9
-apt-get -y install python3.9
+RUN apt-get update
+RUN apt-get -y install python3.9 python3.9-distutils
 
 # Install build-essential (needed by numpy, which tries to
 # build itself from source on 3.6 and above)

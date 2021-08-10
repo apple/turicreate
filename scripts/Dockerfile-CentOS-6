@@ -160,11 +160,12 @@ ENV CXX="/usr/local/bin/g++"
 
 # Install pip and virtualenv
 WORKDIR /src
-RUN curl -O https://bootstrap.pypa.io/get-pip.py
+RUN curl -O https://bootstrap.pypa.io/pip/2.7/get-pip.py
 RUN python2.7 get-pip.py
 RUN pip2.7 install virtualenv
 RUN python3.5 get-pip.py
 RUN pip3.5 install virtualenv
+RUN curl -O https://bootstrap.pypa.io/get-pip.py
 RUN python3.6 get-pip.py
 RUN pip3.6 install virtualenv
 RUN python3.7 get-pip.py
