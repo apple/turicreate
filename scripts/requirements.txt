@@ -8,7 +8,7 @@ scipy==1.2.1; python_version < '3.8'
 scipy==1.5.1; python_version == '3.8'
 scipy==1.7.1; python_version == '3.9'
 
-resampy==0.2.1
+resampy==0.2.1; python_version < '3.9'
 
 scikit-learn==0.20.3; python_version < '3.8'
 scikit-learn==0.23.1; python_version == '3.8'
