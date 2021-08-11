@@ -189,7 +189,7 @@ if __name__ == "__main__":
         # SC errors out on Linux with TensorFlow 2.2 and 2.3
         # See: https://github.com/apple/turicreate/issues/3303
 
-        if sys.version_info[0] != 3 or sys.version_info[1] != 8:
+        if sys.version_info[0] != 3 or sys.version_info[1] < 8:
             install_requires.append("tensorflow >= 2.0.0,<2.1.0")
         else:
             # Only TensorFlow >= 2.2 supports Python 3.8
