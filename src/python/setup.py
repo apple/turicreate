@@ -179,6 +179,8 @@ if __name__ == "__main__":
         sys.version_info[0] == 3 and sys.version_info[1] == 5
     ):
         install_requires.append("llvmlite == 0.31.0")
+    if sys.version_info[0] == 3 and sys.version_info[1] == 9:
+        install_requires.append("llvmlite == 0.36.0")
 
     if sys.platform == "darwin":
         install_requires.append("tensorflow >= 2.0.0")
