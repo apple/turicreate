@@ -142,7 +142,8 @@ build_wheel_linux_python39:
   script:
     - apk add bash
     - mkdir -p /etc/ssl/certs/
-    - bash -e scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --docker-python3.9
+    # Smoke test must be skipped. A Python 3.9 numba wheel can not be installed on Centos 6 (manylinux2014 vs manylinux2010).
+    - bash -e scripts/make_wheel.sh --skip_test --skip_cpp_test --build_number=$CI_PIPELINE_ID --num_procs=4 --docker-python3.9 --skip_smoke_test
   artifacts:
     expire_in: 1 day
     paths:
