@@ -199,7 +199,8 @@ if __name__ == "__main__":
 
         # numba 0.51 started using "manylinux2014" rather than "manylinux2010".
         # This breaks a lot of Linux installs.
-        install_requires.append("numba < 0.51.0")
+        if sys.version_info[0] != 3 and sys.version_info[1] != 9:
+            install_requires.append("numba < 0.51.0")
 
     setup(
         name="turicreate",
