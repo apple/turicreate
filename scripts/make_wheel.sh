@@ -114,6 +114,9 @@ if [[ -n "${USE_DOCKER}" ]]; then
   if [[ -n $SKIP_CPP_TEST ]]; then
     make_wheel_args="$make_wheel_args --skip_cpp_test"
   fi
+  if [[ -n $SKIP_SMOKE_TEST ]]; then
+    make_wheel_args="$make_wheel_args --skip_smoke_test"
+  fi
   if [[ "$build_type" == "debug" ]]; then
     make_wheel_args="$make_wheel_args --debug"
   fi
