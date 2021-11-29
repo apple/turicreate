@@ -1,4 +1,4 @@
-Quick Links: [Installation](#supported-platforms) | [Documentation](#documentation) | [WWDC 2019](https://developer.apple.com/videos/play/wwdc2019/420/) |  [WWDC 2018](https://developer.apple.com/videos/play/wwdc2018/712/)
+Quick Links: [Installation](#supported-platforms) | [Documentation](#documentation)
 
 [![Build Status](https://travis-ci.com/apple/turicreate.svg?branch=master)](#)
 [![PyPI Release](https://img.shields.io/pypi/v/turicreate.svg)](#)
@@ -7,8 +7,6 @@ Quick Links: [Installation](#supported-platforms) | [Documentation](#documentati
 [<img align="right" src="https://docs-assets.developer.apple.com/turicreate/turi-dog.svg" alt="Turi Create" width="100">](#)
 
 # Turi Create 
-
-Check out our talks at [WWDC 2019](https://developer.apple.com/videos/play/wwdc2019/420/) and at [WWDC 2018](https://developer.apple.com/videos/play/wwdc2018/712/)!
 
 Turi Create simplifies the development of custom machine learning models. You
 don't have to be a machine learning expert to add recommendations, object
