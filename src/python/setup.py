@@ -182,6 +182,12 @@ if __name__ == "__main__":
     if sys.version_info[0] == 3 and sys.version_info[1] == 9:
         install_requires.append("llvmlite == 0.36.0")
 
+    if sys.version_info[0] == 3 and sys.version_info[1] == 8:
+        # Only 4.0 betas support Python 3.8
+        install_requires.append("coremltools==4.0b3; python_version >= 3.8.0',")
+    else:
+        install_requires.append("coremltools==3.3; python_version < 3.8.0")
+
     if sys.platform == "darwin":
         install_requires.append("tensorflow >= 2.0.0")
     else:
