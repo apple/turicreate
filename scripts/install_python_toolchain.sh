@@ -3,7 +3,7 @@
 set -exo pipefail
 
 if [[ -z $VIRTUALENV ]]; then
-  VIRTUALENV=virtualenv
+  VIRTUALENV='python3 -m venv'
 fi
 
 $VIRTUALENV "$(pwd)"/deps/env
@@ -63,7 +63,7 @@ fi
 
 echo "run 'ln -Ffs' files from ${SRC_INCLUDE_DIR}"
 for f in $SRC_INCLUDE_DIR/*; do
-  ln -Ffs "$f" "$(basename "$f")"
+  ln -Ffs "$f" "$(basename "$f")" || echo "Warning: error installing symlink for $f."
 done
 
 popd
@@ -73,7 +73,7 @@ pushd deps/local/bin
 
 echo "run 'ln -Ffs' on files from ../../env/bin/"
 for f in ../../env/bin/*; do
-  ln -Ffs "$f" "$(basename "$f")"
+  ln -Ffs "$f" "$(basename "$f")" || echo "Warning: error installing symlink for $f."
 done
 
 popd
