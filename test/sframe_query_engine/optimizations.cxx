@@ -60,7 +60,7 @@ static node source_sarray() {
   std::vector<flexible_type> data(n);
   
   for (size_t i = 0; i < n; ++i)
-    data[i] = random::fast_uniform<size_t>(0,9);
+    data[i] = random::uniform<size_t>(0,9);
 
   auto sa = std::make_shared<sarray<flexible_type>>();
   
@@ -147,7 +147,7 @@ static node binary_source_sarray() {
   std::vector<flexible_type> data(n);
   
   for (size_t i = 0; i < n; ++i) {
-    data[i] = (i < 4) ? 1 : random::fast_uniform<int>(0,1);
+    data[i] = (i < 4) ? 1 : random::uniform<int>(0,1);
   }
 
   auto sa = std::make_shared<sarray<flexible_type>>();
@@ -187,7 +187,7 @@ static node source_sframe(size_t n_columns) {
     data[i].resize(n);
 
     for(size_t j = 0; j < n; ++j) { 
-      data[i][j] = random::fast_uniform<size_t>(0,9);
+      data[i][j] = random::uniform<size_t>(0,9);
     }
   }
 
@@ -237,7 +237,7 @@ static node shifted_source_sframe(size_t n_columns) {
     data[i].resize(2*n);
 
     for(size_t j = 0; j < 2*n; ++j) {
-      data[i][j] = random::fast_uniform<size_t>(0,9);
+      data[i][j] = random::uniform<size_t>(0,9);
     }
   }
 
@@ -618,7 +618,7 @@ struct opts  {
       std::vector<size_t> indices;
       
       for(size_t i = 0; i < 5; ++i)
-        indices.push_back(random::fast_uniform<size_t>(0, 9));
+        indices.push_back(random::uniform<size_t>(0, 9));
 
       if(i % 2 == 0)
         n = make_union(n, source_sframe(5));
@@ -679,9 +679,9 @@ struct opts  {
       std::vector<size_t> indices;
 
       for(size_t i = 0; i < 5; ++i)
-        indices.push_back(random::fast_uniform<size_t>(0, 9));
+        indices.push_back(random::uniform<size_t>(0, 9));
 
-      if(random::fast_uniform<size_t>(0, 1) == 0)
+      if(random::uniform<size_t>(0, 1) == 0)
         n = make_union(n, old_n);
       else 
         n = make_union(old_n, n);
@@ -707,9 +707,9 @@ struct opts  {
       std::vector<size_t> indices;
       
       for(size_t i = 0; i < 5; ++i)
-        indices.push_back(random::fast_uniform<size_t>(0, 9));
+        indices.push_back(random::uniform<size_t>(0, 9));
 
-      if(random::fast_uniform<size_t>(0, 1) == 0)
+      if(random::uniform<size_t>(0, 1) == 0)
         n = make_union(n, old_n);
       else 
         n = make_union(old_n, n);
@@ -722,8 +722,8 @@ struct opts  {
 
       nodes.push_back(n);
 
-      n = make_union(n, nodes[random::fast_uniform<size_t>(0, nodes.size() - 1)]);
-      n = make_union(n, nodes[random::fast_uniform<size_t>(0, nodes.size() - 1)]);
+      n = make_union(n, nodes[random::uniform<size_t>(0, nodes.size() - 1)]);
+      n = make_union(n, nodes[random::uniform<size_t>(0, nodes.size() - 1)]);
     }
     
     _RUN(n);
@@ -798,7 +798,7 @@ struct opts  {
 
     for(size_t i = 0; i < 20; ++i) {
 
-      std::vector<size_t> indices = {random::fast_uniform<size_t>(0, 5 + i - 1)};
+      std::vector<size_t> indices = {random::uniform<size_t>(0, 5 + i - 1)};
       n = make_union(n, make_transform(make_project(n, indices) ) );
     }
 
@@ -815,7 +815,7 @@ struct opts  {
       std::vector<size_t> indices;
       
       for(size_t j = 0; j < 2; ++j)
-        indices.push_back(random::fast_uniform<size_t>(0, 5 + i - 1));
+        indices.push_back(random::uniform<size_t>(0, 5 + i - 1));
 
       n = make_union(n, make_transform(make_project(n, indices) ) );
     }
@@ -833,7 +833,7 @@ struct opts  {
       std::vector<size_t> indices;
 
       for(size_t j = 0; j < 4; ++j)
-        indices.push_back(random::fast_uniform<size_t>(0, 5 + i - 1));
+        indices.push_back(random::uniform<size_t>(0, 5 + i - 1));
 
       n = make_union(n, make_transform(make_project(n, indices) ) );
     }
@@ -866,7 +866,7 @@ struct opts  {
 
       std::vector<size_t> indices;
       for(size_t j = 0; j < 5; ++j)
-        indices.push_back(random::fast_uniform<size_t>(0, 4));
+        indices.push_back(random::uniform<size_t>(0, 4));
 
       if(i %3 == 0)
         n = make_project(make_append(n, n2), indices);
@@ -968,7 +968,7 @@ struct opts  {
       std::vector<size_t> indices;
 
       for(size_t j = 0; j < 2; ++j)
-        indices.push_back(random::fast_uniform<size_t>(0, 5 + i - 1));
+        indices.push_back(random::uniform<size_t>(0, 5 + i - 1));
 
       n = make_union(n, make_transform(make_project(n, indices) ) );
     }
@@ -1065,9 +1065,9 @@ struct opts  {
     std::vector<node> node_list = {make_generalized_transform(n, 10)};
 
     for(size_t i = 0; i < 30; ++i) {
-      size_t idx_1 = random::fast_uniform<size_t>(0, node_list.size() - 1);
-      size_t proj_idx = random::fast_uniform<size_t>(0, 9);
-      size_t idx_2 = random::fast_uniform<size_t>(0, node_list.size() - 1);
+      size_t idx_1 = random::uniform<size_t>(0, node_list.size() - 1);
+      size_t proj_idx = random::uniform<size_t>(0, 9);
+      size_t idx_2 = random::uniform<size_t>(0, node_list.size() - 1);
 
       node_list.push_back(make_union(node_list[idx_1], make_project(node_list[idx_2], {proj_idx})));
     }
@@ -1096,13 +1096,13 @@ struct opts  {
     std::vector<node> node_list = {make_generalized_transform(n, 10)};
 
     for(size_t i = 0; i < 20; ++i) {
-      size_t idx_1 = random::fast_uniform<size_t>(0, node_list.size() - 1);
-      size_t idx_2 = random::fast_uniform<size_t>(0, node_list.size() - 1);
-      size_t idx_3 = random::fast_uniform<size_t>(0, node_list.size() - 1);
+      size_t idx_1 = random::uniform<size_t>(0, node_list.size() - 1);
+      size_t idx_2 = random::uniform<size_t>(0, node_list.size() - 1);
+      size_t idx_3 = random::uniform<size_t>(0, node_list.size() - 1);
 
       std::vector<size_t> project_indices(5);
       for(size_t& idx : project_indices) 
-        idx = random::fast_uniform<size_t>(0, 9);
+        idx = random::uniform<size_t>(0, 9);
 
       node_list.push_back(make_union(node_list[idx_1], make_project(node_list[idx_2], project_indices)));
       node_list.push_back(make_union(node_list[idx_1], make_generalized_transform(node_list[idx_3], 10)));
@@ -1111,7 +1111,7 @@ struct opts  {
     n = make_union(node_list[0], node_list[1]);
     
     for(size_t i = 2; i < node_list.size(); ++i) {
-      size_t idx = random::fast_uniform<size_t>(0, 14);
+      size_t idx = random::uniform<size_t>(0, 14);
       n = make_union(n, make_project(node_list[i], {idx}));
     }
     
@@ -1170,7 +1170,7 @@ struct opts  {
     node n = base_1;
 
     for(size_t i = 0; i < 20; ++i) {
-      size_t idx_1 = random::fast_uniform<size_t>(0, 9);
+      size_t idx_1 = random::uniform<size_t>(0, 9);
 
       n = make_union(n, make_transform(make_project(base_1, {idx_1})));
     }
@@ -1186,8 +1186,8 @@ struct opts  {
     node n = base_1;
 
     for(size_t i = 0; i < 20; ++i) {
-      size_t idx_1 = random::fast_uniform<size_t>(0, 9);
-      size_t idx_2 = random::fast_uniform<size_t>(0, 9);
+      size_t idx_1 = random::uniform<size_t>(0, 9);
+      size_t idx_2 = random::uniform<size_t>(0, 9);
 
       n = make_union(n, make_transform(make_project(base_1, {idx_1, idx_2})));
     }

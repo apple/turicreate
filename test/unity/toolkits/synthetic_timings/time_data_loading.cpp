@@ -39,8 +39,8 @@ int main(int argc, char **argv) {
 
     for(size_t i = 0; i < n_obs; ++i) {
 
-      users[i] = random::fast_uniform<size_t>(0, n_users-1);
-      size_t item_1 = random::fast_uniform<size_t>(0, n_items-1);
+      users[i] = random::uniform<size_t>(0, n_users-1);
+      size_t item_1 = random::uniform<size_t>(0, n_items-1);
       if(use_strings)
         items[i] = std::to_string(item_1) + "_" + std::to_string(size_t(hash64(item_1)));
       else

@@ -23,7 +23,7 @@ void _run_time_test(size_t max_value) {
   std::vector<size_t> powers(n_iterations);
 
   for(size_t i = 0; i < n_iterations; ++i)
-    powers[i] = random::fast_uniform<size_t>(0, max_value);
+    powers[i] = random::uniform<size_t>(0, max_value);
 
 
   {

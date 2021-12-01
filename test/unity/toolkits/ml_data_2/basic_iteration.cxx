@@ -417,8 +417,8 @@ struct ml_data_numeric_iteration_test  {
 
       std::vector<int> seen_value(n);
 
-      size_t row_start = random::fast_uniform<size_t>(0, n-1);
-      size_t row_end = random::fast_uniform<size_t>(0, n-1);
+      size_t row_start = random::uniform<size_t>(0, n-1);
+      size_t row_end = random::uniform<size_t>(0, n-1);
 
       if(row_start > row_end) {
         if(i % 2 == 0)
@@ -529,8 +529,8 @@ struct ml_data_numeric_iteration_test  {
 
       std::vector<int> seen_value(n);
 
-      size_t row_start = random::fast_uniform<size_t>(0, n-1);
-      size_t row_end = random::fast_uniform<size_t>(0, n-1);
+      size_t row_start = random::uniform<size_t>(0, n-1);
+      size_t row_end = random::uniform<size_t>(0, n-1);
 
       if(row_start > row_end) {
         if(i % 2 == 0)

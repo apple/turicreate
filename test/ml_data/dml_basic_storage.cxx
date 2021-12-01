@@ -282,7 +282,7 @@ static void run_storage_check_test(size_t n, const std::string& run_string,
     if (row_end > row_start) {
       auto it = sliced_data.get_iterator();
 
-      size_t idx = random::fast_uniform<size_t>(0, row_end - 1 - row_start);
+      size_t idx = random::uniform<size_t>(0, row_end - 1 - row_start);
 
       it.seek(idx);
       ASSERT_EQ(it.row_index(), idx);

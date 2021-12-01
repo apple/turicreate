@@ -44,8 +44,8 @@ struct train_test_split  {
     }
 
     do {
-      size_t user = random::fast_uniform<size_t>(0, num_users - 1);
-      size_t item = random::fast_uniform<size_t>(0, num_items - 1);
+      size_t user = random::uniform<size_t>(0, num_users - 1);
+      size_t item = random::uniform<size_t>(0, num_items - 1);
       train_data.push_back( {user, item} );
 
     } while(train_data.size() < num_observations);

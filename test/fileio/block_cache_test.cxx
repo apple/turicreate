@@ -40,8 +40,8 @@ struct block_cache_test {
       for (size_t nprobes = 0; nprobes < num_probes; ++nprobes) {
         TS_ASSERT_EQUALS(cache.value_length(std::to_string(key)), 256);
         // generate a random start-end sequence to read
-        size_t start = random::fast_uniform<size_t>(0, 255);
-        size_t end = random::fast_uniform<size_t>(0, 256);
+        size_t start = random::uniform<size_t>(0, 255);
+        size_t end = random::uniform<size_t>(0, 256);
         std::string value;
         auto ret = cache.read(std::to_string(key), value, start, end);
         // make sure the values we read were valid

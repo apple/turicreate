@@ -160,7 +160,7 @@ gl_sframe _generate_random_classification_sframe(size_t n_rows, std::string colu
   }
 
   for(size_t i = num_classes; i < n_bins; ++i) {
-    bin_to_class_map[i] = random::fast_uniform<size_t>(0, num_classes - 1);
+    bin_to_class_map[i] = random::uniform<size_t>(0, num_classes - 1);
   }
 
   random::shuffle(bin_to_class_map);

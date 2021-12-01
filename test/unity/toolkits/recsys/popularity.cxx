@@ -52,12 +52,12 @@ struct recsys_popularity_test  {
     }
 
     do {
-      size_t user = random::fast_uniform<size_t>(0, num_users - 1);
-      size_t item = random::fast_uniform<size_t>(0, num_items - 1);
+      size_t user = random::uniform<size_t>(0, num_users - 1);
+      size_t item = random::uniform<size_t>(0, num_items - 1);
 
       double accept_prob = 1.0 - double(item) / num_items;
 
-      double r = random::fast_uniform<double>(0.0, 1.0);
+      double r = random::uniform<double>(0.0, 1.0);
 
       if(r < accept_prob) {
         train_data.push_back( {user, item} );

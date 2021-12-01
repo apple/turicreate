@@ -582,8 +582,8 @@ class sparse_similarity_lookup_impl : public sparse_similarity_lookup {
 
           for(size_t s_idx = sample_start_idx; s_idx < sample_end_idx; ++s_idx) {
             auto& s = samples[s_idx];
-            s.i = random::fast_uniform<size_t>(0, num_items - 1);
-            s.j = random::fast_uniform<size_t>(0, num_items - 1);
+            s.i = random::uniform<size_t>(0, num_items - 1);
+            s.j = random::uniform<size_t>(0, num_items - 1);
             s.log_1_m_q = 0;
           }
 
@@ -598,7 +598,7 @@ class sparse_similarity_lookup_impl : public sparse_similarity_lookup {
             // Do an iid sample here.
             item_count_distribution.resize(user_count_dist_sample_size);
             for(size_t i = 0; i < user_count_dist_sample_size; ++i) {
-              size_t idx = random::fast_uniform<size_t>(0, items_per_user.size() - 1);
+              size_t idx = random::uniform<size_t>(0, items_per_user.size() - 1);
               item_count_distribution[i] = items_per_user[idx];
             }
             mult_factor = double(items_per_user.size()) / item_count_distribution.size();

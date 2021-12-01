@@ -178,7 +178,7 @@ public:
           size_t end_w_idx = ((thread_idx + 1) * n_total_dimensions) / num_threads;
 
           for(size_t i = start_w_idx; i < end_w_idx; ++i)
-            w[i] = (sd > 0) ? random::fast_uniform<double>(-sd/2, sd/2) : 0;
+            w[i] = (sd > 0) ? random::uniform<double>(-sd/2, sd/2) : 0;
         } else {
           w.setZero();
         }
@@ -206,9 +206,9 @@ public:
               // observations, num_factors > 100), this gave good
               // starting values and didn't diverge on reset.
 
-              V(i, j) = (V_sd > 0) ? random::fast_uniform<double>(lb, ub) : 0;
+              V(i, j) = (V_sd > 0) ? random::uniform<double>(lb, ub) : 0;
 
-              if(random::fast_uniform<size_t>(0, num_factors()) > std::min<size_t>(4ULL, num_factors() / 2))
+              if(random::uniform<size_t>(0, num_factors()) > std::min<size_t>(4ULL, num_factors() / 2))
                 V(i, j) /= 1000;
             }
           }

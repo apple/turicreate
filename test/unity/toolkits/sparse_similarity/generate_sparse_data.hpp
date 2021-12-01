@@ -19,9 +19,9 @@ static std::vector<std::vector<std::pair<size_t, double> > > generate(
   data.resize(n);
 
   for(size_t i = 0; i < size_t(n * m * p); ++i) {
-    size_t row_idx = random::fast_uniform<size_t>(0, n-1);
-    size_t col_idx = random::fast_uniform<size_t>(0, m-1);
-    double value = random::fast_uniform<double>(0, 1);
+    size_t row_idx = random::uniform<size_t>(0, n-1);
+    size_t col_idx = random::uniform<size_t>(0, m-1);
+    double value = random::uniform<double>(0, 1);
 
     if(binary) {
       value = (value < 0.1) ? 0 : 1;

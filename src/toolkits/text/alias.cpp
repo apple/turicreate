@@ -563,7 +563,7 @@ size_t alias_topic_model::sample_topic(size_t d, size_t w, size_t s,
   double prob_sparse_sample = Q(0, w) / (Pdw + Q(0, w));
 
   size_t t = static_cast<size_t>(-1);
-  if (random::fast_uniform<double>(0, 1) < prob_sparse_sample) {
+  if (random::uniform<double>(0, 1) < prob_sparse_sample) {
 
     // Use samples precomputed via Alias sampler
     t = word_samples[w].back();
@@ -576,7 +576,7 @@ size_t alias_topic_model::sample_topic(size_t d, size_t w, size_t s,
   } else {
 
     // Inverse CDF method on the sparse part
-    double cutoff = random::fast_uniform<double>(0, Pdw);
+    double cutoff = random::uniform<double>(0, Pdw);
     double current = 0.0;
 
     if (doc_topic_counts.get_row(d).size() == 0) {
@@ -609,7 +609,7 @@ size_t alias_topic_model::sample_topic(size_t d, size_t w, size_t s,
               (Pdw * pdwt + Q(0, w) * q(w, t));
 
   // Perform MH step
-  size_t chosen_topic = (random::fast_uniform<double>(0, 1) <
+  size_t chosen_topic = (random::uniform<double>(0, 1) <
                          std::min(1.0, pi)) ? t : s;
   // Reset probs to 0
   for (const auto& kv : doc_topic_counts.get_row(d)) {

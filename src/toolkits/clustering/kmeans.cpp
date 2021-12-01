@@ -722,7 +722,7 @@ void kmeans_model::choose_random_centers() {
     progress_table.print_header();
 
     // Choose the first center and set in the model.
-    size_t idx_center = turi::random::fast_uniform<size_t>(0, seeds.size() - 1);
+    size_t idx_center = turi::random::uniform<size_t>(0, seeds.size() - 1);
     progress_table.print_progress_row(0, 0, idx_center);
     clusters[0].center = seeds[idx_center];
 

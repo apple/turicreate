@@ -169,7 +169,7 @@ struct sarray_file_format_v2_test {
       random::seed(10001);
       for (size_t i = 0;i < 1600; ++i) {
         size_t len = 4096;
-        size_t start = random::fast_uniform<size_t>(0, 16 * VERY_LARGE_SIZE - 4097);
+        size_t start = random::uniform<size_t>(0, 16 * VERY_LARGE_SIZE - 4097);
         std::vector<size_t> vals;
         reader.read_rows(start, start + len, vals);
         TS_ASSERT_EQUALS(vals.size(), len);
@@ -201,7 +201,7 @@ struct sarray_file_format_v2_test {
       std::vector<size_t> start_points;
       for (size_t i = 0;i < 16; ++i) {
         start_points.push_back(
-            random::fast_uniform<size_t>(0, 
+            random::uniform<size_t>(0, 
                                          15 * VERY_LARGE_SIZE));
                                          // 15 so as to give some gap for reading
       }
@@ -256,7 +256,7 @@ struct sarray_file_format_v2_test {
       random::seed(10001);
       for (size_t i = 0;i < 1600; ++i) {
         size_t len = 4096;
-        size_t start = random::fast_uniform<size_t>(0, 16 * VERY_LARGE_SIZE - 4097);
+        size_t start = random::uniform<size_t>(0, 16 * VERY_LARGE_SIZE - 4097);
         std::vector<flexible_type> vals;
         reader.read_rows(start, start + len, vals);
         TS_ASSERT_EQUALS(vals.size(), len);
@@ -288,7 +288,7 @@ struct sarray_file_format_v2_test {
       std::vector<size_t> start_points;
       for (size_t i = 0;i < 16; ++i) {
         start_points.push_back(
-            random::fast_uniform<size_t>(0,
+            random::uniform<size_t>(0,
                                          15 * VERY_LARGE_SIZE));
         // 15 so as to give some gap for reading
       }
@@ -316,7 +316,7 @@ struct sarray_file_format_v2_test {
       std::vector<size_t> start_points;
       for (size_t i = 0;i < 16; ++i) {
         start_points.push_back(
-            random::fast_uniform<size_t>(0,
+            random::uniform<size_t>(0,
                                          15 * VERY_LARGE_SIZE));
         // 15 so as to give some gap for reading
       }
@@ -417,7 +417,7 @@ struct sarray_file_format_v2_test {
       random::seed(10001);
       for (size_t i = 0;i < 1600; ++i) {
         size_t len = 4096;
-        size_t start = random::fast_uniform<size_t>(0, 16 * VERY_LARGE_SIZE - 4097);
+        size_t start = random::uniform<size_t>(0, 16 * VERY_LARGE_SIZE - 4097);
         std::vector<flexible_type> vals;
         reader.read_rows(start, start + len, vals);
         TS_ASSERT_EQUALS(vals.size(), len);
@@ -457,7 +457,7 @@ struct sarray_file_format_v2_test {
       std::vector<size_t> start_points;
       for (size_t i = 0;i < 16; ++i) {
         start_points.push_back(
-            random::fast_uniform<size_t>(0,
+            random::uniform<size_t>(0,
                                          15 * VERY_LARGE_SIZE));
         // 15 so as to give some gap for reading
       }
@@ -489,7 +489,7 @@ struct sarray_file_format_v2_test {
       std::vector<size_t> start_points;
       for (size_t i = 0;i < 16; ++i) {
         start_points.push_back(
-            random::fast_uniform<size_t>(0,
+            random::uniform<size_t>(0,
                                          15 * VERY_LARGE_SIZE));
         // 15 so as to give some gap for reading
       }

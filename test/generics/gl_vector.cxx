@@ -37,7 +37,7 @@ size_t alignment_round(size_t n) {
 }
 
 int random_int() {
-  return random::fast_uniform<int>(0, std::numeric_limits<int>::max());
+  return random::uniform<int>(0, std::numeric_limits<int>::max());
 }
 
 template <typename T>
@@ -1521,7 +1521,7 @@ void stress_test(size_t n_tests, GenFunction&& gen_element) {
 
   operations.push_back([&]() {
       auto e = gen_element();
-      size_t idx = random::fast_uniform<size_t>(0, v.size());
+      size_t idx = random::uniform<size_t>(0, v.size());
       v.insert(v.begin() + idx, e);
       v_ref.insert(v_ref.begin() + idx, e);
     });
@@ -1541,7 +1541,7 @@ void stress_test(size_t n_tests, GenFunction&& gen_element) {
 
   operations.push_back([&]() {
       auto e = gen_element();
-      size_t idx = random::fast_uniform<size_t>(0, v.size());
+      size_t idx = random::uniform<size_t>(0, v.size());
       v.insert(v.begin() + idx, 3, e);
       v_ref.insert(v_ref.begin() + idx, 3, e);
     });
@@ -1563,7 +1563,7 @@ void stress_test(size_t n_tests, GenFunction&& gen_element) {
   operations.push_back([&]() {
       auto e = gen_element();
       auto e2 = e;
-      size_t idx = random::fast_uniform<size_t>(0, v.size());
+      size_t idx = random::uniform<size_t>(0, v.size());
       v.insert(v.begin() + idx, std::move(e));
       v_ref.insert(v_ref.begin() + idx, std::move(e2));
     });
@@ -1584,7 +1584,7 @@ void stress_test(size_t n_tests, GenFunction&& gen_element) {
 
   operations.push_back([&]() {
       std::vector<T> ev = {gen_element(), gen_element(), gen_element()};
-      size_t idx = random::fast_uniform<size_t>(0, v.size());
+      size_t idx = random::uniform<size_t>(0, v.size());
       v.insert(v.begin() + idx, ev.begin(), ev.end());
       v_ref.insert(v_ref.begin() + idx, ev.begin(), ev.end());
     });
@@ -1598,7 +1598,7 @@ void stress_test(size_t n_tests, GenFunction&& gen_element) {
   // Erase, single element.
   operations.push_back([&]() {
       if(v.empty()) return;
-      size_t idx = random::fast_uniform<size_t>(0, v.size() - 1);
+      size_t idx = random::uniform<size_t>(0, v.size() - 1);
       v.erase(v.begin() + idx);
       v_ref.erase(v_ref.begin() + idx);
     });
@@ -1606,8 +1606,8 @@ void stress_test(size_t n_tests, GenFunction&& gen_element) {
   // Erase, block
   operations.push_back([&]() {
       if(v.empty()) return;
-      size_t idx_1 = random::fast_uniform<size_t>(0, v.size() - 1);
-      size_t idx_2 = random::fast_uniform<size_t>(0, v.size() - 1);
+      size_t idx_1 = random::uniform<size_t>(0, v.size() - 1);
+      size_t idx_2 = random::uniform<size_t>(0, v.size() - 1);
       v.erase(v.begin() + std::min(idx_1, idx_2), v.begin() + std::max(idx_1, idx_2));
       v_ref.erase(v_ref.begin() + std::min(idx_1, idx_2), v_ref.begin() + std::max(idx_1, idx_2));
     });
@@ -1615,7 +1615,7 @@ void stress_test(size_t n_tests, GenFunction&& gen_element) {
   // Erase, to end
   operations.push_back([&]() {
       if(v.empty()) return;
-      size_t idx = random::fast_uniform<size_t>(0, v.size() - 1);
+      size_t idx = random::uniform<size_t>(0, v.size() - 1);
       v.erase(v.begin() + idx, v.end());
       v_ref.erase(v_ref.begin() + idx, v_ref.end());
     });
@@ -1623,7 +1623,7 @@ void stress_test(size_t n_tests, GenFunction&& gen_element) {
   // Erase, from beginning
   operations.push_back([&]() {
       if(v.empty()) return;
-      size_t idx = random::fast_uniform<size_t>(0, v.size() - 1);
+      size_t idx = random::uniform<size_t>(0, v.size() - 1);
       v.erase(v.begin(), v.begin() + idx);
       v_ref.erase(v_ref.begin(), v_ref.begin() + idx);
     });
@@ -1681,7 +1681,7 @@ void stress_test(size_t n_tests, GenFunction&& gen_element) {
   // shuffle by index
   operations.push_back([&]() {
       for(size_t j = 0; j < v.size(); ++j) {
-        size_t idx = random::fast_uniform<size_t>(0, v.size() - 1);
+        size_t idx = random::uniform<size_t>(0, v.size() - 1);
         std::swap(v[j], v[idx]);
         std::swap(v_ref[j], v_ref[idx]);
       }
@@ -1690,7 +1690,7 @@ void stress_test(size_t n_tests, GenFunction&& gen_element) {
   // shuffle by iterator
   operations.push_back([&]() {
       for(size_t j = 0; j < v.size(); ++j) {
-        size_t idx = random::fast_uniform<size_t>(0, v.size() - 1);
+        size_t idx = random::uniform<size_t>(0, v.size() - 1);
         std::swap(*(v.begin() + j), *(v.begin() + idx));
         std::swap(*(v_ref.begin() + j), *(v_ref.begin() + idx));
       }
@@ -1699,7 +1699,7 @@ void stress_test(size_t n_tests, GenFunction&& gen_element) {
   // shuffle by reverse iterator
   operations.push_back([&]() {
       for(size_t j = 0; j < v.size(); ++j) {
-        size_t idx = random::fast_uniform<size_t>(0, v.size() - 1);
+        size_t idx = random::uniform<size_t>(0, v.size() - 1);
         std::swap(*(v.rbegin() + j), *(v.rbegin() + idx));
         std::swap(*(v_ref.rbegin() + j), *(v_ref.rbegin() + idx));
       }
@@ -1713,7 +1713,7 @@ void stress_test(size_t n_tests, GenFunction&& gen_element) {
       v.swap(v2);
       v_ref.swap(v2_ref);
 
-      size_t idx = random::fast_uniform<size_t>(0, v.size());
+      size_t idx = random::uniform<size_t>(0, v.size());
       v.insert(v.begin() + idx, v2.begin(), v2.end());
       v_ref.insert(v_ref.begin() + idx, v2_ref.begin(), v2_ref.end());
     });
@@ -1754,7 +1754,7 @@ void stress_test(size_t n_tests, GenFunction&& gen_element) {
     });
 
   for(size_t i = 0; i < n_tests; ++i) {
-    size_t idx = random::fast_uniform<size_t>(0, operations.size() - 1);
+    size_t idx = random::uniform<size_t>(0, operations.size() - 1);
     operations[idx]();
 
     ASSERT_EQ(v.size(), v_ref.size());
@@ -1794,7 +1794,7 @@ struct gl_vector_stress_test   {
   void test_vector() {
     random::seed(2);
     stress_test<gl_vector<int> >(100000, []() {
-        size_t len = random::fast_uniform<size_t>(0, 10);
+        size_t len = random::uniform<size_t>(0, 10);
         gl_vector<int> v;
         v.reserve(len);
         for(size_t i = 0; i < len; ++i) {
@@ -1808,7 +1808,7 @@ struct gl_vector_stress_test   {
   void test_gl_vector() {
     random::seed(3);
     stress_test<gl_vector<int> >(100000, []() {
-        size_t len = random::fast_uniform<size_t>(0, 10);
+        size_t len = random::uniform<size_t>(0, 10);
         gl_vector<int> v;
         v.reserve(len);
         for(size_t i = 0; i < len; ++i) {

@@ -31,8 +31,8 @@ BOOST_AUTO_TEST_CASE(test_rmse_and_max_error) {
     double total = 0.0;
     double true_max_error = 0;
     for (size_t i = 0; i < num_observations; ++i) {
-      predictions[i] = random::fast_uniform<double>(0, 1);
-      targets[i] = random::fast_uniform<double>(0, 1);
+      predictions[i] = random::uniform<double>(0, 1);
+      targets[i] = random::uniform<double>(0, 1);
       double err = std::abs((double)predictions[i] - (double)targets[i]);
       total += std::pow(err, 2);
       true_max_error = std::max(true_max_error, err);
@@ -70,8 +70,8 @@ BOOST_AUTO_TEST_CASE(test_roc_curve) {
 
     for (size_t i = 0; i < num_observations; ++i) {
       predictions[i] = float(i) / num_observations;
-      // random::fast_uniform<double>(0, 1);
-      targets[i] = random::fast_uniform<size_t>(0, 1);
+      // random::uniform<double>(0, 1);
+      targets[i] = random::uniform<size_t>(0, 1);
       if (targets[i] == 1) {
         if (predictions[i] == 1) {
           true_positive += 1;
@@ -134,11 +134,11 @@ BOOST_AUTO_TEST_CASE(test_accuracy) {
     auto targets = std::vector<flexible_type>(num_observations);
 
     for (size_t i = 0; i < num_observations; ++i) {
-      double prob = random::fast_uniform<double>(0.0, 1.0);
+      double prob = random::uniform<double>(0.0, 1.0);
       predictions[i] = prob > 0.5 ? 1 : 0;
       pred_vectors[i] = flex_vec({1.0 - prob, prob});
       pred_dicts[i] = flex_dict({{0, 1.0 - prob}, {1, prob}});
-      targets[i] = random::fast_uniform<size_t>(0, 1);
+      targets[i] = random::uniform<size_t>(0, 1);
       if (targets[i] == 1) {
         if (predictions[i] == 1) {
           true_positive += 1;

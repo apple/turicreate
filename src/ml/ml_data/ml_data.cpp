@@ -746,7 +746,7 @@ ml_data ml_data::create_subsampled_copy(size_t n_rows, size_t random_seed) const
   for(size_t i = 0; i < n_rows; ++i) {
     size_t lb = (i > 0) ? (samples[i - 1] + 1) : 0;
     size_t ub = (i < n_rows - 1) ? (samples[i + 1] - 1) : data_size - 1;
-    samples[i] = random::fast_uniform<size_t>(lb, ub);
+    samples[i] = random::uniform<size_t>(lb, ub);
   }
 
   // Break them up into groups

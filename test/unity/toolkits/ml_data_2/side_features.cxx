@@ -106,7 +106,7 @@ void test_consistency(const v2::ml_data& data,
           it.fill_observation(x);
 
           // Strip and replace the features associated with one of the columns
-          size_t idx = random::fast_uniform<size_t>(0, data.metadata()->num_columns(false) - 1);
+          size_t idx = random::uniform<size_t>(0, data.metadata()->num_columns(false) - 1);
 
           data.get_side_features()->strip_side_features_from_row(idx, x);
           data.get_side_features()->add_partial_side_features_to_row(x, idx);
@@ -119,7 +119,7 @@ void test_consistency(const v2::ml_data& data,
           it.fill_observation(x_gi);
 
           // Strip and replace the features associated with one of the columns
-          size_t idx = random::fast_uniform<size_t>(0, data.metadata()->num_columns(false) - 1);
+          size_t idx = random::uniform<size_t>(0, data.metadata()->num_columns(false) - 1);
 
           data.get_side_features()->strip_side_features_from_row(idx, x_gi);
           data.get_side_features()->add_partial_side_features_to_row(x_gi, idx);

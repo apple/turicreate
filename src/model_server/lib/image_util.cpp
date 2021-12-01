@@ -7,6 +7,7 @@
 
 #include <algorithm>
 #include <string>
+#include <random>      
 
 #include <core/data/image/image_util_impl.hpp>
 #include <core/storage/sframe_data/sframe_iterators.hpp>
@@ -376,7 +377,9 @@ std::shared_ptr<unity_sframe> load_images(std::string url, std::string format, b
     image_sarray->set_type(flex_type_enum::IMAGE);
 
     if (random_order) {
-      std::random_shuffle(all_files.begin(), all_files.end());
+      std::random_device rd;
+      std::mt19937 g(rd());
+      std::shuffle(all_files.begin(), all_files.end(), g);
     } else {
       std::sort(all_files.begin(), all_files.end());
     }

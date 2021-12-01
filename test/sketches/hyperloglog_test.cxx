@@ -12,7 +12,7 @@ struct hyperloglog_test {
     turi::sketches::hyperloglog hll(hllbits);
     std::vector<size_t> v(len);
     for (size_t i = 0;i < len; ++i) {
-      v[i] = turi::random::fast_uniform<size_t>(0, random_range - 1);
+      v[i] = turi::random::uniform<size_t>(0, random_range - 1);
       hll.add(v[i]);
     }
     std::sort(v.begin(), v.end());
@@ -39,7 +39,7 @@ struct hyperloglog_test {
 
     std::vector<size_t> v(len);
     for (size_t i = 0;i < len; ++i) {
-      v[i] = turi::random::fast_uniform<size_t>(0, random_range - 1);
+      v[i] = turi::random::uniform<size_t>(0, random_range - 1);
       hllarr[i% 16].add(v[i]);
       sequential_hll.add(v[i]);
     }

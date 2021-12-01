@@ -258,7 +258,7 @@ std::map<std::string, size_t> cgs_topic_model::sample_counts(
       // Iterate through each token
 
       // Choose a random spot in the document to try first.   This way we reduce biases.
-      size_t shift = random::fast_uniform<size_t>(0, x.size()-1);
+      size_t shift = random::uniform<size_t>(0, x.size()-1);
       for (size_t _j = 0; _j < x.size(); ++_j) {
         size_t j = (_j + shift) % x.size();
 

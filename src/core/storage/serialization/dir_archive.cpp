@@ -278,7 +278,7 @@ size_t get_next_random_number() {
     gen.nondet_seed();
     initialized = true;
   }
-  return gen.fast_uniform<size_t>(0, std::numeric_limits<size_t>::max());
+  return gen.uniform<size_t>(0, std::numeric_limits<size_t>::max());
 }
 
 

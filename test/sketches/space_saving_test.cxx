@@ -25,7 +25,7 @@ struct space_saving_test {
     std::vector<size_t> v(len);
     std::map<size_t, size_t> true_counter;
     for (size_t i = 0;i < len; ++i) {
-      v[i] = turi::random::fast_uniform<size_t>(0, random_range - 1);
+      v[i] = turi::random::uniform<size_t>(0, random_range - 1);
       ++true_counter[v[i]];
     }
     turi::timer ti;
@@ -66,7 +66,7 @@ struct space_saving_test {
     std::vector<size_t> v(len);
     std::unordered_map<size_t, size_t> true_counter;
     for (size_t i = 0;i < len; ++i) {
-      v[i] = turi::random::fast_uniform<size_t>(0, random_range - 1);
+      v[i] = turi::random::uniform<size_t>(0, random_range - 1);
       ++true_counter[v[i]];
     }
     turi::timer ti;

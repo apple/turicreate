@@ -56,8 +56,8 @@ alias_sampler::alias_sampler(const std::vector<double>& p) {
 }
 
 size_t alias_sampler::sample() {
-  size_t k = random::fast_uniform<size_t>(0, K - 1);
-  if (q[k] > random::fast_uniform<double>(0, 1)) {
+  size_t k = random::uniform<size_t>(0, K - 1);
+  if (q[k] > random::uniform<double>(0, 1)) {
     return k;
   } else {
     return J[k];
