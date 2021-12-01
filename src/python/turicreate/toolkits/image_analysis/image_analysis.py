@@ -192,6 +192,171 @@ def resize(image, width, height, channels=None, decode=False, resample="nearest"
             "Cannot call 'resize' on objects that are not either an Image or SArray of Images"
         )
 
+def resize_with_original_aspect_ratio(image, min_side_length=None, max_side_length=None, channels=None, decode=False, resample="nearest"):
+    """
+    Resizes the image or SArray of Images to a specific width or height while maintaining the aspect ratio
+
+    Parameters
+    ----------
+
+    image : turicreate.Image | SArray
+        The image or SArray of images to be resized.
+    min_side_length : int
+        The size of the minimum side of the image to be resized while maintaining aspect ratio.
+        For ex: 
+            if the image shape is : 720 * 960 i.e => the aspect ratio is 3:4
+            so if you set the min_side_length to 600, then the resized image dimension would be => 600 * 800
+    max_side_length : int
+        The size of the maximum side of the image to be resized while maintaining aspect ratio.
+        For ex: 
+            if the image shape is : 720 * 960 i.e => the aspect ratio is 3:4
+            so if you set the max_side_length to 600, then the resized image dimension would be => 450 * 600
+    channels : int, optional
+        The number of channels the image is resized to. 1 channel
+        corresponds to grayscale, 3 channels corresponds to RGB, and 4
+        channels corresponds to RGBA images.
+    decode : bool, optional
+        Whether to store the resized image in decoded format. Decoded takes
+        more space, but makes the resize and future operations on the image faster.
+    resample : 'nearest' or 'bilinear'
+        Specify the resampling filter:
+
+            - ``'nearest'``: Nearest neigbhor, extremely fast
+            - ``'bilinear'``: Bilinear, fast and with less aliasing artifacts
+
+    Returns
+    -------
+    out : turicreate.Image
+        Returns a resized Image object with original aspect ratio.
+
+    Notes
+    -----
+    Grayscale Images -> Images with one channel, representing a scale from
+    white to black
+
+    RGB Images -> Images with 3 channels, with each pixel having Green, Red,
+    and Blue values.
+
+    RGBA Images -> An RGB image with an opacity channel.
+
+    Examples
+    --------
+
+    Resize a single image
+
+    >>> img = turicreate.Image('https://static.turi.com/datasets/images/sample.jpg')
+    >>> resized_img = turicreate.image_analysis.resize_with_original_aspect_ratio(img,min_side_length=500,max_side_length=None, channels=1)
+    >>> resized_img = turicreate.image_analysis.resize_with_original_aspect_ratio(img,min_side_length=None,max_side_length=500, channels=1)
+
+    Resize an SArray of images
+
+    >>> url ='https://static.turi.com/datasets/images/nested'
+    >>> image_sframe = turicreate.image_analysis.load_images(url, "auto", with_path=False,
+    ...                                                    recursive=True)
+    >>> image_sarray = image_sframe["image"]
+    >>> resized_images = turicreate.image_analysis.resize(image_sarray, min_side_length=500,max_side_length=None, channels=1)
+    >>> resized_images = turicreate.image_analysis.resize(image_sarray, min_side_length=None,max_side_length=500, channels=1)
+    """
+
+    from ...data_structures.sarray import SArray as _SArray
+    import turicreate as _tc
+
+    if min_side_length is None and max_side_length is None:
+        raise ValueError("Cannot resize when neither `min_side_length` or `max_side_length` is not provided")
+
+    if (min_side_length is not None and min_side_length > 0) and (max_side_length is not None and max_side_length > 0):
+        raise ValueError("Cannot provide both parameters `min_side_length` and `max_side_length` as only one is required to maintain the aspect ratio")
+
+    if min_side_length is not None:
+        if min_side_length > 0:
+            side_length_type = "min_length"
+            side_length = min_side_length
+        else:
+            raise ValueError("Value of min_side_length parameter cannot be negetive")
+    elif max_side_length is not None:
+        if max_side_length > 0:
+            side_length_type = "max_length"
+            side_length = max_side_length
+        else:
+            raise ValueError("Value of max_side_length parameter cannot be negetive")
+    else:
+        raise ValueError("Need to provode either the `min_side_length` or `max_side_length` to resize while maintaining the aspect ratio")
+    
+    if type(image) is _Image:
+        new_image_shape = _get_new_image_dimensions_with_original_aspect_ratio(image, side_length_type, side_length)
+        return resize(image, new_image_shape[0], new_image_shape[1], channels=channels, decode=decode, resample=resample)
+    elif type(image) is _SArray:
+        new_image_shape_sarray = image.apply(
+            lambda x: _get_new_image_dimensions_with_original_aspect_ratio(x, side_length_type, side_length)
+        )
+        image_with_new_dims_sframe = _tc.SFrame({"image": image, "new_shape": new_image_shape_sarray})
+        return image_with_new_dims_sframe.apply(
+            lambda x: resize(x['image'], x['new_shape'][0], x['new_shape'][1], channels=channels, decode=decode, resample=resample)
+        )
+    else:
+        raise ValueError(
+            "Cannot call 'resize' on objects that are not either an Image or SArray of Images"
+        )
+
+
+def _get_new_image_dimensions_with_original_aspect_ratio(image, side_length_type, side_length):
+
+    image_shape = (image.width, image.height)
+    aspect_ratio = image_shape[0]/image_shape[1]
+    if aspect_ratio > 1:
+        if side_length_type == "max_length":
+            return (side_length, int(side_length/aspect_ratio))
+        else:
+            return (int(side_length*aspect_ratio), side_length)
+    else:
+        if side_length_type == "max_length":
+            return (int(side_length*aspect_ratio), side_length)
+        else:
+            return (side_length, int(side_length/aspect_ratio))
+
+
+def resize_annotations(original_image_shape, annotations, target_image_shape):
+    """
+    Resize annotations to any target image dimensions
+
+    Parameters
+    ----------
+    original_image_shape : tuple | list
+        Original image dimesions in the format of (width, height)
+    annotations : list
+        Original annotations of the data. 
+        This should be a list of dictionaries , with
+        each dictionary representing a bounding box of an object instance. Here
+        is an example of the annotations for a single image with two object
+        instances::
+
+            [{'label': 'dog',
+              'type': 'rectangle',
+              'coordinates': {'x': 223, 'y': 198,
+                              'width': 130, 'height': 230}},
+             {'label': 'cat',
+              'type': 'rectangle',
+              'coordinates': {'x': 40, 'y': 73,
+                              'width': 80, 'height': 123}}]
+
+        The value for `x` is the horizontal center of the box paired with
+        `width` and `y` is the vertical center of the box paired with `height`.
+        'None' (the default) indicates the only list column in `dataset` should
+        be used for the annotations.
+        For more information on annotations format refer to `https://apple.github.io/turicreate/docs/userguide/object_detection/` 
+    target_image_shape : tuple | list
+        Target image dimesions in the format of (width, height)
+    """
+    if type(annotations) is not list:
+        raise ValueError("annotations are expected in the form of list")
+
+    for ann_index in range(len(annotations)):
+        annotations[ann_index]["coordinates"]["height"] = annotations[ann_index]["coordinates"]["height"]*target_image_shape[1]/original_image_shape[1]
+        annotations[ann_index]["coordinates"]["width"] = annotations[ann_index]["coordinates"]["width"]*target_image_shape[0]/original_image_shape[0]
+        annotations[ann_index]["coordinates"]["x"] = annotations[ann_index]["coordinates"]["x"]*target_image_shape[0]/original_image_shape[0]
+        annotations[ann_index]["coordinates"]["y"] = annotations[ann_index]["coordinates"]["y"]*target_image_shape[1]/original_image_shape[1]
+    return annotations
+
 
 def get_deep_features(images, model_name, batch_size=64, verbose=True):
     """
