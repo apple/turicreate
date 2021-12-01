@@ -385,7 +385,7 @@ public:
       parallel_for(0, m_num_workers, [&](size_t i) {
         try {
           ret[i] = f(temp_workers[i]->proxy);
-        } catch (cppipc::ipcexception e) {
+        } catch (cppipc::ipcexception& e) {
           throw reinterpret_comm_failure(e);
         }
       });

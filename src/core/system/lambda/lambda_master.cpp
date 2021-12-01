@@ -109,7 +109,7 @@ static lambda_master* instance_ptr = nullptr;
     auto release_lambda_fn = [lambda_hash](std::unique_ptr<lambda_evaluator_proxy>& proxy) {
       try {
         proxy->release_lambda(lambda_hash);
-      } catch (std::exception e){
+      } catch (const std::exception& e){
         logstream(LOG_ERROR) << "Error on releasing lambda: " << e.what() << std::endl;
       } catch (std::string e) {
         logstream(LOG_ERROR) << "Error on releasing lambda: " << e << std::endl;
@@ -134,7 +134,7 @@ static lambda_master* instance_ptr = nullptr;
     // catch and reinterpret comm failure
     try {
       out = worker->proxy->bulk_eval(lambda_hash, args, skip_undefined, seed);
-    } catch (cppipc::ipcexception e) {
+    } catch (cppipc::ipcexception& e) {
       throw reinterpret_comm_failure(e);
     }
   }
@@ -236,7 +236,7 @@ static lambda_master* instance_ptr = nullptr;
         logstream(LOG_WARNING) << "Unexpected SHMIPC failure. Falling back to CPPIPC" << std::endl;
       }
       out = worker->proxy->bulk_eval_rows(lambda_hash, args, skip_undefined, seed);
-    } catch (cppipc::ipcexception e) {
+    } catch (cppipc::ipcexception& e) {
       throw reinterpret_comm_failure(e);
     }
   }
@@ -252,7 +252,7 @@ static lambda_master* instance_ptr = nullptr;
     // catch and reinterpret comm failure
     try {
       out = worker->proxy->bulk_eval_dict(lambda_hash, keys, values, skip_undefined, seed);
-    } catch (cppipc::ipcexception e) {
+    } catch (cppipc::ipcexception& e) {
       throw reinterpret_comm_failure(e);
     }
   }
@@ -289,7 +289,7 @@ static lambda_master* instance_ptr = nullptr;
         logstream(LOG_WARNING) << "Unexpected SHMIPC failure. Falling back to CPPIPC" << std::endl;
       }
       out = worker->proxy->bulk_eval_dict_rows(lambda_hash, keys, rows, skip_undefined, seed);
-    } catch (cppipc::ipcexception e) {
+    } catch (cppipc::ipcexception& e) {
       throw reinterpret_comm_failure(e);
     }
   }
