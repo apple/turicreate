@@ -109,8 +109,11 @@ class AWSReadStreamBase : public SeekStream {
   }
 
   virtual void Close() {
-    logstream(LOG_DEBUG) << "AWSReadStream::Close()" << std::endl;
-    Reset(file_size_);
+    if (!closed_) {
+      closed_ = true;
+      logstream(LOG_DEBUG) << "AWSReadStream::Close()" << std::endl;
+      Reset(file_size_);
+    }
   }
 
   virtual size_t Tell(void) { return curr_bytes_; }
@@ -143,6 +146,7 @@ class AWSReadStreamBase : public SeekStream {
  protected:
   // the total size of the file
   size_t file_size_ = 0;
+  bool closed_ = false;
   s3url url_;
 
  private:

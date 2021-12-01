@@ -12,6 +12,7 @@ make_boost_test(fixed_size_cache_manager_test.cxx REQUIRES
                 unity_shared_for_testing)
 make_boost_test(general_fstream_test.cxx REQUIRES unity_shared_for_testing)
 make_boost_test(parse_hdfs_url_test.cxx REQUIRES unity_shared_for_testing)
+make_boost_test(stop_watch_test.cxx REQUIRES unity_shared_for_testing)
 
 if(${TC_BUILD_REMOTEFS})
   make_executable(s3_filesys_test SOURCES s3_filesys_test.cpp REQUIRES
