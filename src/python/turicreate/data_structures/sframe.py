@@ -2701,7 +2701,7 @@ class SFrame(object):
         with cython_context():
             return SArray(_proxy=self.__proxy__.transform(fn, dtype, seed))
 
-    def flat_map(self, column_names, fn, column_types="auto", seed=None):
+    def flat_map(self, column_names, fn, column_types="auto"):
         """
         Map each row of the SFrame to multiple rows in a new SFrame via a
         function.
@@ -2734,9 +2734,6 @@ class SFrame(object):
             input. If the types cannot be inferred from the first 10 rows, an
             error is raised.
 
-        seed : int, optional
-            Used as the seed if a random number generator is included in `fn`.
-
         Returns
         -------
         out : SFrame
@@ -2764,8 +2761,7 @@ class SFrame(object):
         [6 rows x 2 columns]
         """
         assert callable(fn), "Input must be callable"
-        if seed is None:
-            seed = abs(hash("%0.20f" % time.time())) % (2 ** 31)
+        seed = abs(hash("%0.20f" % time.time())) % (2 ** 31)
 
         # determine the column_types
         if column_types == "auto":
