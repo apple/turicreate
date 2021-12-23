@@ -7,7 +7,8 @@ subdirs(
   ml
   toolkits
   visualization
-  model_server)
+  model_server
+  model_server_v2)
 
 
 if(TC_BUILD_PYTHON)
