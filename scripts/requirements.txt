@@ -18,7 +18,7 @@ statsmodels==0.9.0; python_version < '3.8'
 statsmodels==0.11.1; python_version == '3.8'
 statsmodels==0.12.2; python_version == '3.9'
 
-tensorflow==2.0.2; sys_platform == 'darwin' and python_version != '2.7' and python_version != '3.8' and python_version != '3.9'
+tensorflow==2.11.0; sys_platform == 'darwin' and python_version != '2.7' and python_version != '3.8' and python_version != '3.9'
 
 UISoup==2.5.7
 
