@@ -39,18 +39,16 @@ function linux_patch_sigfpe_handler {
   fi
 }
 
-function get_pip_version{
-  pip_version=$(pip -V).trim()
-  echo $pip_version
-}
-
 $PIP install --upgrade "pip"
+DEPS_RESOLVER_FLAG=""
+if [["$PIP_MAJOR_VERSION" -lt 20 && "$PIP_MINOR_VERSION" -lt 2]]; then
+  DEPS_RESOLVER_FLAG="--use-feature=2020-resolver"
+fi
 
-DEP_RESOLVER=
 if [[ "$USE_MINIMAL" -eq 1  ]]; then
-  $PIP install -r scripts/requirements-minimal.txt --prefer-binary
+  $PIP install -r scripts/requirements-minimal.txt --prefer-binary $DEPS_RESOLVER_FLAG
 else
-  $PIP install -r scripts/requirements.txt --prefer-binary
+  $PIP install -r scripts/requirements.txt --prefer-binary $DEPS_RESOLVER_FLAG
 fi
 
 # install pre-commit hooks for git
