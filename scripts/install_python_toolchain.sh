@@ -12,9 +12,14 @@ source deps/env/bin/activate
 PYTHON="${PWD}/deps/env/bin/python"
 PIP="${PYTHON} -m pip"
 
+# python version
 PYTHON_MAJOR_VERSION=$(${PYTHON} -c 'import sys; print(sys.version_info.major)')
 PYTHON_MINOR_VERSION=$(${PYTHON} -c 'import sys; print(sys.version_info.minor)')
 PYTHON_VERSION="python${PYTHON_MAJOR_VERSION}.${PYTHON_MINOR_VERSION}"
+
+# pip version
+PIP_MAJOR_VERSION=$(${PYTHON} -c 'import pip; print(pip.__version__.split(".")[0])')
+PIP_MINOR_VERSION=$(${PYTHON} -c 'import pip; print(pip.__version__.split(".")[1])')
 
 # TODO - not sure why 'm' is necessary here (and not in 2.7)
 # note that PYTHON_VERSION includes the word "python", like "python2.7" or "python3.6"
@@ -35,10 +40,15 @@ function linux_patch_sigfpe_handler {
 }
 
 $PIP install --upgrade "pip"
+DEPS_RESOLVER_FLAG=""
+if [["$PIP_MAJOR_VERSION" -lt 20 && "$PIP_MINOR_VERSION" -lt 2]]; then
+  DEPS_RESOLVER_FLAG="--use-feature=2020-resolver"
+fi
+
 if [[ "$USE_MINIMAL" -eq 1  ]]; then
-  $PIP install -r scripts/requirements-minimal.txt --prefer-binary  --use-feature=2020-resolver
+  $PIP install -r scripts/requirements-minimal.txt --prefer-binary $DEPS_RESOLVER_FLAG
 else
-  $PIP install -r scripts/requirements.txt --prefer-binary  --use-feature=2020-resolver
+  $PIP install -r scripts/requirements.txt --prefer-binary $DEPS_RESOLVER_FLAG
 fi
 
 # install pre-commit hooks for git
