@@ -34,13 +34,15 @@ export async function fetch(url, body) {
 }
 
 async function initVisualization(id, type) {
-  let spec = await fetch(`/spec/${type}/${id}`);
   var body = undefined;
   if (type === 'table') {
     // for table, fetch the first 100 rows by default
     body = {'type': 'rows', start: 0, end: 100};
   }
-  var data = await fetch(`/data/${type}/${id}`, body);
+  let [spec, data] = await Promise.all([
+    fetch(`/spec/${type}/${id}`),
+    fetch(`/data/${type}/${id}`, body),
+  ]);
 
   window.setSpec(spec);
   window.handleInput(data);
